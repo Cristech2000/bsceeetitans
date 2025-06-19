@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSCEEEY2S1</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Collapsible Buttons */
+.collapsible {
+  background-color: #f2f2f2;
+  color: #000;
+  cursor: pointer;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s;
+}
+
+.collapsible:hover {
+  background-color: #e0e0e0;
+}
+
+.content {
+  padding: 0 15px;
+  display: none;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.unit ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.unit ul li a {
+  text-decoration: none;
+  color: #0066cc;
+}
+
+.unit ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Optional: Indentation for inner units */
+.unit {
+  margin-left: 20px;
+}
+.content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+}
+
+.collapsible.active + .content {
+  max-height: 500px; /* Adjust based on expected content size */
+}
+
+</style>
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <header>
+     <nav>
+     <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+                 <div class="title" >
+<h1>Study Documents</h1>
+            </div>
+        <div class="logo">
+    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+    </div>
+</nav>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <a href="index.html">HOME</a>
+    <a href="timetable.html">TIMETABLE</a>
+    <a href="assignments.html">ASSIGNMENT</a>
+    <a href="studydocs.html">STUDY DOCUMENTS</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="sports.html">SPORTS</a>
+    <a href="personell.html">PERSONNEL</a>
+  </div>
+
+  <!-- Main Content -->
+<section class="study-docs">
+  <h2>Study Documents</h2>
+
+  <!-- Year 1 Semester 2 -->
+  <div class="semester">
+    <button class="collapsible">Year 1 Semester 2</button>
+    <div class="content">
+      
+      <div class="unit">
+        <button class="collapsible"></button>
+        <div class="content">
+          <ul>
+            <li><a href="docs/Y1S2/Maths2_Lecture1.pdf" target="_blank"></a></li>
+            <li><a href="docs/Y1S2/Maths2_Examples.pdf" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="unit">
+        <button class="collapsible"></button>
+        <div class="content">
+          <ul>
+            <li><a href="docs/Y1S2/Analog_Notes.pdf" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Year 2 Semester 1 -->
+  <div class="semester">
+    <button class="collapsible">Year 2 Semester 1</button>
+    <div class="content">
+      
+      <div class="unit">
+        <button class="collapsible"></button>
+        <div class="content">
+          <ul>
+            <li><a href="docs/Y2S1/Signals_Notes.pdf" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="unit">
+        <button class="collapsible"></button>
+        <div class="content">
+          <ul>
+            <li><a href="docs/Y2S1/Machines_Notes.pdf" target="_blank"></a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+
+  <!-- Sidebar Script -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+  </script>
+<!-- Sidebar Script -->
+<script>
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+
+  // Collapsible logic after DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    const collapsibles = document.querySelectorAll(".collapsible");
+    collapsibles.forEach(button => {
+      button.addEventListener("click", () => {
+        const content = button.nextElementSibling;
+        button.classList.toggle("active");
+        content.style.display = content.style.display === "block" ? "none" : "block";
+      });
+    });
+  });
+</script>
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+  </div>
+</footer>
+</body>
+</html>

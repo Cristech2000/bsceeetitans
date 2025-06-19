@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSCEEEY2S1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <header>
+    <nav>
+     <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+       <div class="title" >
+<h1>Chuka University</h1>
+<p style="padding-left: 25px;">Faculty of Engineering</p>
+</div>
+     <div class="logo">
+    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+  </div>
+        
+    </nav>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <a href="index.html">HOME</a>
+    <a href="timetable.html">TIMETABLE</a>
+    <a href="assignments.html">ASSIGNMENT</a>
+    <a href="studydocs.html">STUDY DOCUMENTS</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="sports.html">SPORTS</a>
+    <a href="personell.html">PERSONNEL</a>
+  </div>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <!-- Section 1: Hero -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>  Bachelor of Science in Electrical and Electronics Engineering<br />
+  Chuka University<br />
+  2nd Year | Academic Year 2025–2026</h1>
+        <p>Innovate. Learn. Engineer.</p>
+      </div>
+    </section>
+
+    <!-- Section 2: About -->
+    <section class="about">
+      <h2>About This Site</h2>
+      <p>
+        The BSCEEE Y2S1 class website is a centralized digital space designed to foster academic excellence, unity, and streamlined communication for students pursuing a Bachelor of Science in Electrical and Electronics Engineering at Chuka University. As a second-year class, we are building not only our engineering knowledge but also a collaborative culture that supports innovation and lifelong learning.
+      </p>
+    </section>
+
+    <!-- Section 3: Announcements -->
+    <section class="features">
+  <div class="image-row">
+    <figure><img src="GALLERY/hi image.jpg" alt=""></figure>
+    <figure><img src="GALLERY/home image 2025-06-16 at 20.25.54_a0a50007.jpg" alt=""></figure>
+    <figure><img src="GALLERY/home page 20.22.35_7f93281f.jpg" alt=""></figure>
+  </div>
+  <div class="features-text">
+    🧠 <strong>Who We Are</strong><br>
+    BSCEEE Y2S1 is a class of 102 ambitious student engineers who value academic excellence, innovation, and teamwork. We are driven by curiosity, inspired by technology, and committed to shaping the future through smart solutions and ethical engineering practices.
+  </div>
+</section>
+
+
+    <!-- Section 4: News -->
+    <section class="news">
+  <h2>Latest News</h2>
+  <p>📰 <a href="https://ieee-pes.org/news/just-announced-2025-ieee-power-energy-society-award-recipients/" target="_blank">2025 IEEE Power & Energy Society Awards winners announced</a>: Industry leaders recognized for breakthroughs in power system stability, microgrid automation, and renewable integration :contentReference[oaicite:1]{index=1}.</p>
+  <p>📰 <a href="https://peopledaily.digital/business/kenya-power-faces-rising-electricity-losses" target="_blank">Kenya Power fights rising electricity losses</a>: Transmission losses hit 23.7%, prompting plans to modernize the grid by 2028 and save billions in revenue :contentReference[oaicite:2]{index=2}.</p>
+  <p>📰 <a href="https://www.iafastro.org/news/the-iaf-is-proud-to-introduce-the-2025-iaf-emerging-space-leaders.html" target="_blank">IAF names 2025 Emerging Space Leaders</a>: Highlighting students with cutting-edge projects like CubeSats and satellite navigation, showcasing multidisciplinary engineering in action :contentReference[oaicite:3]{index=3}.</p>
+</section>
+<!-- Section 5: Fun Facts -->
+<section class="fun-facts">
+  <h2>⚡ Fun Engineering Facts</h2>
+  <ul>
+    <li>Did you know? The first electrical battery was invented by Alessandro Volta in 1800!</li>
+    <li>Kenya’s first electric bus rolled out in 2022, leading a shift to sustainable transport.</li>
+    <li>High-voltage transmission lines can carry electricity over 500 km with minimal loss.</li>
+  </ul>
+</section>
+
+<!-- Section 6: Student Spotlight -->
+<section class="spotlight">
+  <h2>🌟 Student Spotlight</h2>
+  <p>Each semester, we’ll feature students who show outstanding performance, innovation, leadership, or community impact.</p>
+  <p><em>Do something awesome — and you might be next in the spotlight!</em></p>
+</section>
+<!-- Section 7: Weekly Quiz -->
+<section class="quiz">
+  <h2>📝 Weekly Quiz</h2>
+  <p><strong>Question:</strong> What is the SI unit of inductance?</p>
+  <ul class="quiz-options">
+    <li>A. Henry</li>
+    <li>B. Farad</li>
+    <li>C. Ohm</li>
+    <li>D. Tesla</li>
+  </ul>
+</section>
+  </main>
+
+  <!-- Sidebar Script -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+  </script>
+  <!-- Image Modal -->
+<div id="imageModal" class="modal">
+  <span class="closeBtn" onclick="closeModal()">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+<script>
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  document.querySelectorAll(".features img").forEach(img => {
+    img.addEventListener("click", () => {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+    });
+  });
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+</script>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+  </div>
+</footer>
+
+</body>

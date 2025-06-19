@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery - BSCEEE Y2S1</title>
+  <link rel="stylesheet" href="style.css" />
+  <STYle>/* Thumbnail images */
+.image-grid img {
+  width: 160px;
+  height: auto;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+.image-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.95);
+}
+
+.modal-content {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  object-fit: contain;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 40px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10000;
+}
+</STYle>
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <header>
+    <nav>
+      <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+      <div class="title">
+        <h1>Gallery</h1>
+      </div>
+      <div class="logo">
+        <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+      </div>
+    </nav>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <a href="index.html">HOME</a>
+    <a href="timetable.html">TIMETABLE</a>
+    <a href="assignments.html">ASSIGNMENT</a>
+    <a href="studydocs.html">STUDY DOCUMENTS</a>
+    <a href="announcement.html">ANNOUNCEMENT</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="sports.html">SPORTS</a>
+    <a href="personell.html">PERSONNEL</a>
+  </div>
+
+  <!-- Main Content -->
+  <main class="content">
+    
+    <!-- Event 1: Engineering Day -->
+    <section class="event-gallery">
+      <h2>Engineering Day 2025</h2>
+      <p>On 4th March 2025, we joined the global community in celebrating World Engineering Day under the theme <strong>“Shaping our sustainable future  through engineering”</strong>
+The event showcased student-led walk around Chuka town to spread awareness about enginering to the community and a public lecture presented by professor Marcel Ohanga. It was a day filled with inspiration, collaboration, and a renewed commitment to using engineering for the betterment of society.
+
+</p>
+      <div class="image-grid">
+        <img src="GALLERY\ENGINEERING DAY\E1.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E2.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E3.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E4.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E5.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E6.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E7.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E8.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E9.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E10.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E11.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E12.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E13.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E14.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E15.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\ENGINEERING DAY\E16.jpg" alt="Lab Session 1" onclick="openModal(this)">
+      </div>
+    </section>
+
+    <!-- Event 2: Lab Practical Sessions -->
+    <section class="event-gallery">
+      <h2>Trip to Weru tea factory Y1S2- 24th february, 2025</h2>
+      <p>On this day, the second-year Electrical and Electronics Engineering students embarked on an educational trip to Weru Tea Factory as part of the Engineering Workshop I (Mechanical Workshop) unit.
+
+The visit offered a practical glimpse into the mechanical processes behind tea production, including machinery operation, maintenance systems, and factory automation.</p>
+      <div class="image-grid">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.14_7dcb6de9.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_e368f92c.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_d7f0ccdf.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_8a66f5c9.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_a30b90c9.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_78b563d6.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_34b9b7c9.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.11_ac7a2abf.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.11_62ad2f23.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.09_7b932b6f.jpg" alt="Lab Session 1" onclick="openModal(this)">
+        
+      </div>
+    </section>
+
+    <!-- Add more events below in the same format -->
+    <!-- Modal for full image view -->
+<div id="imageModal" class="modal">
+  <span class="closeBtn" onclick="closeModal()">&times;</span>
+  <img class="modal-content" id="modalImage" />
+</div>
+<script>
+  function openModal(img) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    modal.style.display = "block";
+    modalImg.src = img.src;
+  }
+
+  function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
+  }
+</script>
+
+  </main>
+
+  <!-- Sidebar Script -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+  </script>
+
+  <!-- Fullscreen Modal Viewer -->
+<div id="imageModal" class="modal">
+  <span class="closeBtn" onclick="closeModal()">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+<script>
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  document.querySelectorAll(".image-grid img").forEach(img => {
+    img.addEventListener("click", () => {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+    });
+  });
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  // Optional: Close modal if you click outside the image
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+</script>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+  </div>
+</footer>
+</body>
+</html>

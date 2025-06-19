@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSCEEEY2S1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <header>
+     <nav>
+     <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+            <div class="title" >
+<h1>Assignments</h1>
+            </div>
+        <div class="logo">
+    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+    </div>
+</nav>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <a href="index.html">HOME</a>
+    <a href="timetable.html">TIMETABLE</a>
+    <a href="assignments.html">ASSIGNMENT</a>
+    <a href="studydocs.html">STUDY DOCUMENTS</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="sports.html">SPORTS</a>
+    <a href="personell.html">PERSONNEL</a>
+  </div>
+
+  <!-- Main Content -->
+<section class="coming-soon" style="margin-top: 70px;">
+  <h2>📁 File Not Available</h2>
+  <p>We're currently on break. Assignments will be posted here once the new semester begins. Stay tuned!</p>
+</section>
+
+
+  <!-- Sidebar Script -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+    }
+  </script>
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+  </div>
+</footer>
+</body>
+</html>
