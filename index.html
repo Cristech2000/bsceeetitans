@@ -80,9 +80,9 @@
 <section class="fun-facts">
   <h2>⚡ Fun Engineering Facts</h2>
   <ul>
-    <li>Did you know? The first electrical battery was invented by Alessandro Volta in 1800!</li>
-    <li>Kenya’s first electric bus rolled out in 2022, leading a shift to sustainable transport.</li>
-    <li>High-voltage transmission lines can carry electricity over 500 km with minimal loss.</li>
+    <li>Did you know? Lithium-ion batteries can explode if metal dendrites cause an internal short circuit.</li>
+    <li> In 1900, electric cars were more popular than gas cars in the U.S.</li>
+    <li> Jet engines burn hotter than lava—up to 1500°C inside!</li>
   </ul>
 </section>
 
@@ -95,13 +95,32 @@
 <!-- Section 7: Weekly Quiz -->
 <section class="quiz">
   <h2>📝 Weekly Quiz</h2>
-  <p><strong>Question:</strong> What is the SI unit of inductance?</p>
-  <ul class="quiz-options">
-    <li>A. Henry</li>
-    <li>B. Farad</li>
-    <li>C. Ohm</li>
-    <li>D. Tesla</li>
+  <p><strong>Background information:</strong> An engineering student is tasked with building a rechargeable autonomous robot using the following components: an Arduino Uno, an ultrasonic sensor, a servo motor, an L293D motor driver module, and a 2-wheel robot chassis kit.</p>
+<p><ul>
+ <li>The Arduino Uno requires a power supply of 7V to 12V.</li>
+	<li>The servo motor and ultrasonic sensor operate at 5V.</li>
+  <li>The L293D motor driver has two power inputs:</li>
+  <ul>
+  <li style="padding-left: 5px;">Logic power (Vcc1): powers the internal logic circuitry, typically 5V.</li>
+  <li style="padding-left: 5px;">Motor power (Vcc2): powers the motors and supports a voltage range of 4.5V to 36V, depending on the motors used.</li>
   </ul>
+   <li>In this project, the student is using TT motors rated from 3V to 9V.</li>
+
+</li>
+</ul></p>
+ <p>The student has acquired two rechargeable Li-ion batteries (3000mAh, 3.7V each) and salvaged a partially damaged power bank charge controller designed for charging these batteries. The charge controller supports charging at 4.2V (maximum per cell), has a nominal voltage of 3.7V, and a cutoff voltage of 3.0V. However, this controller cannot provide a 5V output at the USB port.
+The robot will be powered by the two batteries, which will be charged using this power bank charge controller.
+</p>
+<h3>Task:</h3>
+<h4>Design a power system that:</h4>
+<p>
+  <ul>
+  <li>Supplies power to all components of the autonomous robot with the correct voltages.</li>
+  <li>Uses the two Li-ion batteries and the existing charge controller to charge the batteries safely.</li>
+  <li>Includes a mechanism to switch between charging mode and usage mode.</li>
+</ul>
+</p>
+<p>Please provide a clear explanation and a block diagram or schematic of your design.</p>
 </section>
   </main>
 
