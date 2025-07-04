@@ -104,23 +104,26 @@
     }
   </script>
 <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbxW4CstE2gs8IeltPcVQHsh5XCJIZCPgkOzlIQlOtPWwgG4k3P1esEPDlqTn1cBoiMz/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxW4CstE2gs8IeltPcVQHsh5XCJIZCPgkOzlIQlOtPWwgG4k3P1esEPDlqTn1cBoiMz/exec'; // <-- Replace this with your updated URL
   const form = document.forms['registration-form'];
 
-form.addEventListener('submit', e => {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-      .then(res => res.text())
-      .then(response => {
-        if (response === "Duplicate") {
-          alert("This Reg Number has already been used.");
-        } else {
-          alert("Registration successful!");
-          form.reset();
-        }
-      })
-      .catch(error => alert("Error! Please try again."));
+
+    const formData = new FormData(form);
+    
+    fetch(scriptURL, {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors' // Bypass CORS issues
+    })
+    .then(() => {
+      alert("Registration submitted!");
+      form.reset();
+    })
+    .catch(() => alert("Error! Please try again."));
   });
+
 
 </script>
 
