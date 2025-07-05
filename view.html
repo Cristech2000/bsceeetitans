@@ -2,30 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>View Semester Registrations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Registrations</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background: #f2f2f2;
+      background-color: #f4f4f4;
     }
-    h2 {
-      color: #004080;
-      text-align: center;
+    #passwordSection, #dataSection {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    #passwordPrompt {
-      text-align: center;
-      margin-top: 100px;
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 30px;
+      margin-top: 20px;
     }
     th, td {
-      border: 1px solid #ccc;
       padding: 10px;
-      text-align: center;
+      border: 1px solid #ccc;
+      text-align: left;
     }
     th {
       background-color: #004080;
@@ -35,84 +51,97 @@
 </head>
 <body>
 
-  <div id="passwordPrompt">
-    <h2>Enter Admin Password</h2>
-    <input type="password" id="adminPassword" placeholder="Enter password">
-    <button onclick="checkPassword()">Access</button>
-  </div>
+<div id="passwordSection">
+  <h2>Admin Access</h2>
+  <p>Enter password to view registration data:</p>
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="checkPassword()">Submit</button>
+</div>
 
-  <div id="dataSection" style="display: none;">
-    <h2>Registered Students</h2>
-    <table id="dataTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Reg No</th>
-          <th>Phone</th>
-          <th>Timestamp</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+<div id="dataSection" style="display: none;">
+  <h2>Registered Students</h2>
+  <button onclick="exportToExcel()">Download as Excel</button>
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Reg No</th>
+        <th>Phone</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
 
-  <!-- Firebase SDKs -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-      authDomain: "bsceee-webpage.firebaseapp.com",
-      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-      projectId: "bsceee-webpage",
-      storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "281106710079",
-      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-      measurementId: "G-B1M7SSEZYP"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "281106710079",
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+    measurementId: "G-B1M7SSEZYP"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-    window.checkPassword = async function () {
-      const password = document.getElementById("adminPassword").value;
-      if (password !== "bsceee2025") {
-        alert("Wrong password!");
-        return;
-      }
-
-      document.getElementById("passwordPrompt").style.display = "none";
+  window.checkPassword = function() {
+    const pass = document.getElementById("password").value;
+    if (pass === "bsceeeadmin") {
+      document.getElementById("passwordSection").style.display = "none";
       document.getElementById("dataSection").style.display = "block";
+      loadData();
+    } else {
+      alert("Wrong password!");
+    }
+  }
 
-      const dbRef = ref(db, 'registrations');
-      try {
-        const snapshot = await get(dbRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const tbody = document.querySelector("#dataTable tbody");
-          tbody.innerHTML = "";
+  window.loadData = async function() {
+    const tbody = document.querySelector("#dataTable tbody");
+    tbody.innerHTML = "";
 
-          Object.keys(data).forEach(key => {
-            const entry = data[key];
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${entry.name || ''}</td>
-              <td>${entry.regNo || key}</td>
-              <td>${entry.phone || ''}</td>
-              <td>${entry.timestamp || ''}</td>
-            `;
-            tbody.appendChild(row);
+    try {
+      const snapshot = await get(ref(db, 'registrations'));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        Object.entries(data).forEach(([group, regnos]) => {
+          Object.entries(regnos).forEach(([mid, record]) => {
+            const row = `<tr>
+              <td>${record.name}</td>
+              <td>${record.regNo}</td>
+              <td>${record.phone}</td>
+              <td>${record.timestamp}</td>
+            </tr>`;
+            tbody.innerHTML += row;
           });
-        } else {
-          alert("No data found.");
-        }
-      } catch (error) {
-        console.error("Data fetch error:", error);
-        alert("Failed to load data.");
+        });
+      } else {
+        tbody.innerHTML = "<tr><td colspan='4'>No records found</td></tr>";
       }
-    };
-  </script>
+    } catch (err) {
+      console.error("Error loading data:", err);
+    }
+  }
+
+  window.exportToExcel = function () {
+    let table = document.getElementById("dataTable");
+    let html = table.outerHTML;
+    let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = 'registrations.xls';
+    link.click();
+  }
+</script>
 
 </body>
 </html>
