@@ -40,12 +40,12 @@
   <tbody></tbody>
 </table>
 
-<!-- Firebase App & Database (Non-module versions) -->
+<!-- Firebase SDK (Compat for local use) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
-  // Your Firebase config
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
     authDomain: "bsceee-webpage.firebaseapp.com",
@@ -61,7 +61,7 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Load and display data
+  // Load data
   function loadRegistrations() {
     const tableBody = document.querySelector('#data-table tbody');
     tableBody.innerHTML = "";
@@ -71,10 +71,10 @@
         if (snapshot.exists()) {
           const data = snapshot.val();
 
-          Object.keys(data).forEach(groupCode => {
-            const groupData = data[groupCode];
-            Object.keys(groupData).forEach(midReg => {
-              const record = groupData[midReg];
+          for (const groupKey in data) {
+            const group = data[groupKey]; // e.g. EB24
+            for (const regMid in group) {
+              const record = group[regMid];
               const row = `
                 <tr>
                   <td>${record.name || "N/A"}</td>
@@ -84,14 +84,14 @@
                 </tr>
               `;
               tableBody.insertAdjacentHTML("beforeend", row);
-            });
-          });
+            }
+          }
         } else {
           tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
         }
       })
-      .catch(err => {
-        console.error("Error:", err);
+      .catch(error => {
+        console.error("Error fetching data:", error);
         tableBody.innerHTML = "<tr><td colspan='4'>Error loading data</td></tr>";
       });
   }
