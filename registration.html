@@ -14,30 +14,19 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       border-radius: 10px;
     }
-
     .registration-form h2 {
       text-align: center;
       margin-bottom: 25px;
       color: #004080;
     }
-
-    .registration-form label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-      color: #333;
-    }
-
     .registration-form input {
       width: 100%;
       padding: 10px;
       font-size: 16px;
-      margin-top: 5px;
+      margin-top: 10px;
       border-radius: 5px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
     }
-
     .registration-form button {
       margin-top: 25px;
       width: 100%;
@@ -49,7 +38,6 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
     .registration-form button:hover {
       background-color: #003366;
     }
@@ -87,13 +75,12 @@
   <main class="content">
     <section class="registration-form">
       <h2>Semester Registration</h2>
-<form name="registration-form">
-  <input type="text" name="Name" placeholder="Full Name" required>
-  <input type="text" name="RegNo" placeholder="Registration Number" required>
-  <input type="tel" name="Phone" placeholder="Phone Number" required>
-  <button type="submit">Submit</button>
-</form>
-
+      <form name="registration-form">
+        <input type="text" name="Name" placeholder="Full Name" required>
+        <input type="text" name="RegNo" placeholder="Registration Number" required>
+        <input type="tel" name="Phone" placeholder="Phone Number" required>
+        <button type="submit">Submit</button>
+      </form>
     </section>
   </main>
 
@@ -103,32 +90,65 @@
       document.getElementById("sidebar").classList.toggle("active");
     }
   </script>
-<script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbxW4CstE2gs8IeltPcVQHsh5XCJIZCPgkOzlIQlOtPWwgG4k3P1esEPDlqTn1cBoiMz/exec';
-  const form = document.forms['registration-form'];
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-      .then(res => res.text())
-      .then(response => {
-        if (response === "Duplicate") {
+  <!-- Firebase App and DB -->
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+      authDomain: "bsceee-webpage.firebaseapp.com",
+      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+      projectId: "bsceee-webpage",
+      storageBucket: "bsceee-webpage.appspot.com",
+      messagingSenderId: "281106710079",
+      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+      measurementId: "G-B1M7SSEZYP"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Handle form
+    const form = document.forms['registration-form'];
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = form.Name.value.trim();
+      const regNo = form.RegNo.value.trim().toUpperCase();
+      const phone = form.Phone.value.trim();
+
+      if (!name || !regNo || !phone) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const regRef = ref(db, 'registrations/' + regNo);
+
+      try {
+        const snapshot = await get(regRef);
+        if (snapshot.exists()) {
           alert("This Reg Number has already been used.");
-        } else if (response === "Success") {
+        } else {
+          await set(regRef, {
+            name,
+            regNo,
+            phone,
+            timestamp: new Date().toISOString()
+          });
           alert("Registration successful!");
           form.reset();
-        } else {
-          alert("Unexpected response: " + response);
         }
-      })
-      .catch(error => {
-        alert("Error! Please try again.");
-        console.error("Error:", error);
-      });
-  });
-</script>
-
-
+      } catch (err) {
+        console.error("Firebase error:", err);
+        alert("Something went wrong. Try again.");
+      }
+    });
+  </script>
 
 </body>
 </html>
