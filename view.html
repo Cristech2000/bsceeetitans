@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Registration Data</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #004080;
+      color: white;
+    }
+    #login {
+      text-align: center;
+      margin-top: 100px;
+    }
+    #login input {
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Enter Admin Password</h2>
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="checkPassword()">Submit</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<div id="tableContainer" style="display:none;">
+  <h2>Registered Students</h2>
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Reg No</th>
+        <th>Phone</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  const correctPassword = "classadmin123"; // CHANGE THIS to your own secret password
+
+  function checkPassword() {
+    const entered = document.getElementById("password").value;
+    if (entered === correctPassword) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("tableContainer").style.display = "block";
+      loadData(); // Call Firebase fetch here
+    } else {
+      document.getElementById("error").textContent = "Incorrect password";
+    }
+  }
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "281106710079",
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+    measurementId: "G-B1M7SSEZYP"
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  function loadData() {
+    db.ref("registrations").once("value", snapshot => {
+      const table = document.querySelector("#dataTable tbody");
+      table.innerHTML = "";
+      snapshot.forEach(child => {
+        const data = child.val();
+        const row = `
+          <tr>
+            <td>${data.Name}</td>
+            <td>${data.RegNo}</td>
+            <td>${data.Phone}</td>
+            <td>${new Date(data.timestamp).toLocaleString()}</td>
+          </tr>
+        `;
+        table.innerHTML += row;
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
