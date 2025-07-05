@@ -40,11 +40,12 @@
   <tbody></tbody>
 </table>
 
-<!-- Firebase SDKs -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+<!-- Firebase App & Database (Non-module versions) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
+<script>
+  // Your Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
     authDomain: "bsceee-webpage.firebaseapp.com",
@@ -56,42 +57,43 @@
     measurementId: "G-B1M7SSEZYP"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  async function loadRegistrations() {
+  // Load and display data
+  function loadRegistrations() {
     const tableBody = document.querySelector('#data-table tbody');
-    tableBody.innerHTML = ""; // Clear any previous rows
+    tableBody.innerHTML = "";
 
-    const rootRef = ref(db, 'registrations');
+    db.ref('registrations').once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
 
-    try {
-      const snapshot = await get(rootRef);
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-
-        Object.keys(data).forEach(groupCode => {
-          const groupData = data[groupCode];
-          Object.keys(groupData).forEach(midReg => {
-            const record = groupData[midReg];
-            const row = `
-              <tr>
-                <td>${record.name || "N/A"}</td>
-                <td>${record.regNo || "N/A"}</td>
-                <td>${record.phone || "N/A"}</td>
-                <td>${record.timestamp || "N/A"}</td>
-              </tr>
-            `;
-            tableBody.insertAdjacentHTML("beforeend", row);
+          Object.keys(data).forEach(groupCode => {
+            const groupData = data[groupCode];
+            Object.keys(groupData).forEach(midReg => {
+              const record = groupData[midReg];
+              const row = `
+                <tr>
+                  <td>${record.name || "N/A"}</td>
+                  <td>${record.regNo || "N/A"}</td>
+                  <td>${record.phone || "N/A"}</td>
+                  <td>${record.timestamp || "N/A"}</td>
+                </tr>
+              `;
+              tableBody.insertAdjacentHTML("beforeend", row);
+            });
           });
-        });
-      } else {
-        tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
-      }
-    } catch (error) {
-      console.error("Error loading data:", error);
-      tableBody.innerHTML = "<tr><td colspan='4'>Failed to load data</td></tr>";
-    }
+        } else {
+          tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        tableBody.innerHTML = "<tr><td colspan='4'>Error loading data</td></tr>";
+      });
   }
 
   loadRegistrations();
