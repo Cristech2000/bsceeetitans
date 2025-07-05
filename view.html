@@ -1,37 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>View Registrations</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background-color: #f4f4f4;
-    }
-    #passwordSection, #dataSection {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #004080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
     }
     table {
       width: 100%;
@@ -39,8 +14,8 @@
       margin-top: 20px;
     }
     th, td {
+      border: 1px solid #999;
       padding: 10px;
-      border: 1px solid #ccc;
       text-align: left;
     }
     th {
@@ -51,31 +26,21 @@
 </head>
 <body>
 
-<div id="passwordSection">
-  <h2>Admin Access</h2>
-  <p>Enter password to view registration data:</p>
-  <input type="password" id="password" placeholder="Enter password">
-  <button onclick="checkPassword()">Submit</button>
-</div>
+<h2>Semester Registrations</h2>
 
-<div id="dataSection" style="display: none;">
-  <h2>Registered Students</h2>
-  <button onclick="exportToExcel()">Download as Excel</button>
-  <table id="dataTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Reg No</th>
-        <th>Phone</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-</div>
+<table id="data-table">
+  <thead>
+    <tr>
+      <th>Full Name</th>
+      <th>Reg Number</th>
+      <th>Phone Number</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -94,53 +59,42 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  window.checkPassword = function() {
-    const pass = document.getElementById("password").value;
-    if (pass === "bsceeeadmin") {
-      document.getElementById("passwordSection").style.display = "none";
-      document.getElementById("dataSection").style.display = "block";
-      loadData();
-    } else {
-      alert("Wrong password!");
-    }
-  }
+  async function loadRegistrations() {
+    const tableBody = document.querySelector('#data-table tbody');
+    tableBody.innerHTML = ""; // Clear any previous rows
 
-  window.loadData = async function() {
-    const tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML = "";
+    const rootRef = ref(db, 'registrations');
 
     try {
-      const snapshot = await get(ref(db, 'registrations'));
+      const snapshot = await get(rootRef);
       if (snapshot.exists()) {
         const data = snapshot.val();
-        Object.entries(data).forEach(([group, regnos]) => {
-          Object.entries(regnos).forEach(([mid, record]) => {
-            const row = `<tr>
-              <td>${record.name}</td>
-              <td>${record.regNo}</td>
-              <td>${record.phone}</td>
-              <td>${record.timestamp}</td>
-            </tr>`;
-            tbody.innerHTML += row;
+
+        Object.keys(data).forEach(groupCode => {
+          const groupData = data[groupCode];
+          Object.keys(groupData).forEach(midReg => {
+            const record = groupData[midReg];
+            const row = `
+              <tr>
+                <td>${record.name || "N/A"}</td>
+                <td>${record.regNo || "N/A"}</td>
+                <td>${record.phone || "N/A"}</td>
+                <td>${record.timestamp || "N/A"}</td>
+              </tr>
+            `;
+            tableBody.insertAdjacentHTML("beforeend", row);
           });
         });
       } else {
-        tbody.innerHTML = "<tr><td colspan='4'>No records found</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
       }
-    } catch (err) {
-      console.error("Error loading data:", err);
+    } catch (error) {
+      console.error("Error loading data:", error);
+      tableBody.innerHTML = "<tr><td colspan='4'>Failed to load data</td></tr>";
     }
   }
 
-  window.exportToExcel = function () {
-    let table = document.getElementById("dataTable");
-    let html = table.outerHTML;
-    let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
-    let link = document.createElement("a");
-    link.href = url;
-    link.download = 'registrations.xls';
-    link.click();
-  }
+  loadRegistrations();
 </script>
 
 </body>
