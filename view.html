@@ -1,110 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>View Registration Data</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Registrations</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 30px;
+      background-color: #eef2f5;
+      padding: 20px;
     }
+
+    h2 {
+      color: #004080;
+      text-align: center;
+    }
+
+    .login-box {
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    #protected {
+      display: none;
+      margin-top: 30px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      background-color: white;
     }
+
     th, td {
+      padding: 12px;
       border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
+      text-align: center;
     }
+
     th {
       background-color: #004080;
       color: white;
     }
-    #login {
-      text-align: center;
-      margin-top: 100px;
-    }
-    #login input {
+
+    input[type="password"] {
       padding: 10px;
+      width: 80%;
+      margin: 10px 0;
       font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #003366;
     }
   </style>
 </head>
 <body>
 
-<div id="login">
-  <h2>Enter Admin Password</h2>
-  <input type="password" id="password" placeholder="Password" />
-  <button onclick="checkPassword()">Submit</button>
-  <p id="error" style="color:red;"></p>
-</div>
+  <h2>Semester Registration Viewer</h2>
 
-<div id="tableContainer" style="display:none;">
-  <h2>Registered Students</h2>
-  <table id="dataTable">
-    <thead>
+  <div class="login-box">
+    <p><strong>Admin Access Only</strong></p>
+    <input type="password" id="adminPass" placeholder="Enter admin password" />
+    <br />
+    <button onclick="checkPassword()">Enter</button>
+  </div>
+
+  <div id="protected">
+    <h3>Registered Students</h3>
+    <table id="dataTable">
       <tr>
-        <th>Name</th>
-        <th>Reg No</th>
+        <th>Full Name</th>
+        <th>Registration Number</th>
         <th>Phone</th>
-        <th>Timestamp</th>
       </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
+    </table>
+  </div>
 
-<script>
-  const correctPassword = "classadmin123"; // CHANGE THIS to your own secret password
+  <!-- Firebase Scripts (non-module) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-  function checkPassword() {
-    const entered = document.getElementById("password").value;
-    if (entered === correctPassword) {
-      document.getElementById("login").style.display = "none";
-      document.getElementById("tableContainer").style.display = "block";
-      loadData(); // Call Firebase fetch here
-    } else {
-      document.getElementById("error").textContent = "Incorrect password";
-    }
-  }
+  <script>
+    // Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+      authDomain: "bsceee-webpage.firebaseapp.com",
+      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+      projectId: "bsceee-webpage",
+      storageBucket: "bsceee-webpage.appspot.com",
+      messagingSenderId: "281106710079",
+      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+      measurementId: "G-B1M7SSEZYP"
+    };
 
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-    authDomain: "bsceee-webpage.firebaseapp.com",
-    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-    projectId: "bsceee-webpage",
-    storageBucket: "bsceee-webpage.appspot.com",
-    messagingSenderId: "281106710079",
-    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-    measurementId: "G-B1M7SSEZYP"
-  };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+    // Load data from Firebase
+    function loadData() {
+      const dbRef = firebase.database().ref("registrations");
+      const table = document.getElementById("dataTable");
 
-  function loadData() {
-    db.ref("registrations").once("value", snapshot => {
-      const table = document.querySelector("#dataTable tbody");
-      table.innerHTML = "";
-      snapshot.forEach(child => {
-        const data = child.val();
-        const row = `
-          <tr>
+      dbRef.once("value", (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const data = childSnapshot.val();
+          const row = table.insertRow();
+          row.innerHTML = `
             <td>${data.Name}</td>
             <td>${data.RegNo}</td>
             <td>${data.Phone}</td>
-            <td>${new Date(data.timestamp).toLocaleString()}</td>
-          </tr>
-        `;
-        table.innerHTML += row;
+          `;
+        });
       });
-    });
-  }
-</script>
+    }
+
+    // Password check
+    function checkPassword() {
+      const password = document.getElementById("adminPass").value;
+      if (password === "yourpassword") {
+        document.getElementById("protected").style.display = "block";
+        loadData();
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+  </script>
 
 </body>
 </html>
