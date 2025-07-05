@@ -1,102 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>View Registrations</title>
+  <meta charset="UTF-8">
+  <title>View Semester Registrations</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #eef2f5;
       padding: 20px;
+      background: #f2f2f2;
     }
-
     h2 {
       color: #004080;
       text-align: center;
     }
-
-    .login-box {
-      max-width: 400px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    #passwordPrompt {
       text-align: center;
+      margin-top: 100px;
     }
-
-    #protected {
-      display: none;
-      margin-top: 30px;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: white;
+      margin-top: 30px;
     }
-
     th, td {
-      padding: 12px;
       border: 1px solid #ccc;
+      padding: 10px;
       text-align: center;
     }
-
     th {
       background-color: #004080;
       color: white;
-    }
-
-    input[type="password"] {
-      padding: 10px;
-      width: 80%;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #004080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #003366;
     }
   </style>
 </head>
 <body>
 
-  <h2>Semester Registration Viewer</h2>
-
-  <div class="login-box">
-    <p><strong>Admin Access Only</strong></p>
-    <input type="password" id="adminPass" placeholder="Enter admin password" />
-    <br />
-    <button onclick="checkPassword()">Enter</button>
+  <div id="passwordPrompt">
+    <h2>Enter Admin Password</h2>
+    <input type="password" id="adminPassword" placeholder="Enter password">
+    <button onclick="checkPassword()">Access</button>
   </div>
 
-  <div id="protected">
-    <h3>Registered Students</h3>
+  <div id="dataSection" style="display: none;">
+    <h2>Registered Students</h2>
     <table id="dataTable">
-      <tr>
-        <th>Full Name</th>
-        <th>Registration Number</th>
-        <th>Phone</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Reg No</th>
+          <th>Phone</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
   </div>
 
-  <!-- Firebase Scripts (non-module) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  <script>
-    // Your Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
       authDomain: "bsceee-webpage.firebaseapp.com",
@@ -108,37 +72,45 @@
       measurementId: "G-B1M7SSEZYP"
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // Load data from Firebase
-    function loadData() {
-      const dbRef = firebase.database().ref("registrations");
-      const table = document.getElementById("dataTable");
-
-      dbRef.once("value", (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          const data = childSnapshot.val();
-          const row = table.insertRow();
-          row.innerHTML = `
-            <td>${data.Name}</td>
-            <td>${data.RegNo}</td>
-            <td>${data.Phone}</td>
-          `;
-        });
-      });
-    }
-
-    // Password check
-    function checkPassword() {
-      const password = document.getElementById("adminPass").value;
-      if (password === "yourpassword") {
-        document.getElementById("protected").style.display = "block";
-        loadData();
-      } else {
-        alert("Incorrect password!");
+    window.checkPassword = async function () {
+      const password = document.getElementById("adminPassword").value;
+      if (password !== "bsceee2025") {
+        alert("Wrong password!");
+        return;
       }
-    }
+
+      document.getElementById("passwordPrompt").style.display = "none";
+      document.getElementById("dataSection").style.display = "block";
+
+      const dbRef = ref(db);
+      try {
+        const snapshot = await get(child(dbRef, 'registrations'));
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const tbody = document.querySelector("#dataTable tbody");
+          tbody.innerHTML = "";
+
+          Object.values(data).forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${entry.name}</td>
+              <td>${entry.regNo}</td>
+              <td>${entry.phone}</td>
+              <td>${entry.timestamp || ""}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        } else {
+          alert("No data found.");
+        }
+      } catch (error) {
+        console.error("Data fetch error:", error);
+        alert("Failed to load data.");
+      }
+    };
   </script>
 
 </body>
