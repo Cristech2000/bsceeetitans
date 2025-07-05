@@ -109,28 +109,25 @@
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-
-    const formData = new URLSearchParams();
-    formData.append("Name", form.Name.value);
-    formData.append("RegNo", form.RegNo.value);
-    formData.append("Phone", form.Phone.value);
-
-    fetch(scriptURL, {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.text())
-    .then(response => {
-      if (response === "Duplicate") {
-        alert("This Reg Number has already been used.");
-      } else {
-        alert("Registration successful!");
-        form.reset();
-      }
-    })
-    .catch(error => alert("Error! Please try again."));
+    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+      .then(res => res.text())
+      .then(response => {
+        if (response === "Duplicate") {
+          alert("This Reg Number has already been used.");
+        } else if (response === "Success") {
+          alert("Registration successful!");
+          form.reset();
+        } else {
+          alert("Unexpected response: " + response);
+        }
+      })
+      .catch(error => {
+        alert("Error! Please try again.");
+        console.error("Error:", error);
+      });
   });
 </script>
+
 
 
 </body>
