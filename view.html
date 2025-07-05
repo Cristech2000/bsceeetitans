@@ -22,27 +22,43 @@
       background-color: #004080;
       color: white;
     }
+    #downloadBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
 <h2>Semester Registrations</h2>
 
-<table id="data-table">
-  <thead>
-    <tr>
-      <th>Full Name</th>
-      <th>Reg Number</th>
-      <th>Phone Number</th>
-      <th>Timestamp</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<input type="password" id="adminPass" placeholder="Enter admin password" />
+<button onclick="checkAccess()">Access</button>
+
+<div id="dataSection" style="display:none">
+  <button id="downloadBtn">Download as Excel</button>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Reg Number</th>
+        <th>Phone Number</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -58,17 +74,28 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
+  let registrationsData = [];
+
+  function checkAccess() {
+    const pass = document.getElementById("adminPass").value;
+    if (pass === "yourStrongPassword") {
+      document.getElementById("dataSection").style.display = "block";
+      loadRegistrations();
+    } else {
+      alert("Incorrect password");
+    }
+  }
 
   function loadRegistrations() {
     const tableBody = document.querySelector('#data-table tbody');
     tableBody.innerHTML = "";
+    registrationsData = [];
 
     const refPath = db.ref("registrations");
 
     refPath.once("value")
       .then(snapshot => {
         const data = snapshot.val();
-        console.log("Full data snapshot:", data);
 
         for (let group in data) {
           const groupData = data[group];
@@ -76,12 +103,12 @@
             const endDigits = groupData[midReg];
             for (let lastPart in endDigits) {
               const record = endDigits[lastPart];
-              console.log("Record:", record); // Confirming content
-
               const name = record.name || "N/A";
               const regNo = record.regNo || "N/A";
               const phone = record.phone || "N/A";
               const time = record.timestamp || "N/A";
+
+              registrationsData.push({ name, regNo, phone, timestamp: time });
 
               const row = `
                 <tr>
@@ -95,10 +122,6 @@
             }
           }
         }
-
-        if (!data) {
-          tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
-        }
       })
       .catch(error => {
         console.error("Error fetching data:", error);
@@ -106,7 +129,12 @@
       });
   }
 
-  loadRegistrations();
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    const worksheet = XLSX.utils.json_to_sheet(registrationsData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
+    XLSX.writeFile(workbook, "registrations.xlsx");
+  });
 </script>
 
 </body>
