@@ -40,12 +40,11 @@
   <tbody></tbody>
 </table>
 
-<!-- Firebase SDK (Compat for local use) -->
+<!-- Firebase SDK (Compat version) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
-  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
     authDomain: "bsceee-webpage.firebaseapp.com",
@@ -61,38 +60,47 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Load data
   function loadRegistrations() {
     const tableBody = document.querySelector('#data-table tbody');
     tableBody.innerHTML = "";
 
-    db.ref('registrations').once('value')
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
+    const refPath = db.ref("registrations");
 
-          for (const groupKey in data) {
-            const group = data[groupKey]; // e.g. EB24
-            for (const regMid in group) {
-              const record = group[regMid];
-              const row = `
-                <tr>
-                  <td>${record.name || "N/A"}</td>
-                  <td>${record.regNo || "N/A"}</td>
-                  <td>${record.phone || "N/A"}</td>
-                  <td>${record.timestamp || "N/A"}</td>
-                </tr>
-              `;
-              tableBody.insertAdjacentHTML("beforeend", row);
-            }
+    refPath.once("value")
+      .then(snapshot => {
+        const data = snapshot.val();
+        console.log("Full data snapshot:", data); // Debugging
+
+        for (let group in data) {
+          const groupData = data[group];
+          for (let midReg in groupData) {
+            const entry = groupData[midReg];
+            console.log("Entry:", entry); // Debugging
+
+            const name = entry.name || "N/A";
+            const regNo = entry.regNo || "N/A";
+            const phone = entry.phone || "N/A";
+            const time = entry.timestamp || "N/A";
+
+            const row = `
+              <tr>
+                <td>${name}</td>
+                <td>${regNo}</td>
+                <td>${phone}</td>
+                <td>${time}</td>
+              </tr>
+            `;
+            tableBody.insertAdjacentHTML("beforeend", row);
           }
-        } else {
+        }
+
+        if (!data) {
           tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
         }
       })
       .catch(error => {
         console.error("Error fetching data:", error);
-        tableBody.innerHTML = "<tr><td colspan='4'>Error loading data</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='4'>Failed to load data</td></tr>";
       });
   }
 
