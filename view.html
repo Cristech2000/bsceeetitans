@@ -40,7 +40,7 @@
   <tbody></tbody>
 </table>
 
-<!-- Firebase SDK (Compat version) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
@@ -56,7 +56,6 @@
     measurementId: "G-B1M7SSEZYP"
   };
 
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
@@ -69,28 +68,31 @@
     refPath.once("value")
       .then(snapshot => {
         const data = snapshot.val();
-        console.log("Full data snapshot:", data); // Debugging
+        console.log("Full data snapshot:", data);
 
         for (let group in data) {
           const groupData = data[group];
           for (let midReg in groupData) {
-            const entry = groupData[midReg];
-            console.log("Entry:", entry); // Debugging
+            const endDigits = groupData[midReg];
+            for (let lastPart in endDigits) {
+              const record = endDigits[lastPart];
+              console.log("Record:", record); // Confirming content
 
-            const name = entry.name || "N/A";
-            const regNo = entry.regNo || "N/A";
-            const phone = entry.phone || "N/A";
-            const time = entry.timestamp || "N/A";
+              const name = record.name || "N/A";
+              const regNo = record.regNo || "N/A";
+              const phone = record.phone || "N/A";
+              const time = record.timestamp || "N/A";
 
-            const row = `
-              <tr>
-                <td>${name}</td>
-                <td>${regNo}</td>
-                <td>${phone}</td>
-                <td>${time}</td>
-              </tr>
-            `;
-            tableBody.insertAdjacentHTML("beforeend", row);
+              const row = `
+                <tr>
+                  <td>${name}</td>
+                  <td>${regNo}</td>
+                  <td>${phone}</td>
+                  <td>${time}</td>
+                </tr>
+              `;
+              tableBody.insertAdjacentHTML("beforeend", row);
+            }
           }
         }
 
