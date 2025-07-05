@@ -85,21 +85,22 @@
       document.getElementById("passwordPrompt").style.display = "none";
       document.getElementById("dataSection").style.display = "block";
 
-      const dbRef = ref(db);
+      const dbRef = ref(db, 'registrations');
       try {
-        const snapshot = await get(child(dbRef, 'registrations'));
+        const snapshot = await get(dbRef);
         if (snapshot.exists()) {
           const data = snapshot.val();
           const tbody = document.querySelector("#dataTable tbody");
           tbody.innerHTML = "";
 
-          Object.values(data).forEach(entry => {
+          Object.keys(data).forEach(key => {
+            const entry = data[key];
             const row = document.createElement("tr");
             row.innerHTML = `
-              <td>${entry.name}</td>
-              <td>${entry.regNo}</td>
-              <td>${entry.phone}</td>
-              <td>${entry.timestamp || ""}</td>
+              <td>${entry.name || ''}</td>
+              <td>${entry.regNo || key}</td>
+              <td>${entry.phone || ''}</td>
+              <td>${entry.timestamp || ''}</td>
             `;
             tbody.appendChild(row);
           });
