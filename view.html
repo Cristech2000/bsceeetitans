@@ -7,23 +7,72 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      background: #f4f8fb;
     }
+
+    h2 {
+      color: #004080;
+      text-align: center;
+    }
+
+    #loginBox {
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 25px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    #loginBox input {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #loginBox button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #loginBox button:hover {
+      background-color: #003060;
+    }
+
+    #dataSection {
+      display: none;
+      margin-top: 30px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      background-color: white;
     }
+
     th, td {
       border: 1px solid #999;
       padding: 10px;
       text-align: left;
     }
+
     th {
       background-color: #004080;
       color: white;
     }
+
     #downloadBtn {
-      margin-top: 20px;
+      margin-top: 10px;
       padding: 10px 20px;
       background-color: green;
       color: white;
@@ -37,10 +86,15 @@
 
 <h2>Semester Registrations</h2>
 
-<input type="password" id="adminPass" placeholder="Enter admin password" />
-<button onclick="checkAccess()">Access</button>
+<!-- Login Section -->
+<div id="loginBox">
+  <input type="password" id="adminPass" placeholder="Enter admin password" />
+  <br />
+  <button onclick="checkAccess()">Access</button>
+</div>
 
-<div id="dataSection" style="display:none">
+<!-- Data Display Section -->
+<div id="dataSection">
   <button id="downloadBtn">Download as Excel</button>
   <table id="data-table">
     <thead>
@@ -78,7 +132,8 @@
 
   function checkAccess() {
     const pass = document.getElementById("adminPass").value;
-    if (pass === "yourStrongPassword") {
+    if (pass === "yourStrongPassword") {  // ← Change this to your real password
+      document.getElementById("loginBox").style.display = "none";
       document.getElementById("dataSection").style.display = "block";
       loadRegistrations();
     } else {
@@ -106,21 +161,31 @@
               const name = record.name || "N/A";
               const regNo = record.regNo || "N/A";
               const phone = record.phone || "N/A";
-              const time = record.timestamp || "N/A";
+              const timestamp = record.timestamp || "";
 
-              registrationsData.push({ name, regNo, phone, timestamp: time });
-
-              const row = `
-                <tr>
-                  <td>${name}</td>
-                  <td>${regNo}</td>
-                  <td>${phone}</td>
-                  <td>${time}</td>
-                </tr>
-              `;
-              tableBody.insertAdjacentHTML("beforeend", row);
+              registrationsData.push({ name, regNo, phone, timestamp });
             }
           }
+        }
+
+        // Sort data by timestamp (newest first)
+        registrationsData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        // Add to table
+        registrationsData.forEach(record => {
+          const row = `
+            <tr>
+              <td>${record.name}</td>
+              <td>${record.regNo}</td>
+              <td>${record.phone}</td>
+              <td>${record.timestamp}</td>
+            </tr>
+          `;
+          tableBody.insertAdjacentHTML("beforeend", row);
+        });
+
+        if (registrationsData.length === 0) {
+          tableBody.innerHTML = "<tr><td colspan='4'>No data found</td></tr>";
         }
       })
       .catch(error => {
