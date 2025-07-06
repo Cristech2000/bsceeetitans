@@ -169,7 +169,8 @@
         }
 
         // Sort data by timestamp (newest first)
-        registrationsData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        registrationsData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
 
         // Add to table
         registrationsData.forEach(record => {
