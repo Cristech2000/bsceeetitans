@@ -4,158 +4,183 @@
   <meta charset="UTF-8">
   <title>Academic Support Center</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Add your existing CSS here -->
-  <link rel="stylesheet" href="styles.css"> <!-- Assuming you have a shared CSS file -->
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
+
+  <!-- Styling -->
   <style>
-    .complaint-form-container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fa;
     }
-    .complaint-form-container h2 {
+    .sidebar {
+      height: 100vh;
+      width: 220px;
+      background-color: #2c3e50;
+      color: white;
+      position: fixed;
+      padding: 20px 10px;
+    }
+    .sidebar h2 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #222;
+      font-size: 1.4em;
+      margin-bottom: 30px;
     }
-    .complaint-form-container label {
-      font-weight: bold;
+    .sidebar a {
       display: block;
-      margin-top: 15px;
+      padding: 10px 15px;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      margin: 5px 0;
     }
-    .complaint-form-container input,
-    .complaint-form-container select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    .sidebar a:hover {
+      background-color: #34495e;
     }
-    .complaint-form-container button {
-      margin-top: 20px;
+    .content {
+      margin-left: 240px;
+      padding: 30px;
+    }
+    .container {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+    select, button {
       width: 100%;
       padding: 12px;
-      background-color: #0066cc;
-      color: #fff;
-      font-size: 16px;
-      border: none;
+      margin: 10px 0;
       border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
       cursor: pointer;
     }
-    .complaint-form-container button:hover {
-      background-color: #004c99;
+    button:hover {
+      background-color: #2980b9;
     }
-    .footer-note {
-      text-align: center;
+    .success {
+      color: green;
       margin-top: 10px;
-      font-size: 14px;
-      color: #888;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar (unchanged) -->
+
   <div class="sidebar">
-    <!-- Your existing sidebar HTML here -->
+    <h2>Class Portal</h2>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="view.html">View Registrations</a>
+    <a href="support.html">Support Center</a>
   </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="complaint-form-container">
-      <h2>Missing Marks Complaint</h2>
-      <form id="complaint-form">
-        <label for="RegNo">Registration Number</label>
-        <input type="text" id="RegNo" name="RegNo" placeholder="e.g. EB24/74506/24" required>
+  <div class="content">
+    <div class="container">
+      <h2>Academic Support - Missing Marks</h2>
+      <p>Submit a missing mark complaint for a specific unit. Duplicate complaints for the same unit will be rejected.</p>
 
-        <label for="Unit">Select Unit</label>
-        <select id="Unit" name="Unit" required>
-          <option value="" disabled selected>Select a unit</option>
-          <option value="CHEM 120">CHEM 120</option>
-          <option value="MATH 112">MATH 112</option>
-          <option value="PHYS 122">PHYS 122</option>
-          <option value="COMP 101">COMP 101</option>
-        </select>
+      <select id="unitSelect">
+        <option value="">-- Select Unit --</option>
+        <option value="MATH 101">MATH 101</option>
+        <option value="CHEM 120">CHEM 120</option>
+        <option value="PHY 122">PHY 122</option>
+        <option value="COMP 112">COMP 112</option>
+        <!-- Add more units as needed -->
+      </select>
 
-        <button type="submit">Submit Complaint</button>
-      </form>
-      <div class="footer-note">Only one complaint per unit is allowed.</div>
+      <button onclick="submitComplaint()">Submit Complaint</button>
+
+      <p class="success" id="successMsg" style="display:none;">Complaint submitted successfully!</p>
+      <p class="error" id="errorMsg" style="display:none;"></p>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
+  <script>
+    // Firebase Config
     const firebaseConfig = {
-      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+      apiKey: "AIzaSyDjUrxYO5iJKsK10C8JqAl9n-MXjCHRXjQ",
       authDomain: "bsceee-webpage.firebaseapp.com",
       databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
       projectId: "bsceee-webpage",
       storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "281106710079",
-      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
+      messagingSenderId: "728337748712",
+      appId: "1:728337748712:web:ac0b1b2402732f515cb05f"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const form = document.getElementById("complaint-form");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const regNo = form.RegNo.value.trim().toUpperCase();
-      const unit = form.Unit.value;
+    const unitSelect = document.getElementById("unitSelect");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
 
-      if (!regNo || !unit) {
-        alert("Please fill in all fields.");
+    function submitComplaint() {
+      const unit = unitSelect.value;
+      if (!unit) {
+        errorMsg.innerText = "Please select a unit.";
+        errorMsg.style.display = "block";
+        successMsg.style.display = "none";
         return;
       }
 
-      const regRef = ref(db, `registrations/${regNo}`);
-      const complaintRootRef = ref(db, `complaints/${regNo}`);
-
-      try {
-        const regSnap = await get(regRef);
-        if (!regSnap.exists()) {
-          alert("This Reg Number is not registered.");
-          return;
-        }
-
-        const complaintsSnap = await get(complaintRootRef);
-        let duplicateFound = false;
-
-        if (complaintsSnap.exists()) {
-          complaintsSnap.forEach(child => {
-            const complaint = child.val();
-            if (complaint.unit === unit && complaint.type === "Missing Marks") {
-              duplicateFound = true;
-            }
-          });
-        }
-
-        if (duplicateFound) {
-          alert("You have already submitted a Missing Marks complaint for this unit.");
-          return;
-        }
-
-        const timestamp = Date.now();
-        const newComplaintRef = ref(db, `complaints/${regNo}/${timestamp}`);
-        await set(newComplaintRef, {
-          regNo,
-          unit,
-          type: "Missing Marks",
-          submittedAt: new Date().toISOString()
-        });
-
-        alert("Complaint submitted successfully!");
-        form.reset();
-      } catch (err) {
-        console.error(err);
-        alert("Something went wrong. Try again.");
+      // Get student RegNo from localStorage
+      const regNo = localStorage.getItem("regNo");
+      if (!regNo) {
+        errorMsg.innerText = "You must be registered to submit a complaint.";
+        errorMsg.style.display = "block";
+        successMsg.style.display = "none";
+        return;
       }
-    });
+
+      const [group, middle, last] = regNo.split('/');
+      const complaintRef = db.ref(`complaints/${group}/${middle}/${last}`);
+
+      // Check for duplicate complaint
+      complaintRef.once('value').then(snapshot => {
+        const complaints = snapshot.val() || {};
+        for (const key in complaints) {
+          if (complaints[key].unit === unit) {
+            errorMsg.innerText = `You have already submitted a complaint for ${unit}.`;
+            errorMsg.style.display = "block";
+            successMsg.style.display = "none";
+            return;
+          }
+        }
+
+        // Proceed to submit
+        const timestamp = Date.now();
+        const submittedAt = new Date().toISOString();
+        const newComplaint = {
+          regNo: regNo,
+          type: "Missing Marks",
+          unit: unit,
+          submittedAt: submittedAt
+        };
+
+        complaintRef.child(timestamp).set(newComplaint).then(() => {
+          successMsg.style.display = "block";
+          errorMsg.style.display = "none";
+        }).catch(error => {
+          errorMsg.innerText = "Error submitting complaint.";
+          errorMsg.style.display = "block";
+          successMsg.style.display = "none";
+          console.error(error);
+        });
+      });
+    }
   </script>
 </body>
 </html>
