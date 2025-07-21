@@ -1,126 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>View Complaints</title>
+  <title>Submitted Complaints</title>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
-    h2 { text-align: center; margin-bottom: 10px; }
-    #status { text-align: center; margin-bottom: 15px; color: green; }
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
     table {
-      width: 100%;
       border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      width: 100%;
+      margin-top: 20px;
     }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    th { background-color: #007BFF; color: white; }
-    tr:nth-child(even) { background-color: #f2f2f2; }
-    #downloadBtn {
-      display: block;
-      margin: 15px auto;
-      padding: 10px 20px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+    table, th, td {
+      border: 1px solid #aaa;
     }
-    #downloadBtn:hover { background: #218838; }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    #exportBtn {
+      margin-top: 10px;
+      padding: 8px 15px;
+    }
   </style>
 </head>
 <body>
-
-  <h2>Academic Support Complaints</h2>
-  <div id="status">Loading complaints...</div>
-  <button id="downloadBtn" style="display:none">Download to Excel</button>
-  
-  <table>
+  <h2>All Submitted Complaints</h2>
+  <button id="exportBtn">Export to Excel</button>
+  <table id="complaintsTable">
     <thead>
       <tr>
-        <th>#</th>
-        <th>RegNo</th>
         <th>Name</th>
+        <th>Reg No</th>
         <th>Unit</th>
         <th>Type</th>
         <th>Timestamp</th>
       </tr>
     </thead>
-    <tbody id="complaintsBody"></tbody>
+    <tbody></tbody>
   </table>
 
-  <!-- Firebase SDK & XLSX -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <script>
+    // Firebase Config
     const firebaseConfig = {
-      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+      apiKey: "YOUR_API_KEY",
       authDomain: "bsceee-webpage.firebaseapp.com",
       databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
       projectId: "bsceee-webpage",
       storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "281106710079",
-      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const tableBody = document.getElementById("complaintsBody");
-    const statusEl = document.getElementById("status");
-    const btn = document.getElementById("downloadBtn");
-    let dataCache = [];
 
-    function loadComplaints() {
-      db.ref("complaints").on("value", snapshot => {
-        const obj = snapshot.val();
-        tableBody.innerHTML = "";
-        dataCache = [];
+    // Load registration names
+    async function loadRegistrations() {
+      const snapshot = await db.ref("registrations").once("value");
+      const regData = {};
 
-        if (!obj) {
-          statusEl.textContent = "No complaints submitted yet.";
-          btn.style.display = "none";
-          return;
-        }
-
-        let count = 0;
-        Object.entries(obj).forEach(([regNo, entries]) => {
-          Object.values(entries).forEach(record => {
-            count++;
-            const name = record.name || "—";
-            const unit = record.unit || "—";
-            const type = record.type || "—";
-            const tsISO = record.submittedAt || record.timestamp || "";
-            const tsStr = tsISO ? new Date(tsISO).toLocaleString() : "—";
-
-            const row = document.createElement("tr");
-            row.innerHTML = `<td>${count}</td>
-                             <td>${regNo}</td>
-                             <td>${name}</td>
-                             <td>${unit}</td>
-                             <td>${type}</td>
-                             <td>${tsStr}</td>`;
-            tableBody.appendChild(row);
-
-            dataCache.push({ "#": count, RegNo: regNo, Name: name, Unit: unit, Type: type, Timestamp: tsStr });
-          });
+      snapshot.forEach(child1 => {
+        const part1 = child1.key; // e.g. '67214'
+        child1.forEach(child2 => {
+          const part2 = child2.key; // e.g. '23'
+          const data = child2.val();
+          const fullRegNo = `EB24/${part1}/${part2}`;
+          regData[fullRegNo] = data;
         });
+      });
 
-        statusEl.textContent = `${count} complaint${count > 1 ? "s" : ""} loaded.`;
-        btn.style.display = count ? "block" : "none";
+      return regData;
+    }
+
+    // Load complaints and map with names
+    async function loadComplaints() {
+      const regMap = await loadRegistrations();
+      const complaintSnap = await db.ref("complaints").once("value");
+      const tbody = document.querySelector("#complaintsTable tbody");
+      tbody.innerHTML = "";
+
+      complaintSnap.forEach(studentNode => {
+        const regNo = studentNode.key;
+        studentNode.forEach(entry => {
+          const { unit = "-", type = "-", timestamp = "-" } = entry.val() || {};
+          const student = regMap[regNo] || {};
+          const name = student.name || "-";
+
+          const row = tbody.insertRow();
+          row.insertCell(0).innerText = name;
+          row.insertCell(1).innerText = regNo;
+          row.insertCell(2).innerText = unit;
+          row.insertCell(3).innerText = type;
+          row.insertCell(4).innerText = new Date(timestamp).toLocaleString();
+        });
       });
     }
 
-    btn.addEventListener("click", () => {
-      const ws = XLSX.utils.json_to_sheet(dataCache);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Complaints");
-      XLSX.writeFile(wb, "complaints.xlsx");
-    });
-
     loadComplaints();
-  </script>
 
+    // Export to Excel
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const table = document.getElementById("complaintsTable");
+      const workbook = XLSX.utils.table_to_book(table, { sheet: "Complaints" });
+      XLSX.writeFile(workbook, "complaints.xlsx");
+    });
+  </script>
 </body>
 </html>
