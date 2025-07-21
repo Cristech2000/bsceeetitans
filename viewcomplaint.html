@@ -1,100 +1,177 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>View Complaints</title>
-  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <meta charset="UTF-8">
+  <title>View Complaints | Academic Support Center</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      color: #1f2937;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #111827;
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    tr:hover {
+      background-color: #f9fafb;
+    }
+
+    .export-button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      float: right;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .export-button:hover {
+      background-color: #2563eb;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Complaints</h2>
-  <button onclick="exportToExcel()">Export to Excel</button>
-  <table border="1" id="complaintsTable">
+
+<h1>Academic Support Center — View Complaints</h1>
+
+<button class="export-button" onclick="exportToExcel()">Export to Excel</button>
+
+<div class="table-wrapper">
+  <table id="complaintsTable">
     <thead>
       <tr>
         <th>Name</th>
-        <th>RegNo</th>
+        <th>Reg No</th>
         <th>Unit</th>
         <th>Type</th>
-        <th>Timestamp</th>
+        <th>Time Submitted</th>
       </tr>
     </thead>
-    <tbody id="complaintTableBody"></tbody>
+    <tbody></tbody>
   </table>
+</div>
 
-  <script>
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDjUrxYO5iJKsK10C8JqAl9n-MXjCHRXjQ",
-      authDomain: "bsceee-webpage.firebaseapp.com",
-      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-      projectId: "bsceee-webpage",
-      storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "728337748712",
-      appId: "1:728337748712:web:ac0b1b2402732f515cb05f"
-    };
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebase/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebase/9.6.1/firebase-database-compat.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyApRTAoQ2yZmCFtFiNsOZHLiZ8mEZJMpKk",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "681760277991",
+    appId: "1:681760277991:web:29cb34b292317582a9d7cd"
+  };
 
-    const complaintTableBody = document.getElementById('complaintTableBody');
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-    function loadComplaints() {
-      const complaintsRef = db.ref('complaints');
-      const registrationsRef = db.ref('registrations');
+  const tableBody = document.querySelector('#complaintsTable tbody');
 
-      Promise.all([
-        complaintsRef.once('value'),
-        registrationsRef.once('value')
-      ]).then(([complaintsSnap, registrationsSnap]) => {
-        const complaintsData = complaintsSnap.val() || {};
-        const registrationsData = registrationsSnap.val() || {};
+  function formatTime(iso) {
+    const date = new Date(iso);
+    return date.toLocaleString();
+  }
 
-        for (const level1 in complaintsData) {
-          for (const level2 in complaintsData[level1]) {
-            for (const level3 in complaintsData[level1][level2]) {
-              const entries = complaintsData[level1][level2][level3];
-              for (const timestamp in entries) {
-                const complaint = entries[timestamp];
+  async function fetchComplaints() {
+    const complaintsRef = db.ref('complaints');
+    const registrationsRef = db.ref('registrations');
 
-                const regNo = complaint.regNo;
-                const [group, middle, last] = regNo.split('/');
+    complaintsRef.once('value', async snapshot => {
+      const complaintsData = snapshot.val();
 
-                const student =
-                  registrationsData[group] &&
-                  registrationsData[group][middle] &&
-                  registrationsData[group][middle][last];
+      if (!complaintsData) {
+        tableBody.innerHTML = '<tr><td colspan="5">No complaints found</td></tr>';
+        return;
+      }
 
-                const name = student ? student.name : "Unknown";
+      for (const part1 in complaintsData) {
+        for (const part2 in complaintsData[part1]) {
+          for (const part3 in complaintsData[part1][part2]) {
+            for (const part4 in complaintsData[part1][part2][part3]) {
+              const complaint = complaintsData[part1][part2][part3][part4];
+              const fullRegNo = `${part1}/${part2}/${part3}`;
 
-                const row = complaintTableBody.insertRow();
-                row.insertCell().textContent = name;
-                row.insertCell().textContent = regNo;
-                row.insertCell().textContent = complaint.unit || "-";
-                row.insertCell().textContent = complaint.type || "-";
+              // Fetch name from registrations
+              const regSnap = await registrationsRef.child(part1).child(part2).child(part3).once('value');
+              const regData = regSnap.val();
+              const name = regData?.name || 'N/A';
 
-                // Fix timestamp formatting
-                const formattedTime = complaint.submittedAt
-                  ? new Date(complaint.submittedAt).toLocaleString()
-                  : "-";
-
-                row.insertCell().textContent = formattedTime;
-              }
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${name}</td>
+                <td>${fullRegNo}</td>
+                <td>${complaint.unit || '-'}</td>
+                <td>${complaint.type || '-'}</td>
+                <td>${formatTime(complaint.submittedAt)}</td>
+              `;
+              tableBody.appendChild(row);
             }
           }
         }
-      }).catch(error => {
-        console.error("Error fetching complaints:", error);
-      });
+      }
+    });
+  }
+
+  fetchComplaints();
+
+  function exportToExcel() {
+    const table = document.getElementById("complaintsTable");
+    let csv = [];
+
+    const rows = table.querySelectorAll("tr");
+    for (let row of rows) {
+      const cols = row.querySelectorAll("th, td");
+      let rowData = [];
+      cols.forEach(cell => rowData.push(`"${cell.innerText}"`));
+      csv.push(rowData.join(","));
     }
 
-    function exportToExcel() {
-      const table = document.getElementById("complaintsTable");
-      const workbook = XLSX.utils.table_to_book(table, {sheet: "Complaints"});
-      XLSX.writeFile(workbook, "Complaints.xlsx");
-    }
+    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "complaints.csv";
+    a.click();
+  }
+</script>
 
-    loadComplaints();
-  </script>
 </body>
 </html>
