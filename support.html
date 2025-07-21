@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Academic Support Center</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .support-form {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    .support-form h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #004080;
+    }
+    .support-form input, .support-form select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .support-form button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .support-form button:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <button onclick="toggleSidebar()">☰</button>
+    <div class="title"><h1>Academic Support Center</h1></div>
+    <div class="logo">
+      <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+    </div>
+  </nav>
+</header>
+
+<div id="sidebar">
+  <a href="index.html">HOME</a>
+  <a href="registration.html">SEMESTER REGISTRATION</a>
+  <a href="support.html">ACADEMIC SUPPORT</a>
+</div>
+
+<main class="content">
+  <section class="support-form">
+    <h2>Missing Marks Complaint</h2>
+    <form id="complaint-form">
+      <input type="text" name="RegNo" placeholder="Your Registration Number" required>
+      <select name="Unit" required>
+        <option value="">-- Select Unit --</option>
+        <option value="PHY122">PHY122</option>
+        <option value="EEE211">EEE211</option>
+        <option value="EEE212">EEE212</option>
+        <option value="EEE213">EEE213</option>
+        <option value="EEE214">EEE214</option>
+        <option value="EEE215">EEE215</option>
+      </select>
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </section>
+</main>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "281106710079",
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+    measurementId: "G-B1M7SSEZYP"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const form = document.getElementById("complaint-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const regNo = form.RegNo.value.trim().toUpperCase();
+    const unit = form.Unit.value;
+
+    if (!regNo || !unit) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    const regRef = ref(db, 'registrations/' + regNo);
+    try {
+      const snapshot = await get(regRef);
+      if (!snapshot.exists()) {
+        alert("This Reg Number is not registered.");
+        return;
+      }
+
+      const timestamp = Date.now();
+      const complaintRef = ref(db, `complaints/${regNo}/${timestamp}`);
+      await set(complaintRef, {
+        regNo,
+        unit,
+        type: "Missing Marks",
+        submittedAt: new Date().toISOString()
+      });
+
+      alert("Complaint submitted successfully!");
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Try again.");
+    }
+  });
+</script>
+
+</body>
+</html>
