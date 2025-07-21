@@ -1,41 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Submitted Complaints</title>
+  <meta charset="UTF-8">
+  <title>View Complaints - Academic Support Center</title>
   <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       padding: 20px;
+    }
+    h2 {
+      color: #333;
     }
     table {
       border-collapse: collapse;
       width: 100%;
       margin-top: 20px;
     }
-    table, th, td {
-      border: 1px solid #aaa;
-    }
     th, td {
-      padding: 10px;
+      border: 1px solid #ccc;
+      padding: 8px;
       text-align: left;
     }
-    #exportBtn {
-      margin-top: 10px;
-      padding: 8px 15px;
+    th {
+      background-color: #f5f5f5;
+    }
+    button {
+      margin-top: 20px;
+      padding: 8px 12px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>All Submitted Complaints</h2>
-  <button id="exportBtn">Export to Excel</button>
+  <h2>Submitted Complaints</h2>
   <table id="complaintsTable">
     <thead>
       <tr>
-        <th>Name</th>
         <th>Reg No</th>
+        <th>Name</th>
+        <th>Phone</th>
         <th>Unit</th>
         <th>Type</th>
         <th>Timestamp</th>
@@ -44,71 +50,77 @@
     <tbody></tbody>
   </table>
 
+  <button onclick="exportToExcel()">Export to Excel</button>
+
   <script>
-    // Firebase Config
+    // Firebase config
     const firebaseConfig = {
-      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-      authDomain: "bsceee-webpage.firebaseapp.com",
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
       databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
       projectId: "bsceee-webpage",
-      storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "281106710079",
-      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Load registration names
-    async function loadRegistrations() {
-      const snapshot = await db.ref("registrations").once("value");
-      const regData = {};
+    function loadComplaints() {
+      const complaintsRef = db.ref("complaints");
+      const tableBody = document.querySelector("#complaintsTable tbody");
+      tableBody.innerHTML = "";
 
-      snapshot.forEach(child1 => {
-        const part1 = child1.key; // e.g. '67214'
-        child1.forEach(child2 => {
-          const part2 = child2.key; // e.g. '23'
-          const data = child2.val();
-          const fullRegNo = `EB24/${part1}/${part2}`;
-          regData[fullRegNo] = data;
-        });
+      complaintsRef.once("value", async (snapshot) => {
+        const complaints = snapshot.val();
+        if (!complaints) {
+          tableBody.innerHTML = "<tr><td colspan='6'>No complaints submitted yet.</td></tr>";
+          return;
+        }
+
+        for (const regNoKey in complaints) {
+          const studentComplaints = complaints[regNoKey];
+          for (const timestamp in studentComplaints) {
+            const complaint = studentComplaints[timestamp];
+            const actualRegNo = complaint.regNo || "N/A";
+
+            // Fetch student name & phone from registration
+            let name = "Not Found";
+            let phone = "Not Found";
+            try {
+              const regSnap = await db.ref(`registrations/${actualRegNo}`).once("value");
+              if (regSnap.exists()) {
+                const data = regSnap.val();
+                name = data.name || "N/A";
+                phone = data.phone || "N/A";
+              }
+            } catch (err) {
+              console.error("Error fetching registration:", err);
+            }
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${actualRegNo}</td>
+              <td>${name}</td>
+              <td>${phone}</td>
+              <td>${complaint.unit || "-"}</td>
+              <td>${complaint.type || "-"}</td>
+              <td>${new Date(timestamp).toLocaleString()}</td>
+            `;
+            tableBody.appendChild(row);
+          }
+        }
       });
-
-      return regData;
     }
 
-    // Load complaints and map with names
-    async function loadComplaints() {
-      const regMap = await loadRegistrations();
-      const complaintSnap = await db.ref("complaints").once("value");
-      const tbody = document.querySelector("#complaintsTable tbody");
-      tbody.innerHTML = "";
-
-      complaintSnap.forEach(studentNode => {
-        const regNo = studentNode.key;
-        studentNode.forEach(entry => {
-          const { unit = "-", type = "-", timestamp = "-" } = entry.val() || {};
-          const student = regMap[regNo] || {};
-          const name = student.name || "-";
-
-          const row = tbody.insertRow();
-          row.insertCell(0).innerText = name;
-          row.insertCell(1).innerText = regNo;
-          row.insertCell(2).innerText = unit;
-          row.insertCell(3).innerText = type;
-          row.insertCell(4).innerText = new Date(timestamp).toLocaleString();
-        });
-      });
+    function exportToExcel() {
+      const table = document.getElementById("complaintsTable");
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Complaints" });
+      XLSX.writeFile(wb, "complaints.xlsx");
     }
 
     loadComplaints();
-
-    // Export to Excel
-    document.getElementById("exportBtn").addEventListener("click", () => {
-      const table = document.getElementById("complaintsTable");
-      const workbook = XLSX.utils.table_to_book(table, { sheet: "Complaints" });
-      XLSX.writeFile(workbook, "complaints.xlsx");
-    });
   </script>
 </body>
 </html>
