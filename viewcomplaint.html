@@ -1,126 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>View Complaints - Academic Support Center</title>
-  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Complaints</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    h2 {
-      color: #333;
+    h1 {
+      text-align: center;
     }
     table {
-      border-collapse: collapse;
       width: 100%;
+      border-collapse: collapse;
       margin-top: 20px;
     }
     th, td {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 10px;
       text-align: left;
     }
     th {
-      background-color: #f5f5f5;
+      background-color: #f2f2f2;
     }
-    button {
+    #exportBtn {
       margin-top: 20px;
-      padding: 8px 12px;
-      font-weight: bold;
+      padding: 10px 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h2>Submitted Complaints</h2>
-  <table id="complaintsTable">
-    <thead>
-      <tr>
-        <th>Reg No</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Unit</th>
-        <th>Type</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
 
-  <button onclick="exportToExcel()">Export to Excel</button>
+<h1>Submitted Complaints</h1>
 
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-      projectId: "bsceee-webpage",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+<table id="complaintTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Reg No</th>
+      <th>Unit</th>
+      <th>Type</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Data will be populated here -->
+  </tbody>
+</table>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+<button id="exportBtn">Export to Excel</button>
 
-    function loadComplaints() {
-      const complaintsRef = db.ref("complaints");
-      const tableBody = document.querySelector("#complaintsTable tbody");
-      tableBody.innerHTML = "";
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-      complaintsRef.once("value", async (snapshot) => {
-        const complaints = snapshot.val();
-        if (!complaints) {
-          tableBody.innerHTML = "<tr><td colspan='6'>No complaints submitted yet.</td></tr>";
-          return;
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAqW-EXAMPLEk-FEwVv84fgyXbo",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "316651769790",
+    appId: "1:316651769790:web:46689b34f8d8ba30edc3df",
+    measurementId: "G-X8DQ7X0VJL"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const complaintTableBody = document.querySelector("#complaintTable tbody");
+
+  // Fetch registrations first for mapping RegNo to Name
+  db.ref("registrations").once("value").then(snapshot => {
+    const registrations = snapshot.val() || {};
+
+    // Now fetch complaints
+    db.ref("complaints").once("value").then(complaintsSnap => {
+      const complaints = complaintsSnap.val();
+      if (!complaints) {
+        const row = complaintTableBody.insertRow();
+        row.insertCell().textContent = "No data";
+        row.insertCell().textContent = "-";
+        row.insertCell().textContent = "-";
+        row.insertCell().textContent = "-";
+        row.insertCell().textContent = "-";
+        return;
+      }
+
+      for (const regNo in complaints) {
+        const student = registrations[regNo];
+        const name = student ? student.name : "Unknown";
+        for (const timestamp in complaints[regNo]) {
+          const entry = complaints[regNo][timestamp];
+          const row = complaintTableBody.insertRow();
+          row.insertCell().textContent = name;
+          row.insertCell().textContent = regNo;
+          row.insertCell().textContent = entry.unit || "-";
+          row.insertCell().textContent = entry.type || "-";
+          row.insertCell().textContent = new Date(Number(timestamp)).toLocaleString();
         }
+      }
+    });
+  });
 
-        for (const regNoKey in complaints) {
-          const studentComplaints = complaints[regNoKey];
-          for (const timestamp in studentComplaints) {
-            const complaint = studentComplaints[timestamp];
-            const actualRegNo = complaint.regNo || "N/A";
+  // Export to Excel function
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const wb = XLSX.utils.book_new();
+    const table = document.getElementById("complaintTable");
+    const ws = XLSX.utils.table_to_sheet(table);
+    XLSX.utils.book_append_sheet(wb, ws, "Complaints");
+    XLSX.writeFile(wb, "complaints.xlsx");
+  });
+</script>
 
-            // Fetch student name & phone from registration
-            let name = "Not Found";
-            let phone = "Not Found";
-            try {
-              const regSnap = await db.ref(`registrations/${actualRegNo}`).once("value");
-              if (regSnap.exists()) {
-                const data = regSnap.val();
-                name = data.name || "N/A";
-                phone = data.phone || "N/A";
-              }
-            } catch (err) {
-              console.error("Error fetching registration:", err);
-            }
-
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${actualRegNo}</td>
-              <td>${name}</td>
-              <td>${phone}</td>
-              <td>${complaint.unit || "-"}</td>
-              <td>${complaint.type || "-"}</td>
-              <td>${new Date(timestamp).toLocaleString()}</td>
-            `;
-            tableBody.appendChild(row);
-          }
-        }
-      });
-    }
-
-    function exportToExcel() {
-      const table = document.getElementById("complaintsTable");
-      const wb = XLSX.utils.table_to_book(table, { sheet: "Complaints" });
-      XLSX.writeFile(wb, "complaints.xlsx");
-    }
-
-    loadComplaints();
-  </script>
 </body>
 </html>
