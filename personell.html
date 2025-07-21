@@ -5,6 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BSCEEEY2S1</title>
 <link rel="stylesheet" href="style.css">
+  <!-- Inside your <head> tag -->
+<style>
+  .lecturer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .lecturer-card {
+    background: #f0f4f8;
+    padding: 15px 20px;
+    border-left: 5px solid #004080;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+  }
+
+  .lecturer-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .lecturer-card h3 {
+    margin-bottom: 5px;
+    color: #003060;
+  }
+
+  .lecturer-card p {
+    margin: 3px 0;
+    font-size: 15px;
+  }
+</style>
+
 </head>
 <body>
 
@@ -117,15 +150,36 @@
   </section>
 
   <!-- Section 3: Lecturers -->
-  <section class="personnel-section">
-    <h2>Lecturers This Semester</h2>
-    <!--<ul>
-      <li><strong>Lecturer 1:</strong> [Name] - [Phone]</li>
-      <li><strong>Lecturer 2:</strong> [Name] - [Phone]</li>
-      <li><strong>Lecturer 3:</strong> [Name] - [Phone]</li>
-      <li><strong>Lecturer 4:</strong> [Name] - [Phone]</li>
-    </ul>-->
-  </section>
+<section class="personnel-section">
+  <h2>Lecturers This Semester</h2>
+  <div class="lecturer-grid">
+    <div class="lecturer-card">
+      <h3>Lecturer 1</h3>
+      <p><strong>Name:</strong> [Name]</p>
+      <p><strong>Phone:</strong> [Phone]</p>
+      <p><strong>Unit:</strong> [Unit]</p>
+    </div>
+    <div class="lecturer-card">
+      <h3>Lecturer 2</h3>
+      <p><strong>Name:</strong> [Name]</p>
+      <p><strong>Phone:</strong> [Phone]</p>
+      <p><strong>Unit:</strong> [Unit]</p>
+    </div>
+    <div class="lecturer-card">
+      <h3>Lecturer 3</h3>
+      <p><strong>Name:</strong> [Name]</p>
+      <p><strong>Phone:</strong> [Phone]</p>
+      <p><strong>Unit:</strong> [Unit]</p>
+    </div>
+    <div class="lecturer-card">
+      <h3>Lecturer 4</h3>
+      <p><strong>Name:</strong> [Name]</p>
+      <p><strong>Phone:</strong> [Phone]</p>
+      <p><strong>Unit:</strong> [Unit]</p>
+    </div>
+  </div>
+</section>
+
 
 </main>
 
