@@ -2,125 +2,170 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>View Complaints</title>
+  <title>View Registrations</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
-    h2 { text-align: center; margin-bottom: 10px; }
-    #status { text-align: center; margin-bottom: 15px; color: green; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    th { background-color: #007BFF; color: white; }
-    tr:nth-child(even) { background-color: #f2f2f2; }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #004080;
+      color: white;
+    }
     #downloadBtn {
-      display: block;
-      margin: 15px auto;
+      margin-top: 20px;
       padding: 10px 20px;
-      background: #28a745;
+      background-color: green;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-    #downloadBtn:hover { background: #218838; }
+    #adminPass {
+      padding: 8px;
+      font-size: 16px;
+    }
+    #accessBtn {
+      padding: 8px 16px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #accessBtn:hover {
+      background-color: #002f5f;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Academic Support Complaints</h2>
-  <div id="status">Loading complaints...</div>
-  <button id="downloadBtn" style="display:none">Download to Excel</button>
-  
-  <table>
+<h2>Semester Registrations</h2>
+
+<input type="password" id="adminPass" placeholder="Enter admin password" />
+<button id="accessBtn" onclick="checkAccess()">Access</button>
+
+<div id="dataSection" style="display:none">
+  <button id="downloadBtn">Download as Excel</button>
+  <p><small>Auto-refreshes every 1 minute</small></p>
+  <table id="data-table">
     <thead>
       <tr>
         <th>#</th>
-        <th>RegNo</th>
-        <th>Name</th>
-        <th>Unit</th>
-        <th>Type</th>
+        <th>Full Name</th>
+        <th>Reg Number</th>
+        <th>Phone Number</th>
         <th>Timestamp</th>
       </tr>
     </thead>
-    <tbody id="complaintsBody"></tbody>
+    <tbody></tbody>
   </table>
+</div>
 
-  <!-- Firebase SDK & XLSX -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-      authDomain: "bsceee-webpage.firebaseapp.com",
-      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-      projectId: "bsceee-webpage",
-      storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "281106710079",
-      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
-    };
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "281106710079",
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+    measurementId: "G-B1M7SSEZYP"
+  };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const tableBody = document.getElementById("complaintsBody");
-    const statusEl = document.getElementById("status");
-    const btn = document.getElementById("downloadBtn");
-    let dataCache = [];
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  let registrationsData = [];
+  let refreshInterval;
 
-    function loadComplaints() {
-      db.ref("complaints").on("value", snapshot => {
-        const obj = snapshot.val();
-        tableBody.innerHTML = "";
-        dataCache = [];
+  function checkAccess() {
+    const pass = document.getElementById("adminPass").value;
+    if (pass === "yourStrongPassword") {
+      document.getElementById("dataSection").style.display = "block";
+      loadRegistrations();
 
-        if (!obj) {
-          statusEl.textContent = "No complaints submitted yet.";
-          btn.style.display = "none";
-          return;
+      // Auto-refresh every 60 seconds (60000 ms)
+      refreshInterval = setInterval(loadRegistrations, 60000);
+    } else {
+      alert("Incorrect password");
+    }
+  }
+
+  function loadRegistrations() {
+    const tableBody = document.querySelector('#data-table tbody');
+    tableBody.innerHTML = "";
+    registrationsData = [];
+
+    const refPath = db.ref("registrations");
+
+    refPath.once("value")
+      .then(snapshot => {
+        const data = snapshot.val();
+        const allRecords = [];
+
+        for (let group in data) {
+          const groupData = data[group];
+          for (let midReg in groupData) {
+            const endDigits = groupData[midReg];
+            for (let lastPart in endDigits) {
+              const record = endDigits[lastPart];
+              allRecords.push({
+                name: record.name || "N/A",
+                regNo: record.regNo || "N/A",
+                phone: record.phone || "N/A",
+                timestamp: record.timestamp || "N/A"
+              });
+            }
+          }
         }
 
-        let count = 0;
-        Object.entries(obj).forEach(([regNo, entries]) => {
-          Object.values(entries).forEach(record => {
-            count++;
-            const name = record.name || "—";
-            const unit = record.unit || "—";
-            const type = record.type || "—";
-            const tsISO = record.submittedAt || record.timestamp || "";
-            const tsStr = tsISO ? new Date(tsISO).toLocaleString() : "—";
+        // Sort: oldest to newest
+        allRecords.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-            const row = document.createElement("tr");
-            row.innerHTML = `<td>${count}</td>
-                             <td>${regNo}</td>
-                             <td>${name}</td>
-                             <td>${unit}</td>
-                             <td>${type}</td>
-                             <td>${tsStr}</td>`;
-            tableBody.appendChild(row);
-
-            dataCache.push({ "#": count, RegNo: regNo, Name: name, Unit: unit, Type: type, Timestamp: tsStr });
-          });
+        allRecords.forEach((record, index) => {
+          const row = `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${record.name}</td>
+              <td>${record.regNo}</td>
+              <td>${record.phone}</td>
+              <td>${record.timestamp}</td>
+            </tr>
+          `;
+          tableBody.insertAdjacentHTML("beforeend", row);
         });
 
-        statusEl.textContent = `${count} complaint${count > 1 ? "s" : ""} loaded.`;
-        btn.style.display = count ? "block" : "none";
+        registrationsData = allRecords;
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+        tableBody.innerHTML = "<tr><td colspan='5'>Failed to load data</td></tr>";
       });
-    }
+  }
 
-    btn.addEventListener("click", () => {
-      const ws = XLSX.utils.json_to_sheet(dataCache);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Complaints");
-      XLSX.writeFile(wb, "complaints.xlsx");
-    });
-
-    loadComplaints();
-  </script>
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    const worksheet = XLSX.utils.json_to_sheet(registrationsData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
+    XLSX.writeFile(workbook, "registrations.xlsx");
+  });
+</script>
 
 </body>
 </html>
