@@ -1,150 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>View Complaints</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
-    .container {
-      max-width: 1000px;
-      margin: 60px auto;
+    body {
+      font-family: Arial, sans-serif;
       padding: 20px;
+      background: #f8f9fa;
     }
     h2 {
       text-align: center;
       margin-bottom: 20px;
-      color: #004080;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      background: #fff;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
     th, td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: left;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
     }
     th {
-      background-color: #004080;
+      background-color: #007BFF;
       color: white;
     }
     tr:nth-child(even) {
-      background-color: #f9f9f9;
+      background-color: #f2f2f2;
     }
-    @media screen and (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      th {
-        position: sticky;
-        top: 0;
-      }
-      td {
-        margin-bottom: 10px;
-      }
+    #status {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: green;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <nav>
-    <button onclick="toggleSidebar()">☰</button>
-    <div class="title"><h1>View Complaints</h1></div>
-    <div class="logo">
-      <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
-    </div>
-  </nav>
-</header>
+  <h2>Academic Support Complaints</h2>
+  <div id="status">Loading complaints...</div>
+  <table>
+    <thead>
+      <tr>
+        <th>RegNo</th>
+        <th>Unit</th>
+        <th>Type</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody id="complaintsBody">
+      <!-- Complaints will appear here -->
+    </tbody>
+  </table>
 
-<div id="sidebar">
-  <a href="index.html">HOME</a>
-  <a href="registration.html">SEMESTER REGISTRATION</a>
-  <a href="support.html">ACADEMIC SUPPORT</a>
-  <a href="viewComplaints.html">VIEW COMPLAINTS</a>
-</div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Firebase config (replace with yours if needed)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-<main class="content">
-  <div class="container">
-    <h2>All Submitted Complaints</h2>
-    <table id="complaintsTable">
-      <thead>
-        <tr>
-          <th>RegNo</th>
-          <th>Unit</th>
-          <th>Type</th>
-          <th>Timestamp</th>
-        </tr>
-      </thead>
-      <tbody id="complaintsBody">
-        <tr><td colspan="4">Loading complaints...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</main>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "bsceee-webpage.firebaseapp.com",
+      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+      projectId: "bsceee-webpage",
+      storageBucket: "bsceee-webpage.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-<script>
-  function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
-  }
-</script>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    const tableBody = document.getElementById("complaintsBody");
+    const statusDiv = document.getElementById("status");
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-    authDomain: "bsceee-webpage.firebaseapp.com",
-    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-    projectId: "bsceee-webpage",
-    storageBucket: "bsceee-webpage.appspot.com",
-    messagingSenderId: "281106710079",
-    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-    measurementId: "G-B1M7SSEZYP"
-  };
+    onValue(ref(db, "complaints"), (snapshot) => {
+      const data = snapshot.val();
+      tableBody.innerHTML = ""; // Clear old rows
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  const complaintsBody = document.getElementById("complaintsBody");
-
-  async function loadComplaints() {
-    const complaintsRef = ref(db, 'complaints');
-    try {
-      const snapshot = await get(complaintsRef);
-      complaintsBody.innerHTML = "";
-
-      if (!snapshot.exists()) {
-        complaintsBody.innerHTML = "<tr><td colspan='4'>No complaints found.</td></tr>";
+      if (!data) {
+        statusDiv.textContent = "No complaints submitted yet.";
         return;
       }
 
-      const data = snapshot.val();
-      for (const regNo in data) {
-        const studentComplaints = data[regNo];
-        for (const timestamp in studentComplaints) {
-          const c = studentComplaints[timestamp];
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
+      let count = 0;
+      for (let regNo in data) {
+        for (let timestampKey in data[regNo]) {
+          const complaint = data[regNo][timestampKey];
+          const { unit, type, submittedAt } = complaint;
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
             <td>${regNo}</td>
-            <td>${c.unit}</td>
-            <td>${c.type}</td>
-            <td>${new Date(parseInt(timestamp)).toLocaleString()}</td>
+            <td>${unit || "—"}</td>
+            <td>${type || "—"}</td>
+            <td>${submittedAt ? new Date(submittedAt).toLocaleString() : "—"}</td>
           `;
-          complaintsBody.appendChild(tr);
+          tableBody.appendChild(row);
+          count++;
         }
       }
-    } catch (error) {
-      console.error("Error loading complaints:", error);
-      complaintsBody.innerHTML = "<tr><td colspan='4'>Failed to load complaints.</td></tr>";
-    }
-  }
 
-  loadComplaints();
-</script>
+      statusDiv.textContent = `${count} complaint${count > 1 ? "s" : ""} loaded.`;
+    }, {
+      onlyOnce: false
+    });
+  </script>
 
 </body>
 </html>
