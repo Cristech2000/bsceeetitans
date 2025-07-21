@@ -1,186 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Academic Support Center</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
-
-  <!-- Styling -->
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7fa;
-    }
-    .sidebar {
-      height: 100vh;
-      width: 220px;
-      background-color: #2c3e50;
-      color: white;
-      position: fixed;
-      padding: 20px 10px;
-    }
-    .sidebar h2 {
-      text-align: center;
-      font-size: 1.4em;
-      margin-bottom: 30px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px 15px;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      margin: 5px 0;
-    }
-    .sidebar a:hover {
-      background-color: #34495e;
-    }
-    .content {
-      margin-left: 240px;
-      padding: 30px;
-    }
-    .container {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .support-form {
       max-width: 600px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
     }
-    select, button {
+    .support-form h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #004080;
+    }
+    .support-form input, .support-form select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .support-form button {
+      margin-top: 25px;
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      background-color: #3498db;
+      font-size: 18px;
+      background-color: #004080;
       color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #2980b9;
-    }
-    .success {
-      color: green;
-      margin-top: 10px;
-    }
-    .error {
-      color: red;
-      margin-top: 10px;
+    .support-form button:hover {
+      background-color: #003366;
     }
   </style>
 </head>
 <body>
 
-  <div class="sidebar">
-    <h2>Class Portal</h2>
-    <a href="index.html">Home</a>
-    <a href="register.html">Register</a>
-    <a href="view.html">View Registrations</a>
-    <a href="support.html">Support Center</a>
-  </div>
-
-  <div class="content">
-    <div class="container">
-      <h2>Academic Support - Missing Marks</h2>
-      <p>Submit a missing mark complaint for a specific unit. Duplicate complaints for the same unit will be rejected.</p>
-
-      <select id="unitSelect">
-        <option value="">-- Select Unit --</option>
-        <option value="MATH 101">MATH 101</option>
-        <option value="CHEM 120">CHEM 120</option>
-        <option value="PHY 122">PHY 122</option>
-        <option value="COMP 112">COMP 112</option>
-        <!-- Add more units as needed -->
-      </select>
-
-      <button onclick="submitComplaint()">Submit Complaint</button>
-
-      <p class="success" id="successMsg" style="display:none;">Complaint submitted successfully!</p>
-      <p class="error" id="errorMsg" style="display:none;"></p>
+<header>
+  <nav>
+    <button onclick="toggleSidebar()">☰</button>
+    <div class="title"><h1>Academic Support Center</h1></div>
+    <div class="logo">
+      <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
     </div>
-  </div>
+  </nav>
+</header>
 
-  <script>
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDjUrxYO5iJKsK10C8JqAl9n-MXjCHRXjQ",
-      authDomain: "bsceee-webpage.firebaseapp.com",
-      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-      projectId: "bsceee-webpage",
-      storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "728337748712",
-      appId: "1:728337748712:web:ac0b1b2402732f515cb05f"
-    };
+<div id="sidebar">
+  <a href="index.html">HOME</a>
+  <a href="timetable.html">TIMETABLE</a>
+  <a href="assignments.html">ASSIGNMENT</a>
+  <a href="studydocs.html">STUDY DOCUMENTS</a>
+  <a href="gallery.html">GALLERY</a>
+  <a href="sports.html">SPORTS</a>
+  <a href="personell.html">PERSONNEL</a>
+  <a href="registration.html">SEMESTER REGISTRATION</a>
+  <a href="support.html">ACADEMIC SUPPORT</a>
+</div>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+<main class="content">
+  <section class="support-form">
+    <h2>Missing Marks Complaint</h2>
+    <form id="complaint-form">
+      <input type="text" name="RegNo" placeholder="Your Registration Number" required>
+      <select name="Unit" required>
+        <option value="">-- Select Unit --</option>
+        <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+        <option value="COMS 101">COMS 101 - Communication Skills</option>
+        <option value="COSC 121">COSC 121 - Intro to Computers</option>
+        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+        <option value="MATH 121">MATH 121 - Calculus I</option>
+        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+        <option value="PHYS 112">PHYS 112 - Physics I</option>
+        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+        <option value="PHYS 113">PHYS 113 - Physics II</option>
+        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+      </select>
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </section>
+</main>
 
-    const unitSelect = document.getElementById("unitSelect");
-    const successMsg = document.getElementById("successMsg");
-    const errorMsg = document.getElementById("errorMsg");
+<script>
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+</script>
 
-    function submitComplaint() {
-      const unit = unitSelect.value;
-      if (!unit) {
-        errorMsg.innerText = "Please select a unit.";
-        errorMsg.style.display = "block";
-        successMsg.style.display = "none";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "281106710079",
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+    measurementId: "G-B1M7SSEZYP"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const form = document.getElementById("complaint-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const regNo = form.RegNo.value.trim().toUpperCase();
+    const unit = form.Unit.value;
+
+    if (!regNo || !unit) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const regRef = ref(db, 'registrations/' + regNo);
+      const regSnap = await get(regRef);
+      if (!regSnap.exists()) {
+        alert("This Reg Number is not registered.");
         return;
       }
 
-      // Get student RegNo from localStorage
-      const regNo = localStorage.getItem("regNo");
-      if (!regNo) {
-        errorMsg.innerText = "You must be registered to submit a complaint.";
-        errorMsg.style.display = "block";
-        successMsg.style.display = "none";
-        return;
-      }
+      const complaintsRef = ref(db, 'complaints/' + regNo);
+      const complaintsSnap = await get(complaintsRef);
 
-      const [group, middle, last] = regNo.split('/');
-      const complaintRef = db.ref(`complaints/${group}/${middle}/${last}`);
-
-      // Check for duplicate complaint
-      complaintRef.once('value').then(snapshot => {
-        const complaints = snapshot.val() || {};
-        for (const key in complaints) {
-          if (complaints[key].unit === unit) {
-            errorMsg.innerText = `You have already submitted a complaint for ${unit}.`;
-            errorMsg.style.display = "block";
-            successMsg.style.display = "none";
+      if (complaintsSnap.exists()) {
+        const complaints = complaintsSnap.val();
+        for (const timestamp in complaints) {
+          if (complaints[timestamp].unit === unit) {
+            alert("You’ve already submitted a complaint for this unit.");
             return;
           }
         }
+      }
 
-        // Proceed to submit
-        const timestamp = Date.now();
-        const submittedAt = new Date().toISOString();
-        const newComplaint = {
-          regNo: regNo,
-          type: "Missing Marks",
-          unit: unit,
-          submittedAt: submittedAt
-        };
-
-        complaintRef.child(timestamp).set(newComplaint).then(() => {
-          successMsg.style.display = "block";
-          errorMsg.style.display = "none";
-        }).catch(error => {
-          errorMsg.innerText = "Error submitting complaint.";
-          errorMsg.style.display = "block";
-          successMsg.style.display = "none";
-          console.error(error);
-        });
+      const timestamp = Date.now();
+      const newComplaintRef = ref(db, `complaints/${regNo}/${timestamp}`);
+      await set(newComplaintRef, {
+        regNo,
+        unit,
+        type: "Missing Marks",
+        submittedAt: new Date().toISOString()
       });
+
+      alert("Complaint submitted successfully!");
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Try again.");
     }
-  </script>
+  });
+</script>
+
 </body>
 </html>
