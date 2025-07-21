@@ -2,98 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Submit Missing Marks Complaint</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Academic Support Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add your existing CSS here -->
+  <link rel="stylesheet" href="styles.css"> <!-- Assuming you have a shared CSS file -->
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(120deg, #f5f7fa, #c3cfe2);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    .complaint-form-container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-
-    .container {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 420px;
-    }
-
-    h2 {
+    .complaint-form-container h2 {
       text-align: center;
-      margin-bottom: 30px;
-      color: #333;
+      margin-bottom: 20px;
+      color: #222;
     }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
+    .complaint-form-container label {
       font-weight: bold;
+      display: block;
+      margin-top: 15px;
     }
-
-    input, select {
+    .complaint-form-container input,
+    .complaint-form-container select {
       width: 100%;
       padding: 10px;
-      margin-bottom: 20px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
-
-    button {
+    .complaint-form-container button {
+      margin-top: 20px;
       width: 100%;
       padding: 12px;
-      background-color: #4a90e2;
-      color: white;
+      background-color: #0066cc;
+      color: #fff;
       font-size: 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
-
-    button:hover {
-      background-color: #357ABD;
+    .complaint-form-container button:hover {
+      background-color: #004c99;
     }
-
-    .footer {
+    .footer-note {
       text-align: center;
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 14px;
-      color: #777;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Missing Marks Complaint</h2>
-    <form id="complaint-form">
-      <label for="RegNo">Registration Number</label>
-      <input type="text" id="RegNo" name="RegNo" placeholder="e.g. EB24/74506/24" required>
-
-      <label for="Unit">Select Unit</label>
-      <select id="Unit" name="Unit" required>
-        <option value="" disabled selected>Select a unit</option>
-        <option value="CHEM 120">CHEM 120</option>
-        <option value="MATH 112">MATH 112</option>
-        <option value="PHYS 122">PHYS 122</option>
-        <option value="COMP 101">COMP 101</option>
-        <!-- Add more units as needed -->
-      </select>
-
-      <button type="submit">Submit Complaint</button>
-    </form>
-    <div class="footer">Only one complaint per unit is allowed.</div>
+  <!-- Sidebar (unchanged) -->
+  <div class="sidebar">
+    <!-- Your existing sidebar HTML here -->
   </div>
 
-  <!-- Firebase SDKs -->
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="complaint-form-container">
+      <h2>Missing Marks Complaint</h2>
+      <form id="complaint-form">
+        <label for="RegNo">Registration Number</label>
+        <input type="text" id="RegNo" name="RegNo" placeholder="e.g. EB24/74506/24" required>
+
+        <label for="Unit">Select Unit</label>
+        <select id="Unit" name="Unit" required>
+          <option value="" disabled selected>Select a unit</option>
+          <option value="CHEM 120">CHEM 120</option>
+          <option value="MATH 112">MATH 112</option>
+          <option value="PHYS 122">PHYS 122</option>
+          <option value="COMP 101">COMP 101</option>
+        </select>
+
+        <button type="submit">Submit Complaint</button>
+      </form>
+      <div class="footer-note">Only one complaint per unit is allowed.</div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
