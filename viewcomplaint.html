@@ -1,127 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>View Complaints</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    #exportBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: green;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
+  <h2>Complaints</h2>
+  <button onclick="exportToExcel()">Export to Excel</button>
+  <table border="1" id="complaintsTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>RegNo</th>
+        <th>Unit</th>
+        <th>Type</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody id="complaintTableBody"></tbody>
+  </table>
 
-<h1>Submitted Complaints</h1>
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjUrxYO5iJKsK10C8JqAl9n-MXjCHRXjQ",
+      authDomain: "bsceee-webpage.firebaseapp.com",
+      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+      projectId: "bsceee-webpage",
+      storageBucket: "bsceee-webpage.appspot.com",
+      messagingSenderId: "728337748712",
+      appId: "1:728337748712:web:ac0b1b2402732f515cb05f"
+    };
 
-<table id="complaintTable">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Reg No</th>
-      <th>Unit</th>
-      <th>Type</th>
-      <th>Timestamp</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Data will be populated here -->
-  </tbody>
-</table>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-<button id="exportBtn">Export to Excel</button>
+    const complaintTableBody = document.getElementById('complaintTableBody');
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
-<!-- SheetJS for Excel export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    function loadComplaints() {
+      const complaintsRef = db.ref('complaints');
+      const registrationsRef = db.ref('registrations');
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAqW-EXAMPLEk-FEwVv84fgyXbo",
-    authDomain: "bsceee-webpage.firebaseapp.com",
-    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-    projectId: "bsceee-webpage",
-    storageBucket: "bsceee-webpage.appspot.com",
-    messagingSenderId: "316651769790",
-    appId: "1:316651769790:web:46689b34f8d8ba30edc3df",
-    measurementId: "G-X8DQ7X0VJL"
-  };
+      Promise.all([
+        complaintsRef.once('value'),
+        registrationsRef.once('value')
+      ]).then(([complaintsSnap, registrationsSnap]) => {
+        const complaintsData = complaintsSnap.val() || {};
+        const registrationsData = registrationsSnap.val() || {};
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+        for (const level1 in complaintsData) {
+          for (const level2 in complaintsData[level1]) {
+            for (const level3 in complaintsData[level1][level2]) {
+              const entries = complaintsData[level1][level2][level3];
+              for (const timestamp in entries) {
+                const complaint = entries[timestamp];
 
-  const complaintTableBody = document.querySelector("#complaintTable tbody");
+                const regNo = complaint.regNo;
+                const [group, middle, last] = regNo.split('/');
 
-  // Fetch registrations first for mapping RegNo to Name
-  db.ref("registrations").once("value").then(snapshot => {
-    const registrations = snapshot.val() || {};
+                const student =
+                  registrationsData[group] &&
+                  registrationsData[group][middle] &&
+                  registrationsData[group][middle][last];
 
-    // Now fetch complaints
-    db.ref("complaints").once("value").then(complaintsSnap => {
-      const complaints = complaintsSnap.val();
-      if (!complaints) {
-        const row = complaintTableBody.insertRow();
-        row.insertCell().textContent = "No data";
-        row.insertCell().textContent = "-";
-        row.insertCell().textContent = "-";
-        row.insertCell().textContent = "-";
-        row.insertCell().textContent = "-";
-        return;
-      }
+                const name = student ? student.name : "Unknown";
 
-      for (const regNo in complaints) {
-        const student = registrations[regNo];
-        const name = student ? student.name : "Unknown";
-        for (const timestamp in complaints[regNo]) {
-          const entry = complaints[regNo][timestamp];
-          const row = complaintTableBody.insertRow();
-          row.insertCell().textContent = name;
-          row.insertCell().textContent = regNo;
-          row.insertCell().textContent = entry.unit || "-";
-          row.insertCell().textContent = entry.type || "-";
-          row.insertCell().textContent = new Date(Number(timestamp)).toLocaleString();
+                const row = complaintTableBody.insertRow();
+                row.insertCell().textContent = name;
+                row.insertCell().textContent = regNo;
+                row.insertCell().textContent = complaint.unit || "-";
+                row.insertCell().textContent = complaint.type || "-";
+
+                // Fix timestamp formatting
+                const formattedTime = complaint.submittedAt
+                  ? new Date(complaint.submittedAt).toLocaleString()
+                  : "-";
+
+                row.insertCell().textContent = formattedTime;
+              }
+            }
+          }
         }
-      }
-    });
-  });
+      }).catch(error => {
+        console.error("Error fetching complaints:", error);
+      });
+    }
 
-  // Export to Excel function
-  document.getElementById("exportBtn").addEventListener("click", () => {
-    const wb = XLSX.utils.book_new();
-    const table = document.getElementById("complaintTable");
-    const ws = XLSX.utils.table_to_sheet(table);
-    XLSX.utils.book_append_sheet(wb, ws, "Complaints");
-    XLSX.writeFile(wb, "complaints.xlsx");
-  });
-</script>
+    function exportToExcel() {
+      const table = document.getElementById("complaintsTable");
+      const workbook = XLSX.utils.table_to_book(table, {sheet: "Complaints"});
+      XLSX.writeFile(workbook, "Complaints.xlsx");
+    }
 
+    loadComplaints();
+  </script>
 </body>
 </html>
