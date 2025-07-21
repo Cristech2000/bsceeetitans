@@ -5,6 +5,87 @@
   <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 30px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: block;
+      margin-left: auto;
+    }
+
+    button:hover {
+      background-color: #27ae60;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+    }
+
+    th {
+      background-color: #34495e;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      tr {
+        margin-bottom: 15px;
+      }
+
+      td {
+        padding-left: 50%;
+        position: relative;
+      }
+
+      td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        font-weight: bold;
+        text-transform: capitalize;
+      }
+
+      th {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <h2>Complaints</h2>
@@ -23,7 +104,6 @@
   </table>
 
   <script>
-    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDjUrxYO5iJKsK10C8JqAl9n-MXjCHRXjQ",
       authDomain: "bsceee-webpage.firebaseapp.com",
@@ -73,7 +153,6 @@
                 row.insertCell().textContent = complaint.unit || "-";
                 row.insertCell().textContent = complaint.type || "-";
 
-                // Fix timestamp formatting
                 const formattedTime = complaint.submittedAt
                   ? new Date(complaint.submittedAt).toLocaleString()
                   : "-";
