@@ -1,73 +1,170 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-    authDomain: "bsceee-webpage.firebaseapp.com",
-    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-    projectId: "bsceee-webpage",
-    storageBucket: "bsceee-webpage.appspot.com",
-    messagingSenderId: "281106710079",
-    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-    measurementId: "G-B1M7SSEZYP"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  const form = document.getElementById("complaint-form");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const regNo = form.RegNo.value.trim().toUpperCase();
-    const unit = form.Unit.value;
-
-    if (!regNo || !unit) {
-      alert("Please fill in all fields.");
-      return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Missing Marks Complaint</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(120deg, #f5f7fa, #c3cfe2);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    const regRef = ref(db, `registrations/${regNo}`);
-    const complaintRootRef = ref(db, `complaints/${regNo}`);
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+    }
 
-    try {
-      const regSnap = await get(regRef);
-      if (!regSnap.exists()) {
-        alert("This Reg Number is not registered.");
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a90e2;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #357ABD;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Missing Marks Complaint</h2>
+    <form id="complaint-form">
+      <label for="RegNo">Registration Number</label>
+      <input type="text" id="RegNo" name="RegNo" placeholder="e.g. EB24/74506/24" required>
+
+      <label for="Unit">Select Unit</label>
+      <select id="Unit" name="Unit" required>
+        <option value="" disabled selected>Select a unit</option>
+        <option value="CHEM 120">CHEM 120</option>
+        <option value="MATH 112">MATH 112</option>
+        <option value="PHYS 122">PHYS 122</option>
+        <option value="COMP 101">COMP 101</option>
+        <!-- Add more units as needed -->
+      </select>
+
+      <button type="submit">Submit Complaint</button>
+    </form>
+    <div class="footer">Only one complaint per unit is allowed.</div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+      authDomain: "bsceee-webpage.firebaseapp.com",
+      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+      projectId: "bsceee-webpage",
+      storageBucket: "bsceee-webpage.appspot.com",
+      messagingSenderId: "281106710079",
+      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const form = document.getElementById("complaint-form");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const regNo = form.RegNo.value.trim().toUpperCase();
+      const unit = form.Unit.value;
+
+      if (!regNo || !unit) {
+        alert("Please fill in all fields.");
         return;
       }
 
-      const complaintsSnap = await get(complaintRootRef);
-      let duplicateFound = false;
+      const regRef = ref(db, `registrations/${regNo}`);
+      const complaintRootRef = ref(db, `complaints/${regNo}`);
 
-      if (complaintsSnap.exists()) {
-        complaintsSnap.forEach(child => {
-          const complaint = child.val();
-          if (complaint.unit === unit && complaint.type === "Missing Marks") {
-            duplicateFound = true;
-          }
+      try {
+        const regSnap = await get(regRef);
+        if (!regSnap.exists()) {
+          alert("This Reg Number is not registered.");
+          return;
+        }
+
+        const complaintsSnap = await get(complaintRootRef);
+        let duplicateFound = false;
+
+        if (complaintsSnap.exists()) {
+          complaintsSnap.forEach(child => {
+            const complaint = child.val();
+            if (complaint.unit === unit && complaint.type === "Missing Marks") {
+              duplicateFound = true;
+            }
+          });
+        }
+
+        if (duplicateFound) {
+          alert("You have already submitted a Missing Marks complaint for this unit.");
+          return;
+        }
+
+        const timestamp = Date.now();
+        const newComplaintRef = ref(db, `complaints/${regNo}/${timestamp}`);
+        await set(newComplaintRef, {
+          regNo,
+          unit,
+          type: "Missing Marks",
+          submittedAt: new Date().toISOString()
         });
+
+        alert("Complaint submitted successfully!");
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Try again.");
       }
-
-      if (duplicateFound) {
-        alert("You have already submitted a Missing Marks complaint for this unit.");
-        return;
-      }
-
-      const timestamp = Date.now();
-      const newComplaintRef = ref(db, `complaints/${regNo}/${timestamp}`);
-      await set(newComplaintRef, {
-        regNo,
-        unit,
-        type: "Missing Marks",
-        submittedAt: new Date().toISOString()
-      });
-
-      alert("Complaint submitted successfully!");
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Try again.");
-    }
-  });
-</script>
+    });
+  </script>
+</body>
+</html>
