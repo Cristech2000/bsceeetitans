@@ -3,155 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BSCEEEY2S1</title>
-<link rel="stylesheet" href="style.css">
+  <title>BSCEEE Personnel</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fa;
+      color: #333;
+    }
+
+    header {
+      background-color: #005792;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    section {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #005792;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #005792;
+      padding-bottom: 5px;
+    }
+
+    .personnel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .person {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .person:hover {
+      transform: translateY(-5px);
+    }
+
+    .person h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    .person p {
+      margin: 5px 0;
+    }
+
+    footer {
+      background-color: #003f63;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 50px;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Top Nav -->
   <header>
-     <nav>
-     <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-                 <div class="title" >
-<h1>Personnel</h1>
-            </div>
-        <div class="logo">
-    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
-    </div>
-</nav>
+    <h1>BSCEEE Class Personnel</h1>
   </header>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <a href="index.html">HOME</a>
-    <a href="timetable.html">TIMETABLE</a>
-    <a href="assignments.html">ASSIGNMENT</a>
-    <a href="studydocs.html">STUDY DOCUMENTS</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="sports.html">SPORTS</a>
-    <a href="personell.html">PERSONNEL</a>
-     <a href="registration.html">SEMESTER REGISTRATION</a>
-    <a href="support.html">ACADEMIC SUPPORT</a>
-  </div>
-
-  <!-- Main Content -->
-<main class="content">
-
-  <!-- Section 1: Class Leadership -->
-  <section class="personnel-section">
+  <!-- Section 1: Leadership -->
+  <section>
     <h2>Class Leadership</h2>
     <div class="personnel-grid">
       <div class="person">
-        <h3>Class Representative</h3>
-        <p><strong>Name:</strong> Crispus Rotich</p>
-        <p><strong>Phone:</strong> 0706435687</p>
-        <p><strong>Role:</strong> Coordinates class activities and communicates with lecturers and administration.</p>
+        <h3>Brian Otieno</h3>
+        <p><strong>Position:</strong> Class Representative</p>
+        <p><strong>Phone:</strong> 0700123456</p>
       </div>
       <div class="person">
-        <h3>Deputy Class Representative</h3>
-        <p><strong>Name:</strong> Mercy Wanjiku</p>
-        <p><strong>Phone:</strong>0729383910</p>
-        <p><strong>Role:</strong> Assists the class rep and steps in when absent.</p>
-      </div>
-      <div class="person">
-        <h3>Club Representative</h3>
-        <p><strong>Name:</strong>Leshan sadera</p>
-        <p><strong>Phone:</strong>0706862878</p>
-        <p><strong>Role:</strong> Links class with student engineering clubs and societies.</p>
-      </div>
-      <div class="person">
-        <h3>Class Treasurer</h3>
-        <p><strong>Name:</strong> Evans Otieno</p>
-        <p><strong>Phone:</strong>0796410406</p>
-        <p><strong>Role:</strong> Manages class finances and contributions.</p>
-      </div>
-      <div class="person">
-        <h3>Class Secretary</h3>
-        <p><strong>Name:</strong> Gloria Kemunto</p>
-        <p><strong>Phone:</strong> 0111203107</p>
-        <p><strong>Role:</strong> Takes minutes during meetings and helps with coordination with assignment collection and all other paperwork.</p>
-      </div>
-      <div class="person">
-        <h3>Sports Director 1</h3>
-        <p><strong>Name:</strong>Leshan sadera</p>
-        <p><strong>Phone:</strong>0706862878</p>
-        <p><strong>Role:</strong> Organizes class sports events and matches.</p>
-      </div>
-      <div class="person">
-        <h3>Sports Director 2</h3>
-        <p><strong>Name:</strong>Milcar Onyando</p>
-        <p><strong>Phone:</strong>0735439631</p>
-        <p><strong>Role:</strong> Assists in coordinating sports and recreation activities.</p>
+        <h3>Jane Wambui</h3>
+        <p><strong>Position:</strong> Deputy Class Rep</p>
+        <p><strong>Phone:</strong> 0711223344</p>
       </div>
     </div>
   </section>
 
-  <!-- Section 2: Faculty Leadership -->
-  <section class="personnel-section">
-    <h2>Faculty Leadership</h2>
+  <!-- Section 2: Class Rep Assistants -->
+  <section>
+    <h2>Class Rep Assistants</h2>
     <div class="personnel-grid">
       <div class="person">
-        <h3>Dean of Faculty</h3>
-        <p><strong>Name:</strong>Prof.Marcel Ohanga</p>
-        <p><strong>Phone:</strong> [Phone]</p>
-        <p><strong>Role:</strong> Oversees all operations in the Faculty of Engineering.</p>
+        <h3>Kevin Muthomi</h3>
+        <p><strong>Department:</strong> Welfare</p>
+        <p><strong>Phone:</strong> 0733344556</p>
       </div>
       <div class="person">
-        <h3>Chairman of Department</h3>
-        <p><strong>Name:</strong>Dr.Logan Machoka</p>
-        <p><strong>Phone:</strong>0714477084</p>
-        <p><strong>Role:</strong> Heads the Department of Electrical & Electronics Engineering.</p>
-      </div>
-      <div class="person">
-        <h3>Faculty Admin</h3>
-        <p><strong>Name:</strong>MR.Mutani</p>
-        <p><strong>Phone:</strong>0718010000</p>
-        <p><strong>Role:</strong> Administrative support for faculty records and processes.</p>
-      </div>
-      <div class="person">
-        <h3>Faculty Representative</h3>
-        <p><strong>Name:</strong>Emmanuel Masika</p>
-        <p><strong>Phone:</strong>0758192712</p>
-        <p><strong>Role:</strong> Represents student issues at the faculty level.</p>
+        <h3>Faith Mumo</h3>
+        <p><strong>Department:</strong> Academics</p>
+        <p><strong>Phone:</strong> 0744455667</p>
       </div>
     </div>
   </section>
 
   <!-- Section 3: Lecturers -->
-  <section class="personnel-section">
+  <section>
     <h2>Lecturers This Semester</h2>
-    <!--<ul>
-      <li><strong>Lecturer 1:</strong> [Name] - [Phone]</li>
-      <li><strong>Lecturer 2:</strong> [Name] - [Phone]</li>
-      <li><strong>Lecturer 3:</strong> [Name] - [Phone]</li>
-      <li><strong>Lecturer 4:</strong> [Name] - [Phone]</li>
-    </ul>-->
+    <div class="personnel-grid">
+      <div class="person">
+        <h3>Dr. Linda Mwangi</h3>
+        <p><strong>Phone:</strong> 0712345678</p>
+        <p><strong>Unit:</strong> CHEM 120 - Physical Chemistry</p>
+      </div>
+      <div class="person">
+        <h3>Mr. Dennis Kiptoo</h3>
+        <p><strong>Phone:</strong> 0700123456</p>
+        <p><strong>Unit:</strong> MATH 112 - Calculus II</p>
+      </div>
+      <div class="person">
+        <h3>Eng. Faith Mutheu</h3>
+        <p><strong>Phone:</strong> 0723344556</p>
+        <p><strong>Unit:</strong> PHYS 122 - Electricity and Magnetism</p>
+      </div>
+      <div class="person">
+        <h3>Ms. Stella Mumo</h3>
+        <p><strong>Phone:</strong> 0798765432</p>
+        <p><strong>Unit:</strong> COMP 101 - Introduction to Programming</p>
+      </div>
+    </div>
   </section>
 
-</main>
+  <footer>
+    <p>&copy; 2025 BSCEEE Class | Maintained by Class ICT Team</p>
+  </footer>
 
-
-</section>
-
-  <!-- Sidebar Script -->
-  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
-  </script>
-<footer class="site-footer">
-  <div class="footer-content">
-    <div class="footer-links">
-      <h3>Quick Links</h3>
-      <ul>
-        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
-        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
-  </div>
-</footer>
 </body>
 </html>
