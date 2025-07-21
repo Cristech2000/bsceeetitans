@@ -1,114 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>View Complaints</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f8f9fa;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
+    h2 { text-align: center; margin-bottom: 10px; }
+    #status { text-align: center; margin-bottom: 15px; color: green; }
     table {
       width: 100%;
       border-collapse: collapse;
       background: #fff;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background-color: #007BFF;
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background-color: #007BFF; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    #downloadBtn {
+      display: block;
+      margin: 15px auto;
+      padding: 10px 20px;
+      background: #28a745;
       color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    #status {
-      text-align: center;
-      margin-bottom: 15px;
-      font-size: 14px;
-      color: green;
-    }
+    #downloadBtn:hover { background: #218838; }
   </style>
 </head>
 <body>
 
   <h2>Academic Support Complaints</h2>
   <div id="status">Loading complaints...</div>
+  <button id="downloadBtn" style="display:none">Download to Excel</button>
+  
   <table>
     <thead>
       <tr>
+        <th>#</th>
         <th>RegNo</th>
+        <th>Name</th>
         <th>Unit</th>
         <th>Type</th>
         <th>Timestamp</th>
       </tr>
     </thead>
-    <tbody id="complaintsBody">
-      <!-- Complaints will appear here -->
-    </tbody>
+    <tbody id="complaintsBody"></tbody>
   </table>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Firebase config (replace with yours if needed)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+  <!-- Firebase SDK & XLSX -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+  <script>
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
       authDomain: "bsceee-webpage.firebaseapp.com",
       databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
       projectId: "bsceee-webpage",
       storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      messagingSenderId: "281106710079",
+      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
     const tableBody = document.getElementById("complaintsBody");
-    const statusDiv = document.getElementById("status");
+    const statusEl = document.getElementById("status");
+    const btn = document.getElementById("downloadBtn");
+    let dataCache = [];
 
-    onValue(ref(db, "complaints"), (snapshot) => {
-      const data = snapshot.val();
-      tableBody.innerHTML = ""; // Clear old rows
+    function loadComplaints() {
+      db.ref("complaints").on("value", snapshot => {
+        const obj = snapshot.val();
+        tableBody.innerHTML = "";
+        dataCache = [];
 
-      if (!data) {
-        statusDiv.textContent = "No complaints submitted yet.";
-        return;
-      }
-
-      let count = 0;
-      for (let regNo in data) {
-        for (let timestampKey in data[regNo]) {
-          const complaint = data[regNo][timestampKey];
-          const { unit, type, submittedAt } = complaint;
-
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${regNo}</td>
-            <td>${unit || "—"}</td>
-            <td>${type || "—"}</td>
-            <td>${submittedAt ? new Date(submittedAt).toLocaleString() : "—"}</td>
-          `;
-          tableBody.appendChild(row);
-          count++;
+        if (!obj) {
+          statusEl.textContent = "No complaints submitted yet.";
+          btn.style.display = "none";
+          return;
         }
-      }
 
-      statusDiv.textContent = `${count} complaint${count > 1 ? "s" : ""} loaded.`;
-    }, {
-      onlyOnce: false
+        let count = 0;
+        Object.entries(obj).forEach(([regNo, entries]) => {
+          Object.values(entries).forEach(record => {
+            count++;
+            const name = record.name || "—";
+            const unit = record.unit || "—";
+            const type = record.type || "—";
+            const tsISO = record.submittedAt || record.timestamp || "";
+            const tsStr = tsISO ? new Date(tsISO).toLocaleString() : "—";
+
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${count}</td>
+                             <td>${regNo}</td>
+                             <td>${name}</td>
+                             <td>${unit}</td>
+                             <td>${type}</td>
+                             <td>${tsStr}</td>`;
+            tableBody.appendChild(row);
+
+            dataCache.push({ "#": count, RegNo: regNo, Name: name, Unit: unit, Type: type, Timestamp: tsStr });
+          });
+        });
+
+        statusEl.textContent = `${count} complaint${count > 1 ? "s" : ""} loaded.`;
+        btn.style.display = count ? "block" : "none";
+      });
+    }
+
+    btn.addEventListener("click", () => {
+      const ws = XLSX.utils.json_to_sheet(dataCache);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Complaints");
+      XLSX.writeFile(wb, "complaints.xlsx");
     });
+
+    loadComplaints();
   </script>
 
 </body>
