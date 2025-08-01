@@ -8,7 +8,7 @@
   <style>
     .support-form {
       max-width: 600px;
-      margin: 60px auto;
+      margin: 20px auto;
       padding: 30px;
       background-color: #f9f9f9;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -41,6 +41,32 @@
     .support-form button:hover {
       background-color: #003366;
     }
+
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .tab-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #004080;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tab-buttons button.active {
+      background-color: #0066cc;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -68,13 +94,33 @@
 </div>
 
 <main class="content">
-  <section class="support-form">
-    <h2>Missing Marks Complaint</h2>
-    <form id="complaint-form">
-      <input type="text" name="RegNo" placeholder="Your Registration Number" required>
+  <div class="tab-buttons">
+    <button onclick="showTab('year1')">1st Year</button>
+    <button onclick="showTab('year2')" class="active">2nd Year</button>
+    <button onclick="showTab('year3')">3rd Year</button>
+    <button onclick="showTab('year4')">4th Year</button>
+    <button onclick="showTab('year5')">5th Year</button>
+  </div>
+
+  <!-- Each form structure -->
+  <section id="year1" class="tab-content">
+    <form class="support-form" id="form-year1">
+      <h2>Missing Marks Complaint (1st Year)</h2>
+      <input name="Name" placeholder="Your Name" required>
+      <input name="RegNo" placeholder="Your Registration Number" required>
+      <input name="Lecturer" placeholder="Lecturer's Name" required>
+      <input name="Unit" placeholder="Unit Code & Title" required>
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </section>
+
+  <section id="year2" class="tab-content active">
+    <form class="support-form" id="form-year2">
+      <h2>Missing Marks Complaint (2nd Year)</h2>
+      <input name="RegNo" placeholder="Your Registration Number" required>
       <select name="Unit" required>
         <option value="">-- Select Unit --</option>
-        <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
         <option value="COMS 101">COMS 101 - Communication Skills</option>
         <option value="COSC 121">COSC 121 - Intro to Computers</option>
         <option value="EENG 111">EENG 111 - Workshop Practice I</option>
@@ -93,7 +139,41 @@
         <option value="PHYS 113">PHYS 113 - Physics II</option>
         <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
         <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+        <!-- Add other 2nd-year units -->
       </select>
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </section>
+
+  <section id="year3" class="tab-content">
+    <form class="support-form" id="form-year3">
+      <h2>Missing Marks Complaint (3rd Year)</h2>
+      <input name="Name" placeholder="Your Name" required>
+      <input name="RegNo" placeholder="Your Registration Number" required>
+      <input name="Lecturer" placeholder="Lecturer's Name" required>
+      <input name="Unit" placeholder="Unit Code & Title" required>
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </section>
+
+  <section id="year4" class="tab-content">
+    <form class="support-form" id="form-year4">
+      <h2>Missing Marks Complaint (4th Year)</h2>
+      <input name="Name" placeholder="Your Name" required>
+      <input name="RegNo" placeholder="Your Registration Number" required>
+      <input name="Lecturer" placeholder="Lecturer's Name" required>
+      <input name="Unit" placeholder="Unit Code & Title" required>
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </section>
+
+  <section id="year5" class="tab-content">
+    <form class="support-form" id="form-year5">
+      <h2>Missing Marks Complaint (5th Year)</h2>
+      <input name="Name" placeholder="Your Name" required>
+      <input name="RegNo" placeholder="Your Registration Number" required>
+      <input name="Lecturer" placeholder="Lecturer's Name" required>
+      <input name="Unit" placeholder="Unit Code & Title" required>
       <button type="submit">Submit Complaint</button>
     </form>
   </section>
@@ -103,76 +183,82 @@
   function toggleSidebar() {
     document.getElementById("sidebar").classList.toggle("active");
   }
+  function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
 </script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  const firebaseConfig = {
+  const app = initializeApp({
     apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
     authDomain: "bsceee-webpage.firebaseapp.com",
     databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
     projectId: "bsceee-webpage",
     storageBucket: "bsceee-webpage.appspot.com",
     messagingSenderId: "281106710079",
-    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-    measurementId: "G-B1M7SSEZYP"
-  };
-
-  const app = initializeApp(firebaseConfig);
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
+  });
   const db = getDatabase(app);
 
-  const form = document.getElementById("complaint-form");
-
-  form.addEventListener("submit", async (e) => {
+  // 2nd year complaint logic with duplicate prevention
+  const form2 = document.getElementById("form-year2");
+  form2.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const regNo = form.RegNo.value.trim().toUpperCase();
-    const unit = form.Unit.value;
+    const regNo = form2.RegNo.value.trim().toUpperCase();
+    const unit = form2.Unit.value;
 
-    if (!regNo || !unit) {
-      alert("Please fill in all fields.");
-      return;
+    const regRef = ref(db, 'registrations/' + regNo);
+    const regSnap = await get(regRef);
+    if (!regSnap.exists()) return alert("This Reg Number is not registered.");
+
+    const complaintsRef = ref(db, 'complaints/' + regNo);
+    const complaintsSnap = await get(complaintsRef);
+    if (complaintsSnap.exists()) {
+      for (const entry of Object.values(complaintsSnap.val())) {
+        if (entry.unit === unit) return alert("Complaint already exists for this unit.");
+      }
     }
+    const timestamp = Date.now();
+    await set(ref(db, `complaints/${regNo}/${timestamp}`), {
+      regNo,
+      unit,
+      type: "Missing Marks",
+      submittedAt: new Date().toISOString()
+    });
+    alert("Complaint submitted!");
+    form2.reset();
+  });
 
-    try {
-      const regRef = ref(db, 'registrations/' + regNo);
-      const regSnap = await get(regRef);
-      if (!regSnap.exists()) {
-        alert("This Reg Number is not registered.");
-        return;
-      }
-
-      const complaintsRef = ref(db, 'complaints/' + regNo);
-      const complaintsSnap = await get(complaintsRef);
-
-      if (complaintsSnap.exists()) {
-        const complaints = complaintsSnap.val();
-        for (const timestamp in complaints) {
-          if (complaints[timestamp].unit === unit) {
-            alert("You’ve already submitted a complaint for this unit.");
-            return;
-          }
-        }
-      }
-
+  // Other years (open input, unique paths)
+  ["form-year1", "form-year3", "form-year4", "form-year5"].forEach(id => {
+    const form = document.getElementById(id);
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = form.Name.value.trim();
+      const regNo = form.RegNo.value.trim().toUpperCase();
+      const unit = form.Unit.value.trim();
+      const lecturer = form.Lecturer.value.trim();
+      if (!name || !regNo || !unit || !lecturer) return alert("Fill in all fields.");
       const timestamp = Date.now();
-      const newComplaintRef = ref(db, `complaints/${regNo}/${timestamp}`);
-      await set(newComplaintRef, {
+      const yearKey = id.split("-")[1];
+      await set(ref(db, `complaints_${yearKey}/${regNo}/${timestamp}`), {
+        name,
         regNo,
         unit,
+        lecturer,
         type: "Missing Marks",
         submittedAt: new Date().toISOString()
       });
-
-      alert("Complaint submitted successfully!");
+      alert("Complaint submitted!");
       form.reset();
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Try again.");
-    }
+    });
   });
 </script>
-
 </body>
 </html>
