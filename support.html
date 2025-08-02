@@ -108,8 +108,8 @@
   <section class="yearsel">
      <h3>Choose your current year of study</h3>
     <div class="tab-buttons">
-    <button onclick="showTab('year1')">1st Year</button>
-    <button onclick="showTab('year2')" class="active">2nd Year</button>
+    <button onclick="showTab('year2')" class="active">1st Year</button>
+    <button onclick="showTab('year1')">2nd Year</button>
     <button onclick="showTab('year3')">3rd Year</button>
     <button onclick="showTab('year4')">4th Year</button>
     <button onclick="showTab('year5')">5th Year</button>
@@ -124,7 +124,91 @@
       <input name="Name" placeholder="Your Name" required>
       <input name="RegNo" placeholder="Your Registration Number" required>
       <input name="Lecturer" placeholder="Lecturer's Name" required>
-      <input name="Unit" placeholder="Unit Code & Title" required>
+      <select name="Unit" required>
+        <option value="">-- Select Unit --</option>
+<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+        <option value="COMS 101">COMS 101 - Communication Skills</option>
+        <option value="COSC 121">COSC 121 - Intro to Computers</option>
+        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+        <option value="MATH 121">MATH 121 - Calculus I</option>
+        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+        <option value="PHYS 112">PHYS 112 - Physics I</option>
+        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+        <option value="PHYS 113">PHYS 113 - Physics II</option>
+        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+        <option value="EENG 215">EENG 215 - Workshop Practice III</option>
+<option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
+<option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
+<option value="EENG 271">EENG 271 - Transducers and Sensors</option>
+<option value="EENG 291">EENG 291 - Physical Electronics I</option>
+<option value="MATH 221">MATH 221 - Calculus II</option>
+<option value="MATH 241">MATH 241 - Probability and Statistics</option>
+<option value="EENG 221">EENG 221 - Industrial Attachment</option>
+<option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
+<option value="EENG 241">EENG 241 - Electrical Machines I</option>
+<option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
+<option value="EENG 272">EENG 272 - Control Systems I</option>
+<option value="EENG 292">EENG 292 - Physical Electronics II</option>
+<option value="MATH 203">MATH 203 - Introduction to Analysis</option>
+<option value="MATH 222">MATH 222 - Vector Analysis</option>
+<option value="EENG 342">EENG 342 - Electrical Machines II</option>
+<option value="EENG 343">EENG 343 - Electrical Motors I</option>
+<option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
+<option value="EENG 361">EENG 361 - Power Systems I</option>
+<option value="EENG 373">EENG 373 - Control Systems II</option>
+<option value="EENG 393">EENG 393 - Analogue Electronics I</option>
+<option value="MATH 322">MATH 322 - Ordinary differential equation</option>
+<option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
+<option value="EENG 323">EENG 323 - Industrial Attachment</option>
+<option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
+<option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
+<option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
+<option value="EENG 363">EENG 363 - Power Electronics I</option>
+<option value="EENG 394">EENG 394 - Digital Electronics</option>
+<option value="EENG 395">EENG 395 - Analogue Electronics II</option>
+<option value="MATH 323">MATH 323 - Numerical Analysis I</option>
+<option value="EENG 425">EENG 425 - Engineering Project I</option>
+<option value="EENG 426">EENG 426 - Industrial Attachment</option>
+<option value="EENG 446">EENG 446 - Electrical Machine Design</option>
+<option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
+<option value="EENG 465">EENG 465 - Power Systems II</option>
+<option value="EENG 474">EENG 474 - Microprocessors I</option>
+<option value="EENG 475">EENG 475 - Control Engineering I</option>
+<option value="EENG 476">EENG 476 - Microprocessor II</option>
+<option value="EENG 482">EENG 482 - Signals and Systems</option>
+<option value="EENG 483">EENG 483 - Communication Systems</option>
+<option value="EENG 561">EENG 561 - Power Electronics II</option>
+<option value="EENG 562">EENG 562 - Power System Protection</option>
+<option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
+<option value="EENG 564">EENG 564 - Power System Analysis</option>
+<option value="EENG 565">EENG 565 - High Voltage Engineering</option>
+<option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
+<option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
+<option value="EENG 573">EENG 573 - Control Engineering II</option>
+<option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
+<option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
+<option value="EENG 576">EENG 576 - FPGA-based System Design</option>
+<option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
+<option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
+<option value="EENG 583">EENG 583 - Transmission and Switching</option>
+<option value="EENG 584">EENG 584 - Digital Signal Processing</option>
+<option value="EENG 585">EENG 585 - Optical Communication</option>
+<option value="EENG 591">EENG 591 - Option-Electronics</option>
+<option value="EENG 592">EENG 592 - Digital System Design</option>
+<option value="EENG 593">EENG 593 - Integrated Electronics</option>
+
+
+        <!-- Add other 2nd-year units -->
+      </select>
       <button type="submit">Submit Complaint</button>
     </form>
   </section>
@@ -529,4 +613,5 @@
 </script>
 </body>
 </html>
+
 
