@@ -1,155 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Semester Registration - BSCEEE Y2S1</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .registration-form {
-      max-width: 600px;
-      margin: 60px auto;
-      padding: 30px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    .registration-form h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #004080;
-    }
-    .registration-form input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .registration-form button {
-      margin-top: 25px;
-      width: 100%;
-      padding: 12px;
-      font-size: 18px;
-      background-color: #004080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .registration-form button:hover {
-      background-color: #003366;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semester Registration - BSCEEE Y2S1</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .registration-form {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .registration-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #004080;
+        }
+
+        .registration-form input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .registration-form button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .registration-form button:hover {
+            background-color: #003366;
+        }
+
+
+
+
+
+        .groupRegistration {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .groupRegistration input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .groupRegistration button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .groupRegistration button:hover {
+            background-color: #003366;
+        }
+
+        .noGroup {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .regInput {
+            margin: 4px 0;
+            width: 100%;
+        }
+
+        .membersInputs {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .noGroup input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .noGroup button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .noGroup button:hover {
+            background-color: #003366;
+        }
+    </style>
+
+    </style>
 </head>
+
 <body>
 
-  <!-- Top Nav -->
-  <header>
-    <nav>
-      <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-      <div class="title">
-        <h1>Semester Registration</h1>
-      </div>
-      <div class="logo">
-        <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
-      </div>
-    </nav>
-  </header>
+    <!-- Top Nav -->
+    <header>
+        <nav>
+            <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+            <div class="title">
+                <h1>Semester Registration</h1>
+            </div>
+            <div class="logo">
+                <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+            </div>
+        </nav>
+    </header>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <a href="index.html">HOME</a>
-    <a href="timetable.html">TIMETABLE</a>
-    <a href="assignments.html">ASSIGNMENT</a>
-    <a href="studydocs.html">STUDY DOCUMENTS</a>
-    <a href="announcement.html">ANNOUNCEMENT</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="sports.html">SPORTS</a>
-    <a href="personell.html">PERSONNEL</a>
-     <a href="registration.html">SEMESTER REGISTRATION</a>
-    <a href="support.html">ACADEMIC SUPPORT</a>
-  </div>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <a href="index.html">HOME</a>
+        <a href="timetable.html">TIMETABLE</a>
+        <a href="assignments.html">ASSIGNMENT</a>
+        <a href="studydocs.html">STUDY DOCUMENTS</a>
+        <a href="announcement.html">ANNOUNCEMENT</a>
+        <a href="gallery.html">GALLERY</a>
+        <a href="sports.html">SPORTS</a>
+        <a href="personell.html">PERSONNEL</a>
+        <a href="registration.html">SEMESTER REGISTRATION</a>
+        <a href="support.html">ACADEMIC SUPPORT</a>
+    </div>
 
-  <!-- Registration Form -->
-  <main class="content">
-    <section class="registration-form">
-      <h2>Semester Registration</h2>
-      <form name="registration-form">
-        <input type="text" name="Name" placeholder="Full Name" required>
-        <input type="text" name="RegNo" placeholder="Registration Number" required>
-        <input type="tel" name="Phone" placeholder="Phone Number" required>
-        <button type="submit">Submit</button>
-      </form>
-    </section>
-  </main>
+    <!-- Registration Form -->
+    <main class="content">
+        <section class="registration-form">
+            <h2>Semester Registration</h2>
+            <form name="registration-form">
+                <input type="text" name="Name" placeholder="Full Name" required>
+                <input type="text" name="RegNo" placeholder="Registration Number" required>
+                <input type="tel" name="Phone" placeholder="Phone Number" required>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <section class="groupRegistration">
+            <h2>Group Registration</h2>
+            <form name="groupForm">
+                <label>Group Name:</label>
+                <input type="text" id="groupName" required>
 
-  <!-- Sidebar Script -->
-  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
-  </script>
+                <h3>Group Member Reg Numbers (6 Required)</h3>
+                <div class="memberInputs">
+                    <input type="text" class="regInput" placeholder="RegNo 1" required>
+                    <input type="text" class="regInput" placeholder="RegNo 2" required>
+                    <input type="text" class="regInput" placeholder="RegNo 3" required>
+                    <input type="text" class="regInput" placeholder="RegNo 4" required>
+                    <input type="text" class="regInput" placeholder="RegNo 5" required>
+                    <input type="text" class="regInput" placeholder="RegNo 6" required>
+                </div>
 
-  <!-- Firebase App and DB -->
-  <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+                <button type="submit">Register Group</button>
+            </form>
+        </section>
 
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-      authDomain: "bsceee-webpage.firebaseapp.com",
-      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-      projectId: "bsceee-webpage",
-      storageBucket: "bsceee-webpage.appspot.com",
-      messagingSenderId: "281106710079",
-      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-      measurementId: "G-B1M7SSEZYP"
-    };
+        <section class="noGroup">
+            <h2>No Group? Register Here</h2>
+            <form name="pendingForm">
+                <input type="text" id="pendingRegNo" placeholder="Your RegNo" required>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
 
-    // Init Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    </main>
 
-    // Handle form
-    const form = document.forms['registration-form'];
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const name = form.Name.value.trim();
-      const regNo = form.RegNo.value.trim().toUpperCase();
-      const phone = form.Phone.value.trim();
-
-      if (!name || !regNo || !phone) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      const regRef = ref(db, 'registrations/' + regNo);
-
-      try {
-        const snapshot = await get(regRef);
-        if (snapshot.exists()) {
-          alert("This Reg Number has already been used.");
-        } else {
-          await set(regRef, {
-            name,
-            regNo,
-            phone,
-            timestamp: new Date().toISOString()
-          });
-          alert("Registration successful!");
-          form.reset();
+    <!-- Sidebar Script -->
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
         }
-      } catch (err) {
-        console.error("Firebase error:", err);
-        alert("Something went wrong. Try again.");
-      }
-    });
-  </script>
+    </script>
+
+    <!-- Firebase App and DB -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+            authDomain: "bsceee-webpage.firebaseapp.com",
+            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+            projectId: "bsceee-webpage",
+            storageBucket: "bsceee-webpage.appspot.com",
+            messagingSenderId: "281106710079",
+            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+            measurementId: "G-B1M7SSEZYP"
+        };
+
+        // Init Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Handle form
+        const form = document.forms['registration-form'];
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = form.Name.value.trim();
+            const regNo = form.RegNo.value.trim().toUpperCase();
+            const phone = form.Phone.value.trim();
+
+            if (!name || !regNo || !phone) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const regRef = ref(db, 'registrations/' + regNo);
+
+            try {
+                const snapshot = await get(regRef);
+                if (snapshot.exists()) {
+                    alert("This Reg Number has already been used.");
+                } else {
+                    await set(regRef, {
+                        name,
+                        regNo,
+                        phone,
+                        timestamp: new Date().toISOString()
+                    });
+                    alert("Registration successful!");
+                    form.reset();
+                }
+            } catch (err) {
+                console.error("Firebase error:", err);
+                alert("Something went wrong. Try again.");
+            }
+        });
+
+
+
+
+        const db = firebase.database();
+
+        // Check if a RegNo already in a group ✅
+        async function isRegInGroup(regNo) {
+            const groupsSnapshot = await db.ref("groups").once("value");
+            let found = false;
+
+            groupsSnapshot.forEach(group => {
+                if (group.child("members").hasChild(regNo)) {
+                    found = true;
+                }
+            });
+
+            return found;
+        }
+
+        // ✅ Group registration submit handler
+        document.getElementById("groupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const groupName = document.getElementById("groupName").value.trim();
+            const regInputs = document.querySelectorAll(".regInput");
+            const regNos = [...regInputs].map(input => input.value.trim().toUpperCase());
+
+            if (regNos.length !== 6) {
+                alert("You must enter exactly 6 group members!");
+                return;
+            }
+
+            // Check duplicates within form
+            if (new Set(regNos).size !== regNos.length) {
+                alert("Duplicate RegNos in the same group!");
+                return;
+            }
+
+            const membersData = {};
+
+            for (let regNo of regNos) {
+                const regRef = db.ref(`registrations/${regNo}`);
+                const regSnap = await regRef.once("value");
+
+                if (!regSnap.exists()) {
+                    alert(`RegNo ${regNo} is not registered for the semester!`);
+                    return;
+                }
+
+                if (await isRegInGroup(regNo)) {
+                    alert(`RegNo ${regNo} already belongs to another group!`);
+                    return;
+                }
+
+                membersData[regNo] = regSnap.val().name;
+            }
+
+            // Save to Firebase ✅
+            await db.ref(`groups/${groupName}`).set({
+                members: membersData,
+                leader: regNos[0]
+            });
+
+            alert("Group Registered Successfully!");
+            document.getElementById("groupForm").reset();
+        });
+
+        // ✅ Pending group submit
+        document.getElementById("pendingForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const regNo = document.getElementById("pendingRegNo").value.trim().toUpperCase();
+            const regSnap = await db.ref(`registrations/${regNo}`).once("value");
+
+            if (!regSnap.exists()) {
+                alert("You must be registered first!");
+                return;
+            }
+
+            if (await isRegInGroup(regNo)) {
+                alert("You are already in a group!");
+                return;
+            }
+
+            await db.ref(`pendingGroups/${regNo}`).set({
+                name: regSnap.val().name,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            alert("Submitted! You will be assigned a group soon.");
+            document.getElementById("pendingForm").reset();
+        });
+
+    </script>
 
 </body>
+
 </html>
