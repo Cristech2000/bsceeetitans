@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>View Group Registrations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #004080;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        #downloadBtn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #downloadBtn:hover {
+            background-color: darkgreen;
+        }
+
+        #adminPass {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+        }
+
+        #accessBtn {
+            padding: 10px 20px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        #accessBtn:hover {
+            background-color: #002f5f;
+        }
+
+        .access-control {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .group-header {
+            background-color: #e8f4fd !important;
+            font-weight: bold;
+        }
+
+        .member-row {
+            background-color: #fafafa;
+        }
+
+        .stats {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            border-left: 4px solid green;
+        }
+
+        .group-count {
+            font-weight: bold;
+            color: #004080;
+        }
+
+        .member-count {
+            font-weight: bold;
+            color: green;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Group Registrations - BSCEEE Y2S1</h2>
+
+        <div class="access-control">
+            <input type="password" id="adminPass" placeholder="Enter admin password" />
+            <button id="accessBtn" onclick="checkAccess()">Access</button>
+        </div>
+
+        <div id="dataSection" style="display:none">
+            <div class="stats" id="statsSection">
+                <strong>Statistics:</strong>
+                <span class="group-count" id="groupCount">0 groups</span> |
+                <span class="member-count" id="memberCount">0 members</span>
+            </div>
+
+            <button id="downloadBtn">Download as Excel</button>
+            <p><small>Auto-refreshes every 1 minute</small></p>
+
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Group Name</th>
+                        <th>Leader</th>
+                        <th>Member Name</th>
+                        <th>Reg Number</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+            authDomain: "bsceee-webpage.firebaseapp.com",
+            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+            projectId: "bsceee-webpage",
+            storageBucket: "bsceee-webpage.appspot.com",
+            messagingSenderId: "281106710079",
+            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+            measurementId: "G-B1M7SSEZYP"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        let groupsData = [];
+        let refreshInterval;
+
+        function checkAccess() {
+            const pass = document.getElementById("adminPass").value;
+            // Change this password to your desired admin password
+            if (pass === "yourStrongPassword") {
+                document.getElementById("dataSection").style.display = "block";
+                loadGroups();
+
+                // Auto-refresh every 60 seconds (60000 ms)
+                refreshInterval = setInterval(loadGroups, 60000);
+            } else {
+                alert("Incorrect password");
+            }
+        }
+
+        function loadGroups() {
+            const tableBody = document.querySelector('#data-table tbody');
+            tableBody.innerHTML = "";
+            groupsData = [];
+
+            const refPath = db.ref("groups");
+
+            refPath.once("value")
+                .then(snapshot => {
+                    const data = snapshot.val();
+                    console.log("Raw Firebase data:", data); // Debug log
+
+                    if (!data) {
+                        tableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="empty-state">
+                No group registrations found in the database
+              </td>
+            </tr>
+          `;
+                        updateStats(0, 0);
+                        return;
+                    }
+
+                    const allGroups = [];
+                    let totalGroups = 0;
+                    let totalMembers = 0;
+
+                    // Process each group
+                    for (let groupName in data) {
+                        const groupData = data[groupName];
+                        console.log(`Processing group ${groupName}:`, groupData); // Debug log
+
+                        if (!groupData) continue;
+
+                        totalGroups++;
+
+                        // Get members - handle the nested structure
+                        let members = [];
+                        if (groupData.members) {
+                            // Process the nested member structure
+                            for (let memberKey in groupData.members) {
+                                const memberObj = groupData.members[memberKey];
+                                console.log(`Processing member ${memberKey}:`, memberObj); // Debug log
+
+                                if (memberObj && typeof memberObj === 'object') {
+                                    // Extract regNo and name from the nested numeric properties
+                                    let regNo = '';
+                                    let name = '';
+
+                                    // Look for regNo and name in the nested properties
+                                    for (let prop in memberObj) {
+                                        const value = memberObj[prop];
+                                        if (typeof value === 'object' && value !== null) {
+                                            // If there's another level of nesting
+                                            for (let subProp in value) {
+                                                if (subProp.toLowerCase().includes('reg') || subProp === 'regNo') {
+                                                    regNo = value[subProp];
+                                                } else if (subProp.toLowerCase().includes('name')) {
+                                                    name = value[subProp];
+                                                }
+                                            }
+                                        } else {
+                                            // Direct properties
+                                            if (prop.toLowerCase().includes('reg') || prop === 'regNo') {
+                                                regNo = value;
+                                            } else if (prop.toLowerCase().includes('name')) {
+                                                name = value;
+                                            }
+                                        }
+                                    }
+
+                                    if (regNo || name) {
+                                        members.push({
+                                            regNo: regNo || 'N/A',
+                                            name: name || 'N/A'
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
+                        console.log(`Extracted members for ${groupName}:`, members); // Debug log
+                        totalMembers += members.length;
+
+                        // Add group header row
+                        allGroups.push({
+                            type: 'header',
+                            groupName: groupName,
+                            leader: groupData.leader || 'N/A',
+                            timestamp: groupData.timestamp || 'N/A',
+                            memberCount: members.length
+                        });
+
+                        // Add member rows
+                        members.forEach((member, index) => {
+                            allGroups.push({
+                                type: 'member',
+                                groupName: groupName,
+                                leader: groupData.leader || 'N/A',
+                                memberName: member.name || 'N/A',
+                                regNo: member.regNo || 'N/A',
+                                timestamp: groupData.timestamp || 'N/A',
+                                isLeader: member.regNo === groupData.leader
+                            });
+                        });
+                    }
+
+                    console.log("Processed groups:", allGroups); // Debug log
+
+                    // Display in table
+                    if (allGroups.length === 0) {
+                        tableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="empty-state">
+                No valid group data found
+              </td>
+            </tr>
+          `;
+                    } else {
+                        let rowCount = 0;
+                        allGroups.forEach((item) => {
+                            let row;
+
+                            if (item.type === 'header') {
+                                // Group header row
+                                row = `
+                <tr class="group-header">
+                  <td>${++rowCount}</td>
+                  <td><strong>${item.groupName}</strong></td>
+                  <td>${item.leader}</td>
+                  <td colspan="2"><strong>Members (${item.memberCount} total)</strong></td>
+                  <td>${formatDate(item.timestamp)}</td>
+                </tr>
+              `;
+                            } else {
+                                // Member row
+                                const leaderBadge = item.isLeader ? ' 👑' : '';
+                                row = `
+                <tr class="member-row">
+                  <td></td>
+                  <td>${item.groupName}</td>
+                  <td>${item.leader}</td>
+                  <td>${item.memberName}${leaderBadge}</td>
+                  <td>${item.regNo}</td>
+                  <td>${formatDate(item.timestamp)}</td>
+                </tr>
+              `;
+                            }
+
+                            tableBody.insertAdjacentHTML("beforeend", row);
+                        });
+                    }
+
+                    // Update statistics
+                    updateStats(totalGroups, totalMembers);
+
+                    // Store data for Excel export
+                    groupsData = allGroups.filter(item => item.type === 'member').map(member => ({
+                        'Group Name': member.groupName,
+                        'Leader': member.leader,
+                        'Member Name': member.memberName,
+                        'Reg Number': member.regNo,
+                        'Is Leader': member.isLeader ? 'Yes' : 'No',
+                        'Timestamp': member.timestamp
+                    }));
+
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" style="color: red; text-align: center;">
+              Error loading data: ${error.message}
+            </td>
+          </tr>
+        `;
+                    updateStats(0, 0);
+                });
+        }
+
+        function updateStats(groupCount, memberCount) {
+            document.getElementById('groupCount').textContent = `${groupCount} groups`;
+            document.getElementById('memberCount').textContent = `${memberCount} members`;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp || timestamp === 'N/A') return 'N/A';
+            try {
+                const date = new Date(timestamp);
+                return date.toLocaleString();
+            } catch (e) {
+                return timestamp;
+            }
+        }
+
+        document.getElementById("downloadBtn").addEventListener("click", () => {
+            if (groupsData.length === 0) {
+                alert("No data to download");
+                return;
+            }
+
+            const worksheet = XLSX.utils.json_to_sheet(groupsData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Group Registrations");
+            XLSX.writeFile(workbook, "group_registrations.xlsx");
+        });
+
+        // Clean up interval when page is closed
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
