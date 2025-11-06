@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>View Group Registrations</title>
+    <title>View Group & Pending Registrations</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,7 +48,7 @@
             background-color: #f0f0f0;
         }
 
-        #downloadBtn {
+        .downloadBtn {
             margin-top: 20px;
             padding: 12px 24px;
             background-color: green;
@@ -57,9 +57,10 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            margin-right: 10px;
         }
 
-        #downloadBtn:hover {
+        .downloadBtn:hover {
             background-color: darkgreen;
         }
 
@@ -102,12 +103,29 @@
             background-color: #fafafa;
         }
 
+        .pending-header {
+            background-color: #fff3cd !important;
+            font-weight: bold;
+        }
+
+        .pending-row {
+            background-color: #fffdf6;
+        }
+
         .stats {
             margin: 15px 0;
             padding: 10px;
             background-color: #e8f5e8;
             border-radius: 5px;
             border-left: 4px solid green;
+        }
+
+        .pending-stats {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #fff3cd;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
         }
 
         .group-count {
@@ -120,10 +138,55 @@
             color: green;
         }
 
+        .pending-count {
+            font-weight: bold;
+            color: #856404;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #666;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            color: #004080;
+            border-bottom: 2px solid #004080;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab.active {
+            background-color: #004080;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
@@ -131,7 +194,7 @@
 <body>
 
     <div class="container">
-        <h2>Group Registrations - BSCEEE Y2S1</h2>
+        <h2>BSCEEE Y2S1 - Registration Management</h2>
 
         <div class="access-control">
             <input type="password" id="adminPass" placeholder="Enter admin password" />
@@ -139,28 +202,64 @@
         </div>
 
         <div id="dataSection" style="display:none">
-            <div class="stats" id="statsSection">
-                <strong>Statistics:</strong>
-                <span class="group-count" id="groupCount">0 groups</span> |
-                <span class="member-count" id="memberCount">0 members</span>
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('groups')">Group Registrations</div>
+                <div class="tab" onclick="showTab('pending')">Pending Students</div>
             </div>
 
-            <button id="downloadBtn">Download as Excel</button>
-            <p><small>Auto-refreshes every 1 minute</small></p>
+            <!-- Groups Tab -->
+            <div id="groups-tab" class="tab-content active">
+                <h3 class="section-title">Group Registrations</h3>
 
-            <table id="data-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Group Name</th>
-                        <th>Leader</th>
-                        <th>Member Name</th>
-                        <th>Reg Number</th>
-                        <th>Timestamp</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+                <div class="stats" id="statsSection">
+                    <strong>Statistics:</strong>
+                    <span class="group-count" id="groupCount">0 groups</span> |
+                    <span class="member-count" id="memberCount">0 members</span>
+                </div>
+
+                <button class="downloadBtn" onclick="downloadGroupsExcel()">Download Groups as Excel</button>
+                <p><small>Auto-refreshes every 1 minute</small></p>
+
+                <table id="groups-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Group Name</th>
+                            <th>Leader</th>
+                            <th>Member Name</th>
+                            <th>Reg Number</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Pending Tab -->
+            <div id="pending-tab" class="tab-content">
+                <h3 class="section-title">Pending Students (No Group Yet)</h3>
+
+                <div class="pending-stats" id="pendingStatsSection">
+                    <strong>Statistics:</strong>
+                    <span class="pending-count" id="pendingCount">0 students</span>
+                </div>
+
+                <button class="downloadBtn" onclick="downloadPendingExcel()">Download Pending as Excel</button>
+                <p><small>Auto-refreshes every 1 minute</small></p>
+
+                <table id="pending-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Reg Number</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -184,24 +283,44 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let groupsData = [];
+        let pendingData = [];
         let refreshInterval;
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
 
         function checkAccess() {
             const pass = document.getElementById("adminPass").value;
             // Change this password to your desired admin password
             if (pass === "yourStrongPassword") {
                 document.getElementById("dataSection").style.display = "block";
-                loadGroups();
+                loadAllData();
 
                 // Auto-refresh every 60 seconds (60000 ms)
-                refreshInterval = setInterval(loadGroups, 60000);
+                refreshInterval = setInterval(loadAllData, 60000);
             } else {
                 alert("Incorrect password");
             }
         }
 
+        function loadAllData() {
+            loadGroups();
+            loadPending();
+        }
+
         function loadGroups() {
-            const tableBody = document.querySelector('#data-table tbody');
+            const tableBody = document.querySelector('#groups-table tbody');
             tableBody.innerHTML = "";
             groupsData = [];
 
@@ -210,7 +329,7 @@
             refPath.once("value")
                 .then(snapshot => {
                     const data = snapshot.val();
-                    console.log("Raw Firebase data:", data); // Debug log
+                    console.log("Raw Groups data:", data);
 
                     if (!data) {
                         tableBody.innerHTML = `
@@ -231,7 +350,7 @@
                     // Process each group
                     for (let groupName in data) {
                         const groupData = data[groupName];
-                        console.log(`Processing group ${groupName}:`, groupData); // Debug log
+                        console.log(`Processing group ${groupName}:`, groupData);
 
                         if (!groupData) continue;
 
@@ -243,7 +362,7 @@
                             // Process the nested member structure
                             for (let memberKey in groupData.members) {
                                 const memberObj = groupData.members[memberKey];
-                                console.log(`Processing member ${memberKey}:`, memberObj); // Debug log
+                                console.log(`Processing member ${memberKey}:`, memberObj);
 
                                 if (memberObj && typeof memberObj === 'object') {
                                     // Extract regNo and name from the nested numeric properties
@@ -282,7 +401,7 @@
                             }
                         }
 
-                        console.log(`Extracted members for ${groupName}:`, members); // Debug log
+                        console.log(`Extracted members for ${groupName}:`, members);
                         totalMembers += members.length;
 
                         // Add group header row
@@ -308,7 +427,7 @@
                         });
                     }
 
-                    console.log("Processed groups:", allGroups); // Debug log
+                    console.log("Processed groups:", allGroups);
 
                     // Display in table
                     if (allGroups.length === 0) {
@@ -369,11 +488,11 @@
 
                 })
                 .catch(error => {
-                    console.error("Error fetching data:", error);
+                    console.error("Error fetching groups data:", error);
                     tableBody.innerHTML = `
           <tr>
             <td colspan="6" style="color: red; text-align: center;">
-              Error loading data: ${error.message}
+              Error loading groups data: ${error.message}
             </td>
           </tr>
         `;
@@ -381,9 +500,142 @@
                 });
         }
 
+        function loadPending() {
+            const tableBody = document.querySelector('#pending-table tbody');
+            tableBody.innerHTML = "";
+            pendingData = [];
+
+            const refPath = db.ref("pending");
+
+            refPath.once("value")
+                .then(snapshot => {
+                    const data = snapshot.val();
+                    console.log("Raw Pending data:", data);
+
+                    if (!data) {
+                        tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-state">
+                No pending students found in the database
+              </td>
+            </tr>
+          `;
+                        updatePendingStats(0);
+                        return;
+                    }
+
+                    const allPending = [];
+                    let totalPending = 0;
+
+                    // Process each pending student - handle the three-level nested structure
+                    for (let regNoPart1 in data) {
+                        const level1 = data[regNoPart1];
+                        if (level1 && typeof level1 === 'object') {
+                            for (let regNoPart2 in level1) {
+                                const level2 = level1[regNoPart2];
+                                if (level2 && typeof level2 === 'object') {
+                                    for (let regNoPart3 in level2) {
+                                        const studentData = level2[regNoPart3];
+                                        console.log(`Processing pending student ${regNoPart1}/${regNoPart2}/${regNoPart3}:`, studentData);
+
+                                        if (studentData && typeof studentData === 'object') {
+                                            totalPending++;
+
+                                            // Extract student information - look for the actual data fields
+                                            const studentInfo = {
+                                                regNo: studentData.regNo || `${regNoPart1}/${regNoPart2}/${regNoPart3}`,
+                                                name: getNestedValue(studentData, 'name') || 'N/A',
+                                                type: getNestedValue(studentData, 'type') || 'pending grouping',
+                                                submittedAt: getNestedValue(studentData, 'submittedAt') || getNestedValue(studentData, 'timestamp') || 'N/A'
+                                            };
+
+                                            allPending.push(studentInfo);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    console.log("Processed pending students:", allPending);
+
+                    // Sort by submission date (oldest first)
+                    allPending.sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt));
+
+                    // Display in table
+                    if (allPending.length === 0) {
+                        tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-state">
+                No pending students found
+              </td>
+            </tr>
+          `;
+                    } else {
+                        allPending.forEach((student, index) => {
+                            const row = `
+              <tr class="pending-row">
+                <td>${index + 1}</td>
+                <td><strong>${student.regNo.toUpperCase()}</strong></td>
+                <td>${student.name}</td>
+                <td>${student.type}</td>
+                <td>${formatDate(student.submittedAt)}</td>
+              </tr>
+            `;
+                            tableBody.insertAdjacentHTML("beforeend", row);
+                        });
+                    }
+
+                    // Update statistics
+                    updatePendingStats(totalPending);
+
+                    // Store data for Excel export
+                    pendingData = allPending.map(student => ({
+                        'Reg Number': student.regNo.toUpperCase(),
+                        'Name': student.name,
+                        'Type': student.type,
+                        'Submitted At': student.submittedAt
+                    }));
+
+                })
+                .catch(error => {
+                    console.error("Error fetching pending data:", error);
+                    tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="color: red; text-align: center;">
+              Error loading pending data: ${error.message}
+            </td>
+          </tr>
+        `;
+                    updatePendingStats(0);
+                });
+        }
+
+        // Helper function to get nested values from Firebase data
+        function getNestedValue(obj, key) {
+            if (!obj || typeof obj !== 'object') return null;
+
+            // First try direct access
+            if (obj[key] !== undefined) return obj[key];
+
+            // Then search through nested objects
+            for (let prop in obj) {
+                if (obj[prop] && typeof obj[prop] === 'object') {
+                    const value = getNestedValue(obj[prop], key);
+                    if (value !== null && value !== undefined) return value;
+                }
+            }
+
+            return null;
+        }
+
         function updateStats(groupCount, memberCount) {
             document.getElementById('groupCount').textContent = `${groupCount} groups`;
             document.getElementById('memberCount').textContent = `${memberCount} members`;
+        }
+
+        function updatePendingStats(pendingCount) {
+            document.getElementById('pendingCount').textContent = `${pendingCount} students`;
         }
 
         function formatDate(timestamp) {
@@ -396,9 +648,9 @@
             }
         }
 
-        document.getElementById("downloadBtn").addEventListener("click", () => {
+        function downloadGroupsExcel() {
             if (groupsData.length === 0) {
-                alert("No data to download");
+                alert("No group data to download");
                 return;
             }
 
@@ -406,7 +658,19 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Group Registrations");
             XLSX.writeFile(workbook, "group_registrations.xlsx");
-        });
+        }
+
+        function downloadPendingExcel() {
+            if (pendingData.length === 0) {
+                alert("No pending data to download");
+                return;
+            }
+
+            const worksheet = XLSX.utils.json_to_sheet(pendingData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Pending Students");
+            XLSX.writeFile(workbook, "pending_students.xlsx");
+        }
 
         // Clean up interval when page is closed
         window.addEventListener('beforeunload', () => {
