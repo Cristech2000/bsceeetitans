@@ -51,6 +51,13 @@
 
 
 
+
+
+
+
+
+
+
         .groupRegistration {
             max-width: 600px;
             margin: 60px auto;
@@ -133,8 +140,6 @@
             background-color: #003366;
         }
     </style>
-
-    </style>
 </head>
 
 <body>
@@ -177,30 +182,32 @@
                 <button type="submit">Submit</button>
             </form>
         </section>
-        <section class="groupRegistration">
+
+
+        <!-- Group Registration -->
+        <section class="registration-form">
             <h2>Group Registration</h2>
             <form name="groupForm">
-                <label>Group Name:</label>
-                <input type="text" id="groupName" required>
+                <input type="text" id="groupName" placeholder="Group Name" required>
 
-                <h3>Group Member Reg Numbers (6 Required)</h3>
-                <div class="memberInputs">
-                    <input type="text" class="regInput" placeholder="RegNo 1" required>
-                    <input type="text" class="regInput" placeholder="RegNo 2" required>
-                    <input type="text" class="regInput" placeholder="RegNo 3" required>
-                    <input type="text" class="regInput" placeholder="RegNo 4" required>
-                    <input type="text" class="regInput" placeholder="RegNo 5" required>
-                    <input type="text" class="regInput" placeholder="RegNo 6" required>
-                </div>
+                <h3>Enter 6 Members' Reg Numbers</h3>
+                <input class="regInput" placeholder="Reg No 1" required>
+                <input class="regInput" placeholder="Reg No 2" required>
+                <input class="regInput" placeholder="Reg No 3" required>
+                <input class="regInput" placeholder="Reg No 4" required>
+                <input class="regInput" placeholder="Reg No 5" required>
+                <input class="regInput" placeholder="Reg No 6" required>
 
                 <button type="submit">Register Group</button>
             </form>
         </section>
 
-        <section class="noGroup">
-            <h2>No Group? Register Here</h2>
-            <form name="pendingForm">
-                <input type="text" id="pendingRegNo" placeholder="Your RegNo" required>
+
+        <!-- Pending Students -->
+        <section class="registration-form">
+            <h2>No Group Yet?</h2>
+            <form class="support-form" id="form-year2">
+                <input type="text" name="RegNo" placeholder="Your Reg Number" required>
                 <button type="submit">Submit</button>
             </form>
         </section>
@@ -213,7 +220,6 @@
             document.getElementById("sidebar").classList.toggle("active");
         }
     </script>
-
     <!-- Firebase App and DB -->
     <script type="module">
         // Import Firebase modules
@@ -236,14 +242,37 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Handle form
-        const form = document.forms['registration-form'];
-        form.addEventListener('submit', async (e) => {
+        // Helper function to check if a registration number is already in any group
+        async function isRegInGroup(regNo) {
+            try {
+                const groupsRef = ref(db, 'groups');
+                const snapshot = await get(groupsRef);
+
+                if (!snapshot.exists()) return false;
+
+                const groups = snapshot.val();
+                for (let groupName in groups) {
+                    const group = groups[groupName];
+                    if (group.members && Array.isArray(group.members)) {
+                        const isInGroup = group.members.some(member => member.regNo === regNo);
+                        if (isInGroup) return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error("Error checking groups:", error);
+                return false;
+            }
+        }
+
+        // 1. Individual Registration Form
+        const individualForm = document.forms['registration-form'];
+        individualForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const name = form.Name.value.trim();
-            const regNo = form.RegNo.value.trim().toUpperCase();
-            const phone = form.Phone.value.trim();
+            const name = individualForm.Name.value.trim();
+            const regNo = individualForm.RegNo.value.trim().toUpperCase();
+            const phone = individualForm.Phone.value.trim();
 
             if (!name || !regNo || !phone) {
                 alert("Please fill in all fields.");
@@ -264,7 +293,7 @@
                         timestamp: new Date().toISOString()
                     });
                     alert("Registration successful!");
-                    form.reset();
+                    individualForm.reset();
                 }
             } catch (err) {
                 console.error("Firebase error:", err);
@@ -272,101 +301,141 @@
             }
         });
 
-
-
-
-        const db = firebase.database();
-
-        // Check if a RegNo already in a group ✅
-        async function isRegInGroup(regNo) {
-            const groupsSnapshot = await db.ref("groups").once("value");
-            let found = false;
-
-            groupsSnapshot.forEach(group => {
-                if (group.child("members").hasChild(regNo)) {
-                    found = true;
-                }
-            });
-
-            return found;
-        }
-
-        // ✅ Group registration submit handler
-        document.getElementById("groupForm").addEventListener("submit", async (e) => {
+        // 2. Group Registration Form
+        const groupForm = document.forms['groupForm'];
+        groupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const groupName = document.getElementById("groupName").value.trim();
             const regInputs = document.querySelectorAll(".regInput");
             const regNos = [...regInputs].map(input => input.value.trim().toUpperCase());
 
+            // Validation
+            if (!groupName) {
+                alert("Please enter a group name!");
+                return;
+            }
+
             if (regNos.length !== 6) {
                 alert("You must enter exactly 6 group members!");
                 return;
             }
 
+            // Check for empty registration numbers
+            if (regNos.some(regNo => !regNo)) {
+                alert("Please fill in all registration numbers!");
+                return;
+            }
+
             // Check duplicates within form
             if (new Set(regNos).size !== regNos.length) {
-                alert("Duplicate RegNos in the same group!");
+                alert("Duplicate Reg Numbers in the same group!");
                 return;
             }
 
-            const membersData = {};
+            try {
+                const membersArray = [];
 
-            for (let regNo of regNos) {
-                const regRef = db.ref(`registrations/${regNo}`);
-                const regSnap = await regRef.once("value");
+                // Check if group name already exists
+                const groupRef = ref(db, 'groups/' + groupName);
+                const groupSnap = await get(groupRef);
+                if (groupSnap.exists()) {
+                    alert("Group name already exists! Please choose a different name.");
+                    return;
+                }
+
+                // Check each registration number and build members array
+                for (let regNo of regNos) {
+                    const regRef = ref(db, 'registrations/' + regNo);
+                    const regSnap = await get(regRef);
+
+                    if (!regSnap.exists()) {
+                        alert(`RegNo ${regNo} is not registered for the semester!`);
+                        return;
+                    }
+
+                    if (await isRegInGroup(regNo)) {
+                        alert(`RegNo ${regNo} already belongs to another group!`);
+                        return;
+                    }
+
+                    // Add to members array
+                    membersArray.push({
+                        regNo: regNo,
+                        name: regSnap.val().name
+                    });
+                }
+
+                // Save group to Firebase with array structure
+                await set(groupRef, {
+                    groupName: groupName,
+                    members: membersArray,
+                    leader: regNos[0],
+                    timestamp: new Date().toISOString()
+                });
+
+                alert("Group Registered Successfully!");
+                groupForm.reset();
+
+            } catch (error) {
+                console.error("Error registering group:", error);
+                alert("Something went wrong. Please try again.");
+            }
+        });
+
+        // 3. Pending Students Form
+        const pendingForm = document.getElementById("form-year2");
+        pendingForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const regNo = pendingForm.RegNo.value.trim().toUpperCase();
+
+            if (!regNo) {
+                alert("Please enter your registration number!");
+                return;
+            }
+
+            try {
+                // Check if student is registered
+                const regRef = ref(db, 'registrations/' + regNo);
+                const regSnap = await get(regRef);
 
                 if (!regSnap.exists()) {
-                    alert(`RegNo ${regNo} is not registered for the semester!`);
+                    alert("This Reg Number is not registered for the semester.");
                     return;
                 }
 
+                // Check if student is already in a group
                 if (await isRegInGroup(regNo)) {
-                    alert(`RegNo ${regNo} already belongs to another group!`);
+                    alert("You are already in a group!");
                     return;
                 }
 
-                membersData[regNo] = regSnap.val().name;
+                // Check if already in pending list
+                const pendingRef = ref(db, 'pending/' + regNo);
+                const pendingSnap = await get(pendingRef);
+
+                if (pendingSnap.exists()) {
+                    alert("You are already in the pending list!");
+                    return;
+                }
+
+                // Add to pending list
+                await set(pendingRef, {
+                    regNo: regNo,
+                    name: regSnap.val().name,
+                    type: "pending grouping",
+                    submittedAt: new Date().toISOString()
+                });
+
+                alert("Request submitted! You have been added to the pending list.");
+                pendingForm.reset();
+
+            } catch (error) {
+                console.error("Error submitting pending request:", error);
+                alert("Something went wrong. Please try again.");
             }
-
-            // Save to Firebase ✅
-            await db.ref(`groups/${groupName}`).set({
-                members: membersData,
-                leader: regNos[0]
-            });
-
-            alert("Group Registered Successfully!");
-            document.getElementById("groupForm").reset();
         });
-
-        // ✅ Pending group submit
-        document.getElementById("pendingForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const regNo = document.getElementById("pendingRegNo").value.trim().toUpperCase();
-            const regSnap = await db.ref(`registrations/${regNo}`).once("value");
-
-            if (!regSnap.exists()) {
-                alert("You must be registered first!");
-                return;
-            }
-
-            if (await isRegInGroup(regNo)) {
-                alert("You are already in a group!");
-                return;
-            }
-
-            await db.ref(`pendingGroups/${regNo}`).set({
-                name: regSnap.val().name,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            alert("Submitted! You will be assigned a group soon.");
-            document.getElementById("pendingForm").reset();
-        });
-
     </script>
-
 </body>
 
 </html>
