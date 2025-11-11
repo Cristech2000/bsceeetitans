@@ -99,7 +99,6 @@
       display: flex;
       margin-bottom: 20px;
       border-bottom: 2px solid #004080;
-      flex-wrap: wrap;
     }
 
     .timetable-tab {
@@ -111,11 +110,7 @@
       color: #666;
       border-radius: 8px 8px 0 0;
       margin-right: 5px;
-      margin-bottom: 5px;
       transition: all 0.3s ease;
-      flex: 1;
-      min-width: 140px;
-      text-align: center;
     }
 
     .timetable-tab.active {
@@ -124,160 +119,84 @@
       font-weight: 600;
     }
 
-    /* Mobile Responsive Styles */
+    /* SIMPLE MOBILE FIX - Horizontal scroll only */
     @media (max-width: 768px) {
       .timetable-container {
-        margin: 70px auto 10px;
-        padding: 10px;
+        margin: 70px auto 20px;
+        padding: 15px;
       }
 
       .timetable-section {
-        padding: 15px;
+        padding: 20px 15px;
         margin-bottom: 20px;
-        border-radius: 8px;
       }
 
       .timetable-section h2 {
         font-size: 1.4em;
-        margin-bottom: 8px;
       }
 
       .academic-period {
-        font-size: 0.9em;
-        margin-bottom: 15px;
+        font-size: 1em;
+      }
+
+      /* This is the key fix - horizontal scroll container */
+      .timetable-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #ddd;
+        border-radius: 8px;
       }
 
       .timetable-table {
-        font-size: 0.75em;
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
+        min-width: 800px;
+        /* Force horizontal scroll on mobile */
+        font-size: 0.85em;
+        margin: 0;
+      }
+
+      .timetable-table th,
+      .timetable-table td {
+        padding: 10px 8px;
+      }
+
+      .timetable-tabs {
+        flex-wrap: wrap;
+      }
+
+      .timetable-tab {
+        padding: 10px 20px;
+        margin-bottom: 5px;
+      }
+    }
+
+    /* Very small phones */
+    @media (max-width: 480px) {
+      .timetable-container {
+        padding: 10px;
+        margin: 60px auto 15px;
+      }
+
+      .timetable-section {
+        padding: 15px 10px;
+      }
+
+      .timetable-section h2 {
+        font-size: 1.3em;
+      }
+
+      .timetable-table {
+        min-width: 700px;
+        font-size: 0.8em;
       }
 
       .timetable-table th,
       .timetable-table td {
         padding: 8px 6px;
-        min-width: 100px;
-      }
-
-      .timetable-table .time-slot {
-        min-width: 120px;
-        font-size: 0.8em;
-      }
-
-      .timetable-table .class-info {
-        font-size: 0.8em;
-        line-height: 1.3;
-      }
-
-      .timetable-table .unit-code {
-        font-size: 0.85em;
-      }
-
-      .timetable-table .venue {
-        font-size: 0.75em;
-      }
-
-      .timetable-tabs {
-        flex-direction: column;
-        border-bottom: none;
       }
 
       .timetable-tab {
-        margin-right: 0;
-        margin-bottom: 5px;
-        border-radius: 8px;
-        padding: 10px 15px;
-        min-width: auto;
-      }
-
-      .no-timetable,
-      .loading {
-        padding: 20px;
+        padding: 8px 15px;
         font-size: 0.9em;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .timetable-container {
-        margin: 60px auto 5px;
-        padding: 5px;
-      }
-
-      .timetable-section {
-        padding: 10px;
-        border-radius: 6px;
-      }
-
-      .timetable-section h2 {
-        font-size: 1.2em;
-      }
-
-      .timetable-table {
-        font-size: 0.7em;
-      }
-
-      .timetable-table th,
-      .timetable-table td {
-        padding: 6px 4px;
-        min-width: 90px;
-      }
-
-      .timetable-table .time-slot {
-        min-width: 100px;
-        font-size: 0.75em;
-      }
-
-      .timetable-tab {
-        padding: 8px 12px;
-        font-size: 0.9em;
-      }
-
-      /* Horizontal scroll indicator for mobile */
-      .table-container {
-        position: relative;
-      }
-
-      .table-container::after {
-        content: '← Scroll →';
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        background: rgba(0, 64, 128, 0.8);
-        color: white;
-        padding: 5px 8px;
-        border-radius: 12px;
-        font-size: 0.7em;
-        opacity: 0.7;
-        pointer-events: none;
-      }
-    }
-
-    /* Extra small devices */
-    @media (max-width: 360px) {
-      .timetable-table {
-        font-size: 0.65em;
-      }
-
-      .timetable-table th,
-      .timetable-table td {
-        padding: 4px 3px;
-        min-width: 80px;
-      }
-
-      .timetable-table .time-slot {
-        min-width: 90px;
-        font-size: 0.7em;
-      }
-    }
-
-    /* Fix for very tall tables on mobile */
-    @media (max-height: 600px) and (max-width: 768px) {
-      .timetable-section {
-        max-height: 80vh;
-        overflow-y: auto;
       }
     }
   </style>
@@ -315,11 +234,10 @@
     </div>
 
     <!-- Regular Timetable -->
-    <!-- Regular Timetable -->
     <div id="regularTimetable" class="timetable-section">
       <h2>CLASS TIMETABLE</h2>
       <div id="regularPeriod" class="academic-period">Loading...</div>
-      <div class="table-container">
+      <div class="timetable-table-container">
         <div id="regularTimetableContent" class="loading">
           <i class="fas fa-spinner fa-spin"></i> Loading timetable...
         </div>
@@ -330,7 +248,7 @@
     <div id="examTimetable" class="timetable-section" style="display: none;">
       <h2>EXAMINATION TIMETABLE</h2>
       <div id="examPeriod" class="academic-period">Loading...</div>
-      <div class="table-container">
+      <div class="timetable-table-container">
         <div id="examTimetableContent" class="loading">
           <i class="fas fa-spinner fa-spin"></i> Loading exam schedule...
         </div>
@@ -459,31 +377,31 @@
         }
 
         let html = `
-                <table class="timetable-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Unit Code</th>
-                            <th>Unit Name</th>
-                            <th>Venue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+        <table class="timetable-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Unit Code</th>
+                    <th>Unit Name</th>
+                    <th>Venue</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
 
         Object.keys(schedule).forEach(examId => {
           const exam = schedule[examId];
           if (exam.date && exam.unitCode) {
             html += `
-                        <tr>
-                            <td>${formatDate(exam.date)}</td>
-                            <td>${exam.time || 'TBA'}</td>
-                            <td class="unit-code">${exam.unitCode}</td>
-                            <td>${exam.unitName || ''}</td>
-                            <td class="venue">${exam.venue || 'TBA'}</td>
-                        </tr>
-                    `;
+                <tr>
+                    <td>${formatDate(exam.date)}</td>
+                    <td>${exam.time || 'TBA'}</td>
+                    <td class="unit-code">${exam.unitCode}</td>
+                    <td>${exam.unitName || ''}</td>
+                    <td class="venue">${exam.venue || 'TBA'}</td>
+                </tr>
+            `;
           }
         });
 
