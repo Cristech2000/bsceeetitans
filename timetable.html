@@ -4,22 +4,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BSCEEEY2S1</title>
+  <title>BSCEEEY2S1 - Timetable</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .coming-soon figure img {
-      width: 80%;
-      height: auto;
-      position: center;
+    .timetable-container {
+      max-width: 1200px;
+      margin: 80px auto 20px;
+      padding: 20px;
+    }
 
+    .timetable-section {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
+    .timetable-section h2 {
+      color: #004080;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.8em;
+    }
 
+    .academic-period {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+    }
+
+    .timetable-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .timetable-table th {
+      background: #004080;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid #003366;
+    }
+
+    .timetable-table td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+      vertical-align: top;
+    }
+
+    .timetable-table .time-slot {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #004080;
+    }
+
+    .timetable-table .class-info {
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+
+    .timetable-table .unit-code {
+      font-weight: 600;
+      color: #004080;
+    }
+
+    .timetable-table .venue {
+      color: #666;
+      font-size: 0.85em;
+      margin-top: 5px;
+    }
+
+    .no-timetable {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #004080;
+    }
+
+    .timetable-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #004080;
+    }
+
+    .timetable-tab {
+      padding: 12px 30px;
+      background: #f8f9fa;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+      color: #666;
+      border-radius: 8px 8px 0 0;
+      margin-right: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .timetable-tab.active {
+      background: #004080;
+      color: white;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .timetable-container {
+        margin: 70px auto 20px;
+        padding: 10px;
+      }
+
+      .timetable-table {
+        font-size: 0.8em;
+      }
+
+      .timetable-table th,
+      .timetable-table td {
+        padding: 8px 4px;
+      }
+
+      .timetable-tab {
+        padding: 8px 15px;
+        font-size: 0.9em;
+      }
     }
   </style>
 </head>
 
 <body>
-
   <!-- Top Nav -->
   <header>
     <nav>
@@ -44,18 +167,222 @@
     <a href="personell.html">PERSONNEL</a>
   </div>
 
-  <section class="coming-soon" style="margin-top: 70px;">
-    <figure><img style="width: 70%;" src="GALLERY/image.png" alt=""></figure>
-    <figure><img style="width: 70%;" src="GALLERY/TIMETABLE.jpg" alt=""></figure>
-  </section>
+  <div class="timetable-container">
+    <div class="timetable-tabs">
+      <button class="timetable-tab active" onclick="showTimetableType('regular')">Class Timetable</button>
+      <button class="timetable-tab" onclick="showTimetableType('exam')">Exam Timetable</button>
+    </div>
 
+    <!-- Regular Timetable -->
+    <div id="regularTimetable" class="timetable-section">
+      <h2>CLASS TIMETABLE</h2>
+      <div id="regularPeriod" class="academic-period">Loading...</div>
+      <div id="regularTimetableContent" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading timetable...
+      </div>
+    </div>
 
-  <!-- Sidebar Script -->
+    <!-- Exam Timetable -->
+    <div id="examTimetable" class="timetable-section" style="display: none;">
+      <h2>EXAMINATION TIMETABLE</h2>
+      <div id="examPeriod" class="academic-period">Loading...</div>
+      <div id="examTimetableContent" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading exam schedule...
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+      authDomain: "bsceee-webpage.firebaseapp.com",
+      databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+      projectId: "bsceee-webpage",
+      storageBucket: "bsceee-webpage.appspot.com",
+      messagingSenderId: "281106710079",
+      appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+      measurementId: "G-B1M7SSEZYP"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let currentTimetableType = 'regular';
+
+    function showTimetableType(type) {
+      currentTimetableType = type;
+
+      // Update tabs
+      document.querySelectorAll('.timetable-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Show/hide timetables
+      document.getElementById('regularTimetable').style.display = type === 'regular' ? 'block' : 'none';
+      document.getElementById('examTimetable').style.display = type === 'exam' ? 'block' : 'none';
+    }
+
+    function loadTimetable() {
+      // Load regular timetable
+      db.ref('timetable/regular').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('regularPeriod').textContent = data.period || 'Current Academic Period';
+          displayRegularTimetable(data.schedule);
+        } else {
+          document.getElementById('regularTimetableContent').innerHTML =
+            '<div class="no-timetable">No timetable data available. Please check back later.</div>';
+        }
+      });
+
+      // Load exam timetable
+      db.ref('timetable/exam').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('examPeriod').textContent = data.period || 'Current Examination Period';
+          displayExamTimetable(data.schedule);
+        } else {
+          document.getElementById('examTimetableContent').innerHTML =
+            '<div class="no-timetable">No exam schedule available. Please check back later.</div>';
+        }
+      });
+    }
+
+    function displayRegularTimetable(schedule) {
+      if (!schedule || !Array.isArray(schedule)) {
+        document.getElementById('regularTimetableContent').innerHTML =
+          '<div class="no-timetable">No timetable data available.</div>';
+        return;
+      }
+
+      // Sort the schedule to ensure correct order
+      const sortedSchedule = [...schedule].sort((a, b) => {
+        const timeOrder = {
+          '7:00 AM - 10:00 AM': 1,
+          '10:00 AM - 1:00 PM': 2,
+          '1:00 PM - 4:00 PM': 3,
+          '4:00 PM - 7:00 PM': 4
+        };
+        return (timeOrder[a.timeSlot] || 0) - (timeOrder[b.timeSlot] || 0);
+      });
+
+      let html = `
+        <table class="timetable-table">
+            <thead>
+                <tr>
+                    <th>Time/Day</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+      sortedSchedule.forEach(dayData => {
+        html += `
+            <tr>
+                <td class="time-slot">${dayData.timeSlot}</td>
+                <td class="class-info">${formatClassInfo(dayData.Monday)}</td>
+                <td class="class-info">${formatClassInfo(dayData.Tuesday)}</td>
+                <td class="class-info">${formatClassInfo(dayData.Wednesday)}</td>
+                <td class="class-info">${formatClassInfo(dayData.Thursday)}</td>
+                <td class="class-info">${formatClassInfo(dayData.Friday)}</td>
+            </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      document.getElementById('regularTimetableContent').innerHTML = html;
+    }
+
+    function displayExamTimetable(schedule) {
+      if (!schedule || Object.keys(schedule).length === 0) {
+        document.getElementById('examTimetableContent').innerHTML =
+          '<div class="no-timetable">No exam schedule available.</div>';
+        return;
+      }
+
+      let html = `
+                <table class="timetable-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Unit Code</th>
+                            <th>Unit Name</th>
+                            <th>Venue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+      Object.keys(schedule).forEach(examId => {
+        const exam = schedule[examId];
+        if (exam.date && exam.unitCode) {
+          html += `
+                        <tr>
+                            <td>${formatDate(exam.date)}</td>
+                            <td>${exam.time || 'TBA'}</td>
+                            <td class="unit-code">${exam.unitCode}</td>
+                            <td>${exam.unitName || ''}</td>
+                            <td class="venue">${exam.venue || 'TBA'}</td>
+                        </tr>
+                    `;
+        }
+      });
+
+      html += '</tbody></table>';
+      document.getElementById('examTimetableContent').innerHTML = html;
+    }
+
+    function formatClassInfo(info) {
+      if (!info) return '';
+
+      // Split by newlines and format each line
+      const lines = info.split('\n').filter(line => line.trim());
+      return lines.map(line => {
+        if (line.includes(',')) {
+          const parts = line.split(',');
+          return `
+                        <div class="unit-code">${parts[0].trim()}</div>
+                        <div class="venue">${parts.slice(1).join(',').trim()}</div>
+                    `;
+        }
+        return `<div>${line}</div>`;
+      }).join('');
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'TBA';
+      const date = new Date(dateString + 'T00:00:00');
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Sidebar function
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("active");
     }
+
+    // Load timetable when page loads
+    document.addEventListener('DOMContentLoaded', loadTimetable);
   </script>
+
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-links">
