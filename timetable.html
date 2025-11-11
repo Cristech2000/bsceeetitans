@@ -36,12 +36,23 @@
       font-size: 1.1em;
     }
 
+    /* Scroll container for mobile */
+    .timetable-table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: white;
+    }
+
     .timetable-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 0;
       background: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      min-width: 800px;
+      /* Force horizontal scroll on mobile */
     }
 
     .timetable-table th {
@@ -119,7 +130,7 @@
       font-weight: 600;
     }
 
-    /* SIMPLE MOBILE FIX - Horizontal scroll only */
+    /* Mobile adjustments */
     @media (max-width: 768px) {
       .timetable-container {
         margin: 70px auto 20px;
@@ -128,75 +139,20 @@
 
       .timetable-section {
         padding: 20px 15px;
-        margin-bottom: 20px;
       }
 
       .timetable-section h2 {
         font-size: 1.4em;
       }
 
-      .academic-period {
-        font-size: 1em;
-      }
-
-      /* This is the key fix - horizontal scroll container */
-      .timetable-table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-      }
-
       .timetable-table {
         min-width: 800px;
-        /* Force horizontal scroll on mobile */
-        font-size: 0.85em;
-        margin: 0;
+        /* This ensures horizontal scrolling */
       }
 
       .timetable-table th,
       .timetable-table td {
         padding: 10px 8px;
-      }
-
-      .timetable-tabs {
-        flex-wrap: wrap;
-      }
-
-      .timetable-tab {
-        padding: 10px 20px;
-        margin-bottom: 5px;
-      }
-    }
-
-    /* Very small phones */
-    @media (max-width: 480px) {
-      .timetable-container {
-        padding: 10px;
-        margin: 60px auto 15px;
-      }
-
-      .timetable-section {
-        padding: 15px 10px;
-      }
-
-      .timetable-section h2 {
-        font-size: 1.3em;
-      }
-
-      .timetable-table {
-        min-width: 700px;
-        font-size: 0.8em;
-      }
-
-      .timetable-table th,
-      .timetable-table td {
-        padding: 8px 6px;
-      }
-
-      .timetable-tab {
-        padding: 8px 15px;
-        font-size: 0.9em;
       }
     }
   </style>
@@ -238,8 +194,10 @@
       <h2>CLASS TIMETABLE</h2>
       <div id="regularPeriod" class="academic-period">Loading...</div>
       <div class="timetable-table-container">
-        <div id="regularTimetableContent" class="loading">
-          <i class="fas fa-spinner fa-spin"></i> Loading timetable...
+        <div id="regularTimetableContent">
+          <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Loading timetable...
+          </div>
         </div>
       </div>
     </div>
@@ -249,12 +207,13 @@
       <h2>EXAMINATION TIMETABLE</h2>
       <div id="examPeriod" class="academic-period">Loading...</div>
       <div class="timetable-table-container">
-        <div id="examTimetableContent" class="loading">
-          <i class="fas fa-spinner fa-spin"></i> Loading exam schedule...
+        <div id="examTimetableContent">
+          <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Loading exam schedule...
+          </div>
         </div>
       </div>
     </div>
-
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -320,9 +279,10 @@
       }
 
       function displayRegularTimetable(schedule) {
+        const contentDiv = document.getElementById('regularTimetableContent');
+
         if (!schedule || !Array.isArray(schedule)) {
-          document.getElementById('regularTimetableContent').innerHTML =
-            '<div class="no-timetable">No timetable data available.</div>';
+          contentDiv.innerHTML = '<div class="no-timetable">No timetable data available.</div>';
           return;
         }
 
@@ -366,13 +326,14 @@
         });
 
         html += '</tbody></table>';
-        document.getElementById('regularTimetableContent').innerHTML = html;
+        contentDiv.innerHTML = html;
       }
 
       function displayExamTimetable(schedule) {
+        const contentDiv = document.getElementById('examTimetableContent');
+
         if (!schedule || Object.keys(schedule).length === 0) {
-          document.getElementById('examTimetableContent').innerHTML =
-            '<div class="no-timetable">No exam schedule available.</div>';
+          contentDiv.innerHTML = '<div class="no-timetable">No exam schedule available.</div>';
           return;
         }
 
@@ -406,9 +367,8 @@
         });
 
         html += '</tbody></table>';
-        document.getElementById('examTimetableContent').innerHTML = html;
+        contentDiv.innerHTML = html;
       }
-
       function formatClassInfo(info) {
         if (!info) return '';
 
