@@ -597,21 +597,26 @@
             document.getElementById('adminLoginLink').style.display = 'block';
         }
         // Initialize
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function () {
-            loadContent();
-            loadCustomSections(); // This will now inject sections between existing ones
-
-            // Set up real-time updates for custom sections
-            db.ref('customSections').on('value', function (snapshot) {
-                // First remove all existing custom sections
-                document.querySelectorAll('.custom-section').forEach(section => {
-                    section.remove();
-                });
-                // Then reload them in correct positions
-                loadCustomSections();
-            });
+document.addEventListener('DOMContentLoaded', function () {
+    loadContent();
+    
+    let isInitialLoad = true;
+    
+    // Load custom sections with real-time updates
+    db.ref('customSections').on('value', function (snapshot) {
+        // Remove all existing custom sections
+        document.querySelectorAll('.custom-section').forEach(section => {
+            section.remove();
         });
+        
+        // Load new sections
+        if (snapshot.exists()) {
+            loadCustomSections();
+        }
+        
+        isInitialLoad = false;
+    });
+});
 
         // Your existing functions
         function toggleSidebar() {
@@ -788,3 +793,4 @@
 </body>
 
 </html>
+
