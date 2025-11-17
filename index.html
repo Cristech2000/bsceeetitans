@@ -1,175 +1,790 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BSCEEEY2S1</title>
-<link rel="stylesheet" href="style.css">
-	 <link rel="icon" href="pngegg.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BSCEEEY2S1</title>
+    <link rel="stylesheet" href="style.css">
+	<link rel="icon" href="pngegg.png">
+    <!-- Add Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Custom Sections Styles */
+        .custom-section {
+            padding: 60px 20px;
+            margin: 40px 0;
+            width: 100%;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .custom-section .section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .custom-section h2 {
+            color: #004080;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .text-content {
+            line-height: 1.6;
+            font-size: 1.1em;
+            max-width: 100%;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .document-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .document-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .document-card h4 {
+            color: #004080;
+            margin-bottom: 10px;
+        }
+
+        .document-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .doc-link {
+            display: inline-block;
+            background: #004080;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .doc-link:hover {
+            background: #003366;
+            text-decoration: none;
+        }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #004080;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-url {
+            color: #004080;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .link-url:hover {
+            text-decoration: underline;
+        }
+
+        .link-desc {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+        }
+
+        /* Ensure white background sections have proper contrast */
+        .custom-section[style*="background: white"],
+        .custom-section[style*="background:#fff"],
+        .custom-section[style*="background: #fff"] {
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
 </head>
+
 <body>
 
-  <!-- Top Nav -->
-  <header>
-    <nav>
-     <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-       <div class="title" >
-<h1>Chuka University</h1>
-<p style="padding-left: 25px;">Faculty of Engineering</p>
-</div>
-     <div class="logo">
-    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
-  </div>
-        
-    </nav>
-  </header>
+    <!-- Top Nav -->
+    <header>
+        <nav>
+            <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+            <div class="title">
+                <h1>Chuka University</h1>
+                <p style="padding-left: 25px;">Faculty of Engineering</p>
+            </div>
+            <div class="logo">
+                <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+            </div>
+            <!-- Admin Indicator (shown when logged in) -->
+            <div id="adminIndicator" style="display: none; color: white; margin-right: 20px;">
+                <i class="fas fa-crown"></i> Admin Mode
+            </div>
+        </nav>
+    </header>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <a href="index.html">HOME</a>
-    <a href="timetable.html">TIMETABLE</a>
-    <a href="assignments.html">ASSIGNMENT</a>
-    <a href="studydocs.html">STUDY DOCUMENTS</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="sports.html">SPORTS</a>
-    <a href="personell.html">PERSONNEL</a>
-     <a href="registration.html">SEMESTER REGISTRATION</a>
- <a href="support.html">ACADEMIC SUPPORT</a>
-  </div>
-
-  <!-- Main Content -->
-  <main class="content">
-
-    <!-- Section 1: Hero -->
-    <section class="hero">
-      <div class="hero-text">
-        <h1>  Bachelor of Science in Electrical and Electronics Engineering<br />
-  Chuka University<br />
-  2nd Year | Academic Year 2025–2026</h1>
-        <p>Innovate. Learn. Engineer.</p>
-      </div>
-    </section>
-
-    <!-- Section 2: About -->
-    <section class="about">
-      <h2>About This Site</h2>
-      <p>
-        The BSCEEE Y2S1 class website is a centralized digital space designed to foster academic excellence, unity, and streamlined communication for students pursuing a Bachelor of Science in Electrical and Electronics Engineering at Chuka University. As a second-year class, we are building not only our engineering knowledge but also a collaborative culture that supports innovation and lifelong learning.
-      </p>
-    </section>
-
-    <!-- Section 3: Announcements -->
-    <section class="features">
-  <div class="image-row">
-    <figure><img src="GALLERY/hi image.jpg" alt=""></figure>
-    <figure><img src="GALLERY/home image 2025-06-16 at 20.25.54_a0a50007.jpg" alt=""></figure>
-    <figure><img src="GALLERY/home page 20.22.35_7f93281f.jpg" alt=""></figure>
-  </div>
-  <div class="features-text">
-    🧠 <strong>Who We Are</strong><br>
-    BSCEEE Y2S1 is a class of 102 ambitious student engineers who value academic excellence, innovation, and teamwork. We are driven by curiosity, inspired by technology, and committed to shaping the future through smart solutions and ethical engineering practices.
-  </div>
-</section>
-
-
-    <!-- Section 4: News -->
-    <section class="news">
-  <h2>Latest News</h2>
-  <p>📰 <a href="https://ieee-pes.org/news/just-announced-2025-ieee-power-energy-society-award-recipients/" target="_blank">2025 IEEE Power & Energy Society Awards winners announced</a>: Industry leaders recognized for breakthroughs in power system stability, microgrid automation, and renewable integration :contentReference[oaicite:1]{index=1}.</p>
-  <p>📰 <a href="https://peopledaily.digital/business/kenya-power-faces-rising-electricity-losses" target="_blank">Kenya Power fights rising electricity losses</a>: Transmission losses hit 23.7%, prompting plans to modernize the grid by 2028 and save billions in revenue :contentReference[oaicite:2]{index=2}.</p>
-  <p>📰 <a href="https://www.iafastro.org/news/the-iaf-is-proud-to-introduce-the-2025-iaf-emerging-space-leaders.html" target="_blank">IAF names 2025 Emerging Space Leaders</a>: Highlighting students with cutting-edge projects like CubeSats and satellite navigation, showcasing multidisciplinary engineering in action :contentReference[oaicite:3]{index=3}.</p>
-</section>
-<!-- Section 5: Fun Facts -->
-<section class="fun-facts">
-  <h2>⚡ Fun Engineering Facts</h2>
-  <ul>
-    <li>The human brain produces about 20 watts of power — enough to dimly light a small LED bulb.</li>
-    <li>Elevators are the safest form of transport. They have up to 10 separate braking systems, and statistically, they’re safer than cars, trains, or planes.</li>
-    <li>Bluetooth is named after a Viking king. King Harald “Bluetooth” united Denmark and Norway — just like Bluetooth unites devices.</li>
-  </ul>
-</section>
-
-<!-- Section 6: Student Spotlight -->
-<section class="spotlight">
-  <h2>🌟 Student Spotlight</h2>
-  <p>Each semester, we’ll feature students who show outstanding performance, innovation, leadership, or community impact.</p>
-  <p><em>Do something awesome — and you might be next in the spotlight!</em></p>
-</section>
-<!-- Section 7: Weekly Quiz -->
-<section class="quiz">
-  <h2>📝 Weekly Quiz</h2>
-  <p><strong>Background information:</strong> An engineering student is tasked with building a rechargeable autonomous robot using the following components: an Arduino Uno, an ultrasonic sensor, a servo motor, an L293D motor driver module, and a 2-wheel robot chassis kit.</p>
-<p><ul>
- <li>The Arduino Uno requires a power supply of 7V to 12V.</li>
-	<li>The servo motor and ultrasonic sensor operate at 5V.</li>
-  <li>The L293D motor driver has two power inputs:</li>
-  <ul>
-  <li style="padding-left: 5px;">Logic power (Vcc1): powers the internal logic circuitry, typically 5V.</li>
-  <li style="padding-left: 5px;">Motor power (Vcc2): powers the motors and supports a voltage range of 4.5V to 36V, depending on the motors used.</li>
-  </ul>
-   <li>In this project, the student is using TT motors rated from 3V to 9V.</li>
-
-</li>
-</ul></p>
- <p>The student has acquired two rechargeable Li-ion batteries (3000mAh, 3.7V each) and salvaged a partially damaged power bank charge controller designed for charging these batteries. The charge controller supports charging at 4.2V (maximum per cell), has a nominal voltage of 3.7V, and a cutoff voltage of 3.0V. However, this controller cannot provide a 5V output at the USB port.
-The robot will be powered by the two batteries, which will be charged using this power bank charge controller.
-</p>
-<h3>Task:</h3>
-<h4>Design a power system that:</h4>
-<p>
-  <ul>
-  <li>Supplies power to all components of the autonomous robot with the correct voltages.</li>
-  <li>Uses the two Li-ion batteries and the existing charge controller to charge the batteries safely.</li>
-  <li>Includes a mechanism to switch between charging mode and usage mode.</li>
-</ul>
-</p>
-<p>Please provide a clear explanation and a block diagram or schematic of your design.</p>
-</section>
-  </main>
-
-  <!-- Sidebar Script -->
-  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
-  </script>
-  <!-- Image Modal -->
-<div id="imageModal" class="modal">
-  <span class="closeBtn" onclick="closeModal()">&times;</span>
-  <img class="modal-content" id="modalImage">
-</div>
-<script>
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
-
-  document.querySelectorAll(".features img").forEach(img => {
-    img.addEventListener("click", () => {
-      modal.style.display = "block";
-      modalImg.src = img.src;
-    });
-  });
-
-  function closeModal() {
-    modal.style.display = "none";
-  }
-</script>
-
-<!-- Footer -->
-<footer class="site-footer">
-  <div class="footer-content">
-    <div class="footer-links">
-      <h3>Quick Links</h3>
-      <ul>
-        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
-        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
-      </ul>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <a href="index.html">HOME</a>
+        <a href="timetable.html">TIMETABLE</a>
+        <a href="assignments.html">ASSIGNMENT</a>
+        <a href="studydocs.html">STUDY DOCUMENTS</a>
+        <a href="gallery.html">GALLERY</a>
+        <a href="sports.html">SPORTS</a>
+        <a href="personell.html">PERSONNEL</a>
+        <a href="registration.html">SEMESTER REGISTRATION</a>
+        <a href="support.html">ACADEMIC SUPPORT</a>
+        <!-- Admin Login Link -->
+        <a href="admin-login.html" id="adminLoginLink" style="background: rgba(255,255,255,0.1);">
+            <i class="fas fa-lock"></i> Admin Login
+        </a>
+        <!-- Admin Dashboard Link (shown when logged in) -->
+        <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none; background: #ffd700; color: #000;">
+            <i class="fas fa-cogs"></i> Admin Dashboard
+        </a>
     </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
-  </div>
-</footer>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <!-- Section 1: Hero -->
+        <section class="hero" id="section-hero">
+            <div class="hero-text">
+                <h1 id="heroTitle">Bachelor of Science in Electrical and Electronics Engineering<br />
+                    Chuka University<br />
+                    2nd Year | Academic Year 2025–2026
+                </h1>
+                <p id="heroSubtitle">Innovate. Learn. Engineer.</p>
+                <!-- Admin Edit Button -->
+                <button class="admin-edit-btn" data-section="hero" onclick="openEditor('hero')" style="display: none;">
+                    <i class="fas fa-edit"></i> Edit Hero
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 2: About -->
+        <section class="about" id="section-about">
+            <h2>About This Site</h2>
+            <p id="aboutContent">
+                The BSCEEE Y2S1 class website is a centralized digital space designed to foster academic excellence,
+                unity, and streamlined communication for students pursuing a Bachelor of Science in Electrical and
+                Electronics Engineering at Chuka University. As a second-year class, we are building not only our
+                engineering knowledge but also a collaborative culture that supports innovation and lifelong learning.
+            </p>
+            <!-- Admin Edit Button -->
+            <button class="admin-edit-btn" data-section="about" onclick="openEditor('about')" style="display: none;">
+                <i class="fas fa-edit"></i> Edit About
+            </button>
+        </section>
+
+        <!-- Section 3: Features/Who We Are -->
+        <section class="features" id="section-features">
+            <div class="image-row">
+                <figure><img src="GALLERY/hi image.jpg" alt=""></figure>
+                <figure><img src="GALLERY/home image 2025-06-16 at 20.25.54_a0a50007.jpg" alt=""></figure>
+                <figure><img src="GALLERY/home page 20.22.35_7f93281f.jpg" alt=""></figure>
+            </div>
+            <div class="features-text">
+                <span id="featuresContent">
+                    🧠 <strong>Who We Are</strong><br>
+                    BSCEEE Y2S1 is a class of 102 ambitious student engineers who value academic excellence, innovation,
+                    and teamwork. We are driven by curiosity, inspired by technology, and committed to shaping the
+                    future through smart solutions and ethical engineering practices.
+                </span>
+                <!-- Admin Edit Button -->
+                <button class="admin-edit-btn" data-section="features" onclick="openEditor('features')"
+                    style="display: none;">
+                    <i class="fas fa-edit"></i> Edit Content
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 4: News -->
+        <section class="news" id="section-news">
+            <h2>Latest News</h2>
+            <div id="newsContent">
+                <p>📰 <a href="https://ieee-pes.org/news/just-announced-2025-ieee-power-energy-society-award-recipients/"
+                        target="_blank">2025 IEEE Power & Energy Society Awards winners announced</a>: Industry leaders
+                    recognized for breakthroughs in power system stability, microgrid automation, and renewable
+                    integration.</p>
+                <p>📰 <a href="https://peopledaily.digital/business/kenya-power-faces-rising-electricity-losses"
+                        target="_blank">Kenya Power fights rising electricity losses</a>: Transmission losses hit 23.7%,
+                    prompting plans to modernize the grid by 2028 and save billions in revenue.</p>
+                <p>📰 <a href="https://www.iafastro.org/news/the-iaf-is-proud-to-introduce-the-2025-iaf-emerging-space-leaders.html"
+                        target="_blank">IAF names 2025 Emerging Space Leaders</a>: Highlighting students with
+                    cutting-edge projects like CubeSats and satellite navigation, showcasing multidisciplinary
+                    engineering in action.</p>
+            </div>
+            <!-- Admin Edit Button -->
+            <button class="admin-edit-btn" data-section="news" onclick="openEditor('news')" style="display: none;">
+                <i class="fas fa-edit"></i> Edit News
+            </button>
+        </section>
+
+        <!-- Section 5: Fun Facts -->
+        <section class="fun-facts" id="section-funfacts">
+            <h2>⚡ Fun Engineering Facts</h2>
+            <ul id="funFactsContent">
+                <li>The human brain produces about 20 watts of power — enough to dimly light a small LED bulb.</li>
+                <li>Elevators are the safest form of transport. They have up to 10 separate braking systems, and
+                    statistically, they're safer than cars, trains, or planes.</li>
+                <li>Bluetooth is named after a Viking king. King Harald "Bluetooth" united Denmark and Norway — just
+                    like Bluetooth unites devices.</li>
+            </ul>
+            <!-- Admin Edit Button -->
+            <button class="admin-edit-btn" data-section="funFacts" onclick="openEditor('funFacts')"
+                style="display: none;">
+                <i class="fas fa-edit"></i> Edit Fun Facts
+            </button>
+        </section>
+
+        <!-- Section 6: Student Spotlight -->
+        <section class="spotlight" id="section-spotlight">
+            <h2>🌟 Student Spotlight</h2>
+            <div id="spotlightContent">
+                <p>Each semester, we'll feature students who show outstanding performance, innovation, leadership, or
+                    community impact.</p>
+                <p><em>Do something awesome — and you might be next in the spotlight!</em></p>
+            </div>
+            <!-- Admin Edit Button -->
+            <button class="admin-edit-btn" data-section="spotlight" onclick="openEditor('spotlight')"
+                style="display: none;">
+                <i class="fas fa-edit"></i> Edit Spotlight
+            </button>
+        </section>
+
+        <!-- Section 7: Weekly Quiz -->
+        <section class="quiz" id="section-quiz">
+            <h2>📝 Weekly Quiz</h2>
+            <div id="quizContent">
+                <p><strong>Background information:</strong> An engineering student is tasked with building a
+                    rechargeable autonomous robot using the following components: an Arduino Uno, an ultrasonic sensor,
+                    a servo motor, an L293D motor driver module, and a 2-wheel robot chassis kit.</p>
+                <p>
+                <ul>
+                    <li>The Arduino Uno requires a power supply of 7V to 12V.</li>
+                    <li>The servo motor and ultrasonic sensor operate at 5V.</li>
+                    <li>The L293D motor driver has two power inputs:</li>
+                    <ul>
+                        <li style="padding-left: 5px;">Logic power (Vcc1): powers the internal logic circuitry,
+                            typically 5V.</li>
+                        <li style="padding-left: 5px;">Motor power (Vcc2): powers the motors and supports a voltage
+                            range of 4.5V to 36V, depending on the motors used.</li>
+                    </ul>
+                    <li>In this project, the student is using TT motors rated from 3V to 9V.</li>
+                </ul>
+                </p>
+                <p>The student has acquired two rechargeable Li-ion batteries (3000mAh, 3.7V each) and salvaged a
+                    partially damaged power bank charge controller designed for charging these batteries. The charge
+                    controller supports charging at 4.2V (maximum per cell), has a nominal voltage of 3.7V, and a cutoff
+                    voltage of 3.0V. However, this controller cannot provide a 5V output at the USB port.
+                    The robot will be powered by the two batteries, which will be charged using this power bank charge
+                    controller.
+                </p>
+                <h3>Task:</h3>
+                <h4>Design a power system that:</h4>
+                <p>
+                <ul>
+                    <li>Supplies power to all components of the autonomous robot with the correct voltages.</li>
+                    <li>Uses the two Li-ion batteries and the existing charge controller to charge the batteries safely.
+                    </li>
+                    <li>Includes a mechanism to switch between charging mode and usage mode.</li>
+                </ul>
+                </p>
+                <p>Please provide a clear explanation and a block diagram or schematic of your design.</p>
+            </div>
+            <!-- Admin Edit Button -->
+            <button class="admin-edit-btn" data-section="quiz" onclick="openEditor('quiz')" style="display: none;">
+                <i class="fas fa-edit"></i> Edit Quiz
+            </button>
+        </section>
+
+    </main>
+
+    <!-- Admin Edit Modal -->
+    <div id="adminModal" class="modal" style="display: none; z-index: 3000;">
+        <div class="modal-content" style="background: white; padding: 30px; border-radius: 10px; max-width: 600px;">
+            <span class="closeBtn" onclick="closeEditor()">&times;</span>
+            <h3 id="modalTitle">Edit Content</h3>
+            <textarea id="contentEditor"
+                style="width: 100%; height: 300px; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 16px;"></textarea>
+            <div style="margin-top: 20px; text-align: right;">
+                <button onclick="closeEditor()"
+                    style="padding: 10px 20px; margin-right: 10px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+                <button onclick="saveContent()"
+                    style="padding: 10px 20px; background: #004080; color: white; border: none; border-radius: 5px; cursor: pointer;">Save
+                    Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="closeBtn" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+                    <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+        </div>
+    </footer>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+            authDomain: "bsceee-webpage.firebaseapp.com",
+            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+            projectId: "bsceee-webpage",
+            storageBucket: "bsceee-webpage.appspot.com",
+            messagingSenderId: "281106710079",
+            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+            measurementId: "G-B1M7SSEZYP"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        // Check admin authentication status
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, check if admin
+                checkAdminStatus(user.uid);
+            } else {
+                // User is signed out, hide admin features
+                hideAdminFeatures();
+            }
+        });
+
+        // Load dynamic content from Firebase
+        function loadContent() {
+            // Hero Section
+            db.ref('websiteContent/hero').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('heroTitle').textContent = data.title;
+                    document.getElementById('heroSubtitle').textContent = data.subtitle;
+                }
+            });
+
+            // About Section
+            db.ref('websiteContent/about').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('aboutContent').textContent = data.content;
+                }
+            });
+
+            // Features Section
+            db.ref('websiteContent/features').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('featuresContent').innerHTML = data.content;
+                }
+            });
+
+            // News Section
+            db.ref('websiteContent/news').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('newsContent').innerHTML = data.content;
+                }
+            });
+
+            // Fun Facts Section
+            db.ref('websiteContent/funFacts').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.items) {
+                    const factsList = document.getElementById('funFactsContent');
+                    factsList.innerHTML = '';
+                    data.items.forEach(fact => {
+                        const li = document.createElement('li');
+                        li.textContent = fact;
+                        factsList.appendChild(li);
+                    });
+                }
+            });
+
+            // Spotlight Section
+            db.ref('websiteContent/spotlight').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('spotlightContent').innerHTML = data.content;
+                }
+            });
+
+            // Quiz Section
+            db.ref('websiteContent/quiz').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('quizContent').innerHTML = data.content;
+                }
+            });
+        }
+
+        // Admin editing functions
+        let currentEditingSection = '';
+
+        function openEditor(section) {
+            currentEditingSection = section;
+            const modal = document.getElementById('adminModal');
+            const editor = document.getElementById('contentEditor');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // Set modal title
+            const sectionTitles = {
+                'hero': 'Edit Hero Section',
+                'about': 'Edit About Section',
+                'features': 'Edit Features Section',
+                'news': 'Edit News Section',
+                'funFacts': 'Edit Fun Facts',
+                'spotlight': 'Edit Student Spotlight',
+                'quiz': 'Edit Weekly Quiz'
+            };
+            modalTitle.textContent = sectionTitles[section] || 'Edit Content';
+
+            // Get current content
+            let currentContent = '';
+            switch (section) {
+                case 'hero':
+                    currentContent = document.getElementById('heroTitle').textContent + '\n---\n' + document.getElementById('heroSubtitle').textContent;
+                    break;
+                case 'about':
+                    currentContent = document.getElementById('aboutContent').textContent;
+                    break;
+                case 'features':
+                    currentContent = document.getElementById('featuresContent').innerHTML;
+                    break;
+                case 'news':
+                    currentContent = document.getElementById('newsContent').innerHTML;
+                    break;
+                case 'funFacts':
+                    const facts = Array.from(document.getElementById('funFactsContent').getElementsByTagName('li')).map(li => li.textContent);
+                    currentContent = facts.join('\n');
+                    break;
+                case 'spotlight':
+                    currentContent = document.getElementById('spotlightContent').innerHTML;
+                    break;
+                case 'quiz':
+                    currentContent = document.getElementById('quizContent').innerHTML;
+                    break;
+            }
+
+            editor.value = currentContent;
+            modal.style.display = 'block';
+        }
+
+        function closeEditor() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function saveContent() {
+            const newContent = document.getElementById('contentEditor').value;
+
+            // Save to Firebase based on section
+            switch (currentEditingSection) {
+                case 'hero':
+                    const lines = newContent.split('\n---\n');
+                    db.ref('websiteContent/hero').set({
+                        title: lines[0] || '',
+                        subtitle: lines[1] || ''
+                    });
+                    break;
+                case 'about':
+                    db.ref('websiteContent/about').set({
+                        content: newContent
+                    });
+                    break;
+                case 'features':
+                    db.ref('websiteContent/features').set({
+                        content: newContent
+                    });
+                    break;
+                case 'news':
+                    db.ref('websiteContent/news').set({
+                        content: newContent
+                    });
+                    break;
+                case 'funFacts':
+                    const facts = newContent.split('\n').filter(fact => fact.trim() !== '');
+                    db.ref('websiteContent/funFacts').set({
+                        items: facts
+                    });
+                    break;
+                case 'spotlight':
+                    db.ref('websiteContent/spotlight').set({
+                        content: newContent
+                    });
+                    break;
+                case 'quiz':
+                    db.ref('websiteContent/quiz').set({
+                        content: newContent
+                    });
+                    break;
+            }
+
+            closeEditor();
+            alert('Content updated successfully!');
+        }
+
+        // Check if user is admin and show/hide features accordingly
+        function checkAdminStatus(uid) {
+            db.ref('admins/' + uid).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    showAdminFeatures();
+                } else {
+                    hideAdminFeatures();
+                }
+            });
+        }
+
+        function showAdminFeatures() {
+            document.querySelectorAll('.admin-edit-btn').forEach(btn => {
+                btn.style.display = 'inline-block';
+            });
+            document.getElementById('adminIndicator').style.display = 'block';
+            document.getElementById('adminDashboardLink').style.display = 'block';
+            document.getElementById('adminLoginLink').style.display = 'none';
+        }
+
+        function hideAdminFeatures() {
+            document.querySelectorAll('.admin-edit-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
+            document.getElementById('adminIndicator').style.display = 'none';
+            document.getElementById('adminDashboardLink').style.display = 'none';
+            document.getElementById('adminLoginLink').style.display = 'block';
+        }
+        // Initialize
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            loadContent();
+            loadCustomSections(); // This will now inject sections between existing ones
+
+            // Set up real-time updates for custom sections
+            db.ref('customSections').on('value', function (snapshot) {
+                // First remove all existing custom sections
+                document.querySelectorAll('.custom-section').forEach(section => {
+                    section.remove();
+                });
+                // Then reload them in correct positions
+                loadCustomSections();
+            });
+        });
+
+        // Your existing functions
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+        // Image Modal functions
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+
+        document.querySelectorAll(".features img").forEach(img => {
+            img.addEventListener("click", () => {
+                modal.style.display = "block";
+                modalImg.src = img.src;
+            });
+        });
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+
+
+
+        // Load Custom Sections and inject them in correct positions
+        function loadCustomSections() {
+            console.log('🔄 Loading custom sections...');
+
+            db.ref('customSections').once('value')
+                .then(snapshot => {
+                    const data = snapshot.val();
+                    console.log('📦 Custom sections data from Firebase:', data);
+
+                    if (!data) {
+                        console.log('❌ No custom sections found in Firebase');
+                        return;
+                    }
+
+                    // Convert to array and sort by order
+                    const sectionsArray = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    })).sort((a, b) => a.order - b.order);
+
+                    console.log('📋 Processed sections array:', sectionsArray);
+
+                    // Inject each custom section in the correct position
+                    sectionsArray.forEach(section => {
+                        injectCustomSection(section);
+                    });
+                })
+                .catch(error => {
+                    console.error('❌ Error loading custom sections:', error);
+                });
+        }
+
+        function injectCustomSection(section) {
+            const sectionHtml = renderCustomSection(section);
+            const sectionElement = createSectionElement(sectionHtml);
+
+            // Determine where to insert based on order number
+            let insertAfterElement = null;
+
+            if (section.order < 1.5) {
+                insertAfterElement = document.getElementById('section-hero');
+            } else if (section.order < 2.5) {
+                insertAfterElement = document.getElementById('section-about');
+            } else if (section.order < 3.5) {
+                insertAfterElement = document.getElementById('section-features');
+            } else if (section.order < 4.5) {
+                insertAfterElement = document.getElementById('section-news');
+            } else if (section.order < 5.5) {
+                insertAfterElement = document.getElementById('section-funfacts');
+            } else if (section.order < 6.5) {
+                insertAfterElement = document.getElementById('section-spotlight');
+            } else {
+                insertAfterElement = document.getElementById('section-quiz');
+            }
+
+            if (insertAfterElement) {
+                insertAfterElement.insertAdjacentHTML('afterend', sectionHtml);
+                console.log(`✅ Injected section "${section.title}" after ${insertAfterElement.id}`);
+            } else {
+                // Fallback: append to main content
+                document.querySelector('main').insertAdjacentHTML('beforeend', sectionHtml);
+                console.log(`✅ Appended section "${section.title}" to end`);
+            }
+        }
+
+        function createSectionElement(html) {
+            const template = document.createElement('template');
+            template.innerHTML = html;
+            return template.content.firstElementChild;
+        }
+
+        function renderCustomSection(section) {
+            const bgStyle = section.backgroundColor ? `style="background: ${section.backgroundColor};"` : '';
+
+            return `
+        <section class="custom-section" id="${section.id}" ${bgStyle}>
+            <div class="section-content">
+                <h2>${section.title}</h2>
+                ${renderSectionContent(section)}
+            </div>
+            ${getAdminEditButton(section.id)}
+        </section>
+    `;
+        }
+
+        function renderSectionContent(section) {
+            switch (section.type) {
+                case 'text':
+                    return `<div class="text-content">${section.content.replace(/\n/g, '<br>')}</div>`;
+
+                case 'documents':
+                    if (!section.documents || section.documents.length === 0) {
+                        return '<p>No documents available.</p>';
+                    }
+                    return `
+                <div class="documents-grid">
+                    ${section.documents.map(doc => `
+                        <div class="document-card">
+                            <h4>${doc.title}</h4>
+                            ${doc.description ? `<p>${doc.description}</p>` : ''}
+                            <a href="${doc.link}" target="_blank" class="doc-link">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+                case 'links':
+                    if (!section.links || section.links.length === 0) {
+                        return '<p>No links available.</p>';
+                    }
+                    return `
+                <div class="links-list">
+                    ${section.links.map(link => `
+                        <div class="link-item">
+                            <a href="${link.url}" target="_blank" class="link-url">
+                                <i class="fas fa-external-link-alt"></i> ${link.text}
+                            </a>
+                            ${link.description ? `<p class="link-desc">${link.description}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+                case 'custom':
+                    return section.customHTML || '<p>No content available.</p>';
+
+                default:
+                    return '<p>Unsupported section type.</p>';
+            }
+        }
+
+        function getAdminEditButton(sectionId) {
+            return `
+        <button class="admin-edit-btn" data-section="custom_${sectionId}" onclick="openCustomSectionEditor('${sectionId}')" style="display: none;">
+            <i class="fas fa-edit"></i> Edit Section
+        </button>
+    `;
+        }
+
+        function openCustomSectionEditor(sectionId) {
+            // Redirect to admin dashboard
+            if (confirm('This will take you to the admin dashboard to edit this section. Continue?')) {
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+    </script>
 
 </body>
 
-
+</html>
