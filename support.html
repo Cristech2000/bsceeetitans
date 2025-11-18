@@ -1,620 +1,673 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Academic Support Center</title>
-  <link rel="stylesheet" href="style.css" />
-   <link rel="icon" href="pngegg.png">
-  <style>
-    .support-form {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 30px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    .support-form h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #004080;
-    }
-    .support-form input, .support-form select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .support-form button {
-      margin-top: 25px;
-      width: 100%;
-      padding: 12px;
-      font-size: 18px;
-      background-color: #004080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .support-form button:hover {
-      background-color: #003366;
-    }
 
-    .tab-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 40px;
-      flex-wrap: wrap;
-    }
-    .tab-buttons button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      background-color: #004080;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .tab-buttons button.active {
-      background-color: #0066cc;
-    }
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    h3{
-      padding-top: 50px;
-      text-align: center;
-      color: #0066cc;
-    }
-    .yearsel{
-     background-color: #c8d0d7;
-     margin: 40px;
-     border-radius: 10px;
-    }
-  </style>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academic Support Center</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="pngegg.png">
+    <style>
+        .support-form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .support-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #004080;
+        }
+
+        .support-form input,
+        .support-form select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .support-form button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .support-form button:hover {
+            background-color: #003366;
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #004080;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tab-buttons button.active {
+            background-color: #0066cc;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        h3 {
+            padding-top: 50px;
+            text-align: center;
+            color: #0066cc;
+        }
+
+        .yearsel {
+            background-color: #c8d0d7;
+            margin: 40px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
+
 <body>
 
-<header>
-  <nav>
-    <button onclick="toggleSidebar()">☰</button>
-    <div class="title"><h1>Academic Support Center</h1></div>
-    <div class="logo">
-      <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+    <header>
+        <nav>
+            <button onclick="toggleSidebar()">☰</button>
+            <div class="title">
+                <h1>Academic Support Center</h1>
+            </div>
+            <div class="logo">
+                <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+            </div>
+        </nav>
+    </header>
+
+    <div id="sidebar">
+        <a href="index.html">HOME</a>
+        <a href="timetable.html">TIMETABLE</a>
+        <a href="assignments.html">ASSIGNMENT</a>
+        <a href="studydocs.html">STUDY DOCUMENTS</a>
+        <a href="gallery.html">GALLERY</a>
+        <a href="sports.html">SPORTS</a>
+        <a href="personell.html">PERSONNEL</a>
+        <a href="registration.html">SEMESTER REGISTRATION</a>
+        <a href="support.html">ACADEMIC SUPPORT</a>
     </div>
-  </nav>
-</header>
 
-<div id="sidebar">
-  <a href="index.html">HOME</a>
-  <a href="timetable.html">TIMETABLE</a>
-  <a href="assignments.html">ASSIGNMENT</a>
-  <a href="studydocs.html">STUDY DOCUMENTS</a>
-  <a href="gallery.html">GALLERY</a>
-  <a href="sports.html">SPORTS</a>
-  <a href="personell.html">PERSONNEL</a>
-  <a href="registration.html">SEMESTER REGISTRATION</a>
-  <a href="support.html">ACADEMIC SUPPORT</a>
-</div>
-
-<main class="content">
-  <section class="yearsel">
-     <h3>Choose your current year of study</h3>
-    <div class="tab-buttons">
-    <button onclick="showTab('year2')" class="active">1st Year</button>
-    <button onclick="showTab('year1')">2nd Year</button>
-    <button onclick="showTab('year3')">3rd Year</button>
-    <button onclick="showTab('year4')">4th Year</button>
-    <button onclick="showTab('year5')">5th Year</button>
-  </div>
-  </section>
- 
-
-  <!-- Each form structure -->
-  <section id="year1" class="tab-content">
-    <form class="support-form" id="form-year1">
-      <h2>Missing Marks Complaint (2nd Year)</h2>
-      <input name="Name" placeholder="Your Name" required>
-      <input name="RegNo" placeholder="Your Registration Number" required>
-      <input name="Lecturer" placeholder="Lecturer's Name" required>
-      <select name="Unit" required>
-        <option value="">-- Select Unit --</option>
-<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
-        <option value="COMS 101">COMS 101 - Communication Skills</option>
-        <option value="COSC 121">COSC 121 - Intro to Computers</option>
-        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
-        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
-        <option value="MATH 121">MATH 121 - Calculus I</option>
-        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
-        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
-        <option value="PHYS 112">PHYS 112 - Physics I</option>
-        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
-        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
-        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
-        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
-        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
-        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
-        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
-        <option value="PHYS 113">PHYS 113 - Physics II</option>
-        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
-        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
-        <option value="EENG 215">EENG 215 - Workshop Practice III</option>
-<option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
-<option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
-<option value="EENG 271">EENG 271 - Transducers and Sensors</option>
-<option value="EENG 291">EENG 291 - Physical Electronics I</option>
-<option value="MATH 221">MATH 221 - Calculus II</option>
-<option value="MATH 241">MATH 241 - Probability and Statistics</option>
-<option value="EENG 221">EENG 221 - Industrial Attachment</option>
-<option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
-<option value="EENG 241">EENG 241 - Electrical Machines I</option>
-<option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
-<option value="EENG 272">EENG 272 - Control Systems I</option>
-<option value="EENG 292">EENG 292 - Physical Electronics II</option>
-<option value="MATH 203">MATH 203 - Introduction to Analysis</option>
-<option value="MATH 222">MATH 222 - Vector Analysis</option>
-<option value="EENG 342">EENG 342 - Electrical Machines II</option>
-<option value="EENG 343">EENG 343 - Electrical Motors I</option>
-<option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
-<option value="EENG 361">EENG 361 - Power Systems I</option>
-<option value="EENG 373">EENG 373 - Control Systems II</option>
-<option value="EENG 393">EENG 393 - Analogue Electronics I</option>
-<option value="MATH 322">MATH 322 - Ordinary differential equation</option>
-<option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
-<option value="EENG 323">EENG 323 - Industrial Attachment</option>
-<option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
-<option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
-<option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
-<option value="EENG 363">EENG 363 - Power Electronics I</option>
-<option value="EENG 394">EENG 394 - Digital Electronics</option>
-<option value="EENG 395">EENG 395 - Analogue Electronics II</option>
-<option value="MATH 323">MATH 323 - Numerical Analysis I</option>
-<option value="EENG 425">EENG 425 - Engineering Project I</option>
-<option value="EENG 426">EENG 426 - Industrial Attachment</option>
-<option value="EENG 446">EENG 446 - Electrical Machine Design</option>
-<option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
-<option value="EENG 465">EENG 465 - Power Systems II</option>
-<option value="EENG 474">EENG 474 - Microprocessors I</option>
-<option value="EENG 475">EENG 475 - Control Engineering I</option>
-<option value="EENG 476">EENG 476 - Microprocessor II</option>
-<option value="EENG 482">EENG 482 - Signals and Systems</option>
-<option value="EENG 483">EENG 483 - Communication Systems</option>
-<option value="EENG 561">EENG 561 - Power Electronics II</option>
-<option value="EENG 562">EENG 562 - Power System Protection</option>
-<option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
-<option value="EENG 564">EENG 564 - Power System Analysis</option>
-<option value="EENG 565">EENG 565 - High Voltage Engineering</option>
-<option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
-<option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
-<option value="EENG 573">EENG 573 - Control Engineering II</option>
-<option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
-<option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
-<option value="EENG 576">EENG 576 - FPGA-based System Design</option>
-<option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
-<option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
-<option value="EENG 583">EENG 583 - Transmission and Switching</option>
-<option value="EENG 584">EENG 584 - Digital Signal Processing</option>
-<option value="EENG 585">EENG 585 - Optical Communication</option>
-<option value="EENG 591">EENG 591 - Option-Electronics</option>
-<option value="EENG 592">EENG 592 - Digital System Design</option>
-<option value="EENG 593">EENG 593 - Integrated Electronics</option>
+    <main class="content">
+        <section class="yearsel">
+            <h3>Choose your current year of study</h3>
+            <div class="tab-buttons">
+                <button onclick="showTab('year1')" class="active">1st Year</button>
+                <button onclick="showTab('year2')">2nd Year</button>
+                <button onclick="showTab('year3')">3rd Year</button>
+                <button onclick="showTab('year4')">4th Year</button>
+                <button onclick="showTab('year5')">5th Year</button>
+            </div>
+        </section>
 
 
-        <!-- Add other 2nd-year units -->
-      </select>
-      <button type="submit">Submit Complaint</button>
-    </form>
-  </section>
-
-  <section id="year2" class="tab-content active">
-    <form class="support-form" id="form-year2">
-      <h2>Missing Marks Complaint ( 1st Year)</h2>
-      <input name="RegNo" placeholder="Your Registration Number" required>
-      <select name="Unit" required>
-        <option value="">-- Select Unit --</option>
-<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
-        <option value="COMS 101">COMS 101 - Communication Skills</option>
-        <option value="COSC 121">COSC 121 - Intro to Computers</option>
-        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
-        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
-        <option value="MATH 121">MATH 121 - Calculus I</option>
-        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
-        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
-        <option value="PHYS 112">PHYS 112 - Physics I</option>
-        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
-        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
-        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
-        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
-        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
-        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
-        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
-        <option value="PHYS 113">PHYS 113 - Physics II</option>
-        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
-        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
-        <!-- Add other 2nd-year units -->
-      </select>
-      <button type="submit">Submit Complaint</button>
-    </form>
-  </section>
-
-  <section id="year3" class="tab-content">
-    <form class="support-form" id="form-year3">
-      <h2>Missing Marks Complaint (3rd Year)</h2>
-      <input name="Name" placeholder="Your Name" required>
-      <input name="RegNo" placeholder="Your Registration Number" required>
-      <input name="Lecturer" placeholder="Lecturer's Name" required>
-      <select name="Unit" required>
-        <option value="">-- Select Unit --</option>
-<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
-        <option value="COMS 101">COMS 101 - Communication Skills</option>
-        <option value="COSC 121">COSC 121 - Intro to Computers</option>
-        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
-        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
-        <option value="MATH 121">MATH 121 - Calculus I</option>
-        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
-        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
-        <option value="PHYS 112">PHYS 112 - Physics I</option>
-        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
-        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
-        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
-        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
-        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
-        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
-        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
-        <option value="PHYS 113">PHYS 113 - Physics II</option>
-        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
-        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
-        <option value="EENG 215">EENG 215 - Workshop Practice III</option>
-<option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
-<option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
-<option value="EENG 271">EENG 271 - Transducers and Sensors</option>
-<option value="EENG 291">EENG 291 - Physical Electronics I</option>
-<option value="MATH 221">MATH 221 - Calculus II</option>
-<option value="MATH 241">MATH 241 - Probability and Statistics</option>
-<option value="EENG 221">EENG 221 - Industrial Attachment</option>
-<option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
-<option value="EENG 241">EENG 241 - Electrical Machines I</option>
-<option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
-<option value="EENG 272">EENG 272 - Control Systems I</option>
-<option value="EENG 292">EENG 292 - Physical Electronics II</option>
-<option value="MATH 203">MATH 203 - Introduction to Analysis</option>
-<option value="MATH 222">MATH 222 - Vector Analysis</option>
-<option value="EENG 342">EENG 342 - Electrical Machines II</option>
-<option value="EENG 343">EENG 343 - Electrical Motors I</option>
-<option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
-<option value="EENG 361">EENG 361 - Power Systems I</option>
-<option value="EENG 373">EENG 373 - Control Systems II</option>
-<option value="EENG 393">EENG 393 - Analogue Electronics I</option>
-<option value="MATH 322">MATH 322 - Ordinary differential equation</option>
-<option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
-<option value="EENG 323">EENG 323 - Industrial Attachment</option>
-<option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
-<option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
-<option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
-<option value="EENG 363">EENG 363 - Power Electronics I</option>
-<option value="EENG 394">EENG 394 - Digital Electronics</option>
-<option value="EENG 395">EENG 395 - Analogue Electronics II</option>
-<option value="MATH 323">MATH 323 - Numerical Analysis I</option>
-<option value="EENG 425">EENG 425 - Engineering Project I</option>
-<option value="EENG 426">EENG 426 - Industrial Attachment</option>
-<option value="EENG 446">EENG 446 - Electrical Machine Design</option>
-<option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
-<option value="EENG 465">EENG 465 - Power Systems II</option>
-<option value="EENG 474">EENG 474 - Microprocessors I</option>
-<option value="EENG 475">EENG 475 - Control Engineering I</option>
-<option value="EENG 476">EENG 476 - Microprocessor II</option>
-<option value="EENG 482">EENG 482 - Signals and Systems</option>
-<option value="EENG 483">EENG 483 - Communication Systems</option>
-<option value="EENG 561">EENG 561 - Power Electronics II</option>
-<option value="EENG 562">EENG 562 - Power System Protection</option>
-<option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
-<option value="EENG 564">EENG 564 - Power System Analysis</option>
-<option value="EENG 565">EENG 565 - High Voltage Engineering</option>
-<option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
-<option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
-<option value="EENG 573">EENG 573 - Control Engineering II</option>
-<option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
-<option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
-<option value="EENG 576">EENG 576 - FPGA-based System Design</option>
-<option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
-<option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
-<option value="EENG 583">EENG 583 - Transmission and Switching</option>
-<option value="EENG 584">EENG 584 - Digital Signal Processing</option>
-<option value="EENG 585">EENG 585 - Optical Communication</option>
-<option value="EENG 591">EENG 591 - Option-Electronics</option>
-<option value="EENG 592">EENG 592 - Digital System Design</option>
-<option value="EENG 593">EENG 593 - Integrated Electronics</option>
+        <!-- Each form structure -->
+        <section id="year1" class="tab-content">
+            <form class="support-form" id="form-year1">
+                <h2>Missing Marks Complaint (1st years)</h2>
+                <input name="Name" placeholder="Your Name" required>
+                <input name="RegNo" placeholder="Your Registration Number" required>
+                <input name="Lecturer" placeholder="Lecturer's Name" required>
+                <select name="Unit" required>
+                    <option value="">-- Select Unit --</option>
+                    <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+                    <option value="COMS 101">COMS 101 - Communication Skills</option>
+                    <option value="COSC 121">COSC 121 - Intro to Computers</option>
+                    <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+                    <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+                    <option value="MATH 121">MATH 121 - Calculus I</option>
+                    <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+                    <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+                    <option value="PHYS 112">PHYS 112 - Physics I</option>
+                    <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+                    <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+                    <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+                    <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+                    <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+                    <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+                    <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+                    <option value="PHYS 113">PHYS 113 - Physics II</option>
+                    <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+                    <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+                    <option value="EENG 215">EENG 215 - Workshop Practice III</option>
+                    <option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
+                    <option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
+                    <option value="EENG 271">EENG 271 - Transducers and Sensors</option>
+                    <option value="EENG 291">EENG 291 - Physical Electronics I</option>
+                    <option value="MATH 221">MATH 221 - Calculus II</option>
+                    <option value="MATH 241">MATH 241 - Probability and Statistics</option>
+                    <option value="EENG 221">EENG 221 - Industrial Attachment</option>
+                    <option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
+                    <option value="EENG 241">EENG 241 - Electrical Machines I</option>
+                    <option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
+                    <option value="EENG 272">EENG 272 - Control Systems I</option>
+                    <option value="EENG 292">EENG 292 - Physical Electronics II</option>
+                    <option value="MATH 203">MATH 203 - Introduction to Analysis</option>
+                    <option value="MATH 222">MATH 222 - Vector Analysis</option>
+                    <option value="EENG 342">EENG 342 - Electrical Machines II</option>
+                    <option value="EENG 343">EENG 343 - Electrical Motors I</option>
+                    <option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
+                    <option value="EENG 361">EENG 361 - Power Systems I</option>
+                    <option value="EENG 373">EENG 373 - Control Systems II</option>
+                    <option value="EENG 393">EENG 393 - Analogue Electronics I</option>
+                    <option value="MATH 322">MATH 322 - Ordinary differential equation</option>
+                    <option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
+                    <option value="EENG 323">EENG 323 - Industrial Attachment</option>
+                    <option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
+                    <option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
+                    <option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
+                    <option value="EENG 363">EENG 363 - Power Electronics I</option>
+                    <option value="EENG 394">EENG 394 - Digital Electronics</option>
+                    <option value="EENG 395">EENG 395 - Analogue Electronics II</option>
+                    <option value="MATH 323">MATH 323 - Numerical Analysis I</option>
+                    <option value="EENG 425">EENG 425 - Engineering Project I</option>
+                    <option value="EENG 426">EENG 426 - Industrial Attachment</option>
+                    <option value="EENG 446">EENG 446 - Electrical Machine Design</option>
+                    <option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
+                    <option value="EENG 465">EENG 465 - Power Systems II</option>
+                    <option value="EENG 474">EENG 474 - Microprocessors I</option>
+                    <option value="EENG 475">EENG 475 - Control Engineering I</option>
+                    <option value="EENG 476">EENG 476 - Microprocessor II</option>
+                    <option value="EENG 482">EENG 482 - Signals and Systems</option>
+                    <option value="EENG 483">EENG 483 - Communication Systems</option>
+                    <option value="EENG 561">EENG 561 - Power Electronics II</option>
+                    <option value="EENG 562">EENG 562 - Power System Protection</option>
+                    <option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
+                    <option value="EENG 564">EENG 564 - Power System Analysis</option>
+                    <option value="EENG 565">EENG 565 - High Voltage Engineering</option>
+                    <option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
+                    <option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
+                    <option value="EENG 573">EENG 573 - Control Engineering II</option>
+                    <option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
+                    <option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
+                    <option value="EENG 576">EENG 576 - FPGA-based System Design</option>
+                    <option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
+                    <option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
+                    <option value="EENG 583">EENG 583 - Transmission and Switching</option>
+                    <option value="EENG 584">EENG 584 - Digital Signal Processing</option>
+                    <option value="EENG 585">EENG 585 - Optical Communication</option>
+                    <option value="EENG 591">EENG 591 - Option-Electronics</option>
+                    <option value="EENG 592">EENG 592 - Digital System Design</option>
+                    <option value="EENG 593">EENG 593 - Integrated Electronics</option>
 
 
-        <!-- Add other 2nd-year units -->
-      </select>
-      <button type="submit">Submit Complaint</button>
-    </form>
-  </section>
+                    <!-- Add other 2nd-year units -->
+                </select>
+                <button type="submit">Submit Complaint</button>
+            </form>
+        </section>
 
-  <section id="year4" class="tab-content">
-    <form class="support-form" id="form-year4">
-      <h2>Missing Marks Complaint (4th Year)</h2>
-      <input name="Name" placeholder="Your Name" required>
-      <input name="RegNo" placeholder="Your Registration Number" required>
-      <input name="Lecturer" placeholder="Lecturer's Name" required>
-      <select name="Unit" required>
-        <option value="">-- Select Unit --</option>
-<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
-        <option value="COMS 101">COMS 101 - Communication Skills</option>
-        <option value="COSC 121">COSC 121 - Intro to Computers</option>
-        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
-        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
-        <option value="MATH 121">MATH 121 - Calculus I</option>
-        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
-        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
-        <option value="PHYS 112">PHYS 112 - Physics I</option>
-        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
-        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
-        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
-        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
-        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
-        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
-        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
-        <option value="PHYS 113">PHYS 113 - Physics II</option>
-        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
-        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
-        <option value="EENG 215">EENG 215 - Workshop Practice III</option>
-<option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
-<option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
-<option value="EENG 271">EENG 271 - Transducers and Sensors</option>
-<option value="EENG 291">EENG 291 - Physical Electronics I</option>
-<option value="MATH 221">MATH 221 - Calculus II</option>
-<option value="MATH 241">MATH 241 - Probability and Statistics</option>
-<option value="EENG 221">EENG 221 - Industrial Attachment</option>
-<option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
-<option value="EENG 241">EENG 241 - Electrical Machines I</option>
-<option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
-<option value="EENG 272">EENG 272 - Control Systems I</option>
-<option value="EENG 292">EENG 292 - Physical Electronics II</option>
-<option value="MATH 203">MATH 203 - Introduction to Analysis</option>
-<option value="MATH 222">MATH 222 - Vector Analysis</option>
-<option value="EENG 342">EENG 342 - Electrical Machines II</option>
-<option value="EENG 343">EENG 343 - Electrical Motors I</option>
-<option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
-<option value="EENG 361">EENG 361 - Power Systems I</option>
-<option value="EENG 373">EENG 373 - Control Systems II</option>
-<option value="EENG 393">EENG 393 - Analogue Electronics I</option>
-<option value="MATH 322">MATH 322 - Ordinary differential equation</option>
-<option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
-<option value="EENG 323">EENG 323 - Industrial Attachment</option>
-<option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
-<option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
-<option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
-<option value="EENG 363">EENG 363 - Power Electronics I</option>
-<option value="EENG 394">EENG 394 - Digital Electronics</option>
-<option value="EENG 395">EENG 395 - Analogue Electronics II</option>
-<option value="MATH 323">MATH 323 - Numerical Analysis I</option>
-<option value="EENG 425">EENG 425 - Engineering Project I</option>
-<option value="EENG 426">EENG 426 - Industrial Attachment</option>
-<option value="EENG 446">EENG 446 - Electrical Machine Design</option>
-<option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
-<option value="EENG 465">EENG 465 - Power Systems II</option>
-<option value="EENG 474">EENG 474 - Microprocessors I</option>
-<option value="EENG 475">EENG 475 - Control Engineering I</option>
-<option value="EENG 476">EENG 476 - Microprocessor II</option>
-<option value="EENG 482">EENG 482 - Signals and Systems</option>
-<option value="EENG 483">EENG 483 - Communication Systems</option>
-<option value="EENG 561">EENG 561 - Power Electronics II</option>
-<option value="EENG 562">EENG 562 - Power System Protection</option>
-<option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
-<option value="EENG 564">EENG 564 - Power System Analysis</option>
-<option value="EENG 565">EENG 565 - High Voltage Engineering</option>
-<option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
-<option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
-<option value="EENG 573">EENG 573 - Control Engineering II</option>
-<option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
-<option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
-<option value="EENG 576">EENG 576 - FPGA-based System Design</option>
-<option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
-<option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
-<option value="EENG 583">EENG 583 - Transmission and Switching</option>
-<option value="EENG 584">EENG 584 - Digital Signal Processing</option>
-<option value="EENG 585">EENG 585 - Optical Communication</option>
-<option value="EENG 591">EENG 591 - Option-Electronics</option>
-<option value="EENG 592">EENG 592 - Digital System Design</option>
-<option value="EENG 593">EENG 593 - Integrated Electronics</option>
+        <section id="year2" class="tab-content active">
+            <form class="support-form" id="form-year2">
+                <h2>Missing Marks Complaint ( 2nd Year)</h2>
+                <input name="RegNo" placeholder="Your Registration Number" required>
+                <select name="Unit" required>
+                    <option value="">-- Select Unit --</option>
+                    <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+                    <option value="COMS 101">COMS 101 - Communication Skills</option>
+                    <option value="COSC 121">COSC 121 - Intro to Computers</option>
+                    <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+                    <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+                    <option value="MATH 121">MATH 121 - Calculus I</option>
+                    <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+                    <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+                    <option value="PHYS 112">PHYS 112 - Physics I</option>
+                    <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+                    <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+                    <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+                    <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+                    <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+                    <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+                    <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+                    <option value="PHYS 113">PHYS 113 - Physics II</option>
+                    <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+                    <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+                    <!-- Add other 2nd-year units -->
+                </select>
+                <button type="submit">Submit Complaint</button>
+            </form>
+            <!-- NEW: Anonymous Class Issues Form -->
+            <form class="support-form" id="form-anonymous-year2" style="margin-top: 40px;">
+                <h2>Anonymous Class Issue (2nd Year)</h2>
+                <select name="IssueType" required>
+                    <option value="">-- Select Issue Type --</option>
+                    <option value="teaching">Teaching Quality</option>
+                    <option value="resources">Learning Resources</option>
+                    <option value="facilities">Classroom Facilities</option>
+                    <option value="schedule">Class Schedule</option>
+                    <option value="communication">Communication Issues</option>
+                    <option value="other">Other</option>
+                </select>
+                <textarea name="Description" placeholder="Describe the issue in detail..." style="width: 100%; height: 120px; padding: 10px; margin-top: 10px; 
+                         border: 1px solid #ccc; border-radius: 5px; font-family: inherit; 
+                         font-size: 16px; resize: vertical;" required></textarea>
+                <button type="submit">Submit Anonymously</button>
+            </form>
+        </section>
+        </section>
 
-
-        <!-- Add other 2nd-year units -->
-      </select>
-      <button type="submit">Submit Complaint</button>
-    </form>
-  </section>
-
-  <section id="year5" class="tab-content">
-    <form class="support-form" id="form-year5">
-      <h2>Missing Marks Complaint (5th Year)</h2>
-      <input name="Name" placeholder="Your Name" required>
-      <input name="RegNo" placeholder="Your Registration Number" required>
-      <input name="Lecturer" placeholder="Lecturer's Name" required>
-      <select name="Unit" required>
-        <option value="">-- Select Unit --</option>
-<option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
-        <option value="COMS 101">COMS 101 - Communication Skills</option>
-        <option value="COSC 121">COSC 121 - Intro to Computers</option>
-        <option value="EENG 111">EENG 111 - Workshop Practice I</option>
-        <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
-        <option value="MATH 121">MATH 121 - Calculus I</option>
-        <option value="MATH 122">MATH 122 - Basic Mathematics</option>
-        <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
-        <option value="PHYS 112">PHYS 112 - Physics I</option>
-        <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
-        <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
-        <option value="COSC 113">COSC 113 - Computers for Engineering</option>
-        <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
-        <option value="EENG 114">EENG 114 - Workshop Practice II</option>
-        <option value="MATH 141">MATH 141 - Introductory Statistics</option>
-        <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
-        <option value="PHYS 113">PHYS 113 - Physics II</option>
-        <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
-        <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
-        <option value="EENG 215">EENG 215 - Workshop Practice III</option>
-<option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
-<option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
-<option value="EENG 271">EENG 271 - Transducers and Sensors</option>
-<option value="EENG 291">EENG 291 - Physical Electronics I</option>
-<option value="MATH 221">MATH 221 - Calculus II</option>
-<option value="MATH 241">MATH 241 - Probability and Statistics</option>
-<option value="EENG 221">EENG 221 - Industrial Attachment</option>
-<option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
-<option value="EENG 241">EENG 241 - Electrical Machines I</option>
-<option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
-<option value="EENG 272">EENG 272 - Control Systems I</option>
-<option value="EENG 292">EENG 292 - Physical Electronics II</option>
-<option value="MATH 203">MATH 203 - Introduction to Analysis</option>
-<option value="MATH 222">MATH 222 - Vector Analysis</option>
-<option value="EENG 342">EENG 342 - Electrical Machines II</option>
-<option value="EENG 343">EENG 343 - Electrical Motors I</option>
-<option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
-<option value="EENG 361">EENG 361 - Power Systems I</option>
-<option value="EENG 373">EENG 373 - Control Systems II</option>
-<option value="EENG 393">EENG 393 - Analogue Electronics I</option>
-<option value="MATH 322">MATH 322 - Ordinary differential equation</option>
-<option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
-<option value="EENG 323">EENG 323 - Industrial Attachment</option>
-<option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
-<option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
-<option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
-<option value="EENG 363">EENG 363 - Power Electronics I</option>
-<option value="EENG 394">EENG 394 - Digital Electronics</option>
-<option value="EENG 395">EENG 395 - Analogue Electronics II</option>
-<option value="MATH 323">MATH 323 - Numerical Analysis I</option>
-<option value="EENG 425">EENG 425 - Engineering Project I</option>
-<option value="EENG 426">EENG 426 - Industrial Attachment</option>
-<option value="EENG 446">EENG 446 - Electrical Machine Design</option>
-<option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
-<option value="EENG 465">EENG 465 - Power Systems II</option>
-<option value="EENG 474">EENG 474 - Microprocessors I</option>
-<option value="EENG 475">EENG 475 - Control Engineering I</option>
-<option value="EENG 476">EENG 476 - Microprocessor II</option>
-<option value="EENG 482">EENG 482 - Signals and Systems</option>
-<option value="EENG 483">EENG 483 - Communication Systems</option>
-<option value="EENG 561">EENG 561 - Power Electronics II</option>
-<option value="EENG 562">EENG 562 - Power System Protection</option>
-<option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
-<option value="EENG 564">EENG 564 - Power System Analysis</option>
-<option value="EENG 565">EENG 565 - High Voltage Engineering</option>
-<option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
-<option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
-<option value="EENG 573">EENG 573 - Control Engineering II</option>
-<option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
-<option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
-<option value="EENG 576">EENG 576 - FPGA-based System Design</option>
-<option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
-<option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
-<option value="EENG 583">EENG 583 - Transmission and Switching</option>
-<option value="EENG 584">EENG 584 - Digital Signal Processing</option>
-<option value="EENG 585">EENG 585 - Optical Communication</option>
-<option value="EENG 591">EENG 591 - Option-Electronics</option>
-<option value="EENG 592">EENG 592 - Digital System Design</option>
-<option value="EENG 593">EENG 593 - Integrated Electronics</option>
+        <section id="year3" class="tab-content">
+            <form class="support-form" id="form-year3">
+                <h2>Missing Marks Complaint (3rd Year)</h2>
+                <input name="Name" placeholder="Your Name" required>
+                <input name="RegNo" placeholder="Your Registration Number" required>
+                <input name="Lecturer" placeholder="Lecturer's Name" required>
+                <select name="Unit" required>
+                    <option value="">-- Select Unit --</option>
+                    <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+                    <option value="COMS 101">COMS 101 - Communication Skills</option>
+                    <option value="COSC 121">COSC 121 - Intro to Computers</option>
+                    <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+                    <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+                    <option value="MATH 121">MATH 121 - Calculus I</option>
+                    <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+                    <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+                    <option value="PHYS 112">PHYS 112 - Physics I</option>
+                    <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+                    <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+                    <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+                    <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+                    <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+                    <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+                    <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+                    <option value="PHYS 113">PHYS 113 - Physics II</option>
+                    <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+                    <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+                    <option value="EENG 215">EENG 215 - Workshop Practice III</option>
+                    <option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
+                    <option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
+                    <option value="EENG 271">EENG 271 - Transducers and Sensors</option>
+                    <option value="EENG 291">EENG 291 - Physical Electronics I</option>
+                    <option value="MATH 221">MATH 221 - Calculus II</option>
+                    <option value="MATH 241">MATH 241 - Probability and Statistics</option>
+                    <option value="EENG 221">EENG 221 - Industrial Attachment</option>
+                    <option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
+                    <option value="EENG 241">EENG 241 - Electrical Machines I</option>
+                    <option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
+                    <option value="EENG 272">EENG 272 - Control Systems I</option>
+                    <option value="EENG 292">EENG 292 - Physical Electronics II</option>
+                    <option value="MATH 203">MATH 203 - Introduction to Analysis</option>
+                    <option value="MATH 222">MATH 222 - Vector Analysis</option>
+                    <option value="EENG 342">EENG 342 - Electrical Machines II</option>
+                    <option value="EENG 343">EENG 343 - Electrical Motors I</option>
+                    <option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
+                    <option value="EENG 361">EENG 361 - Power Systems I</option>
+                    <option value="EENG 373">EENG 373 - Control Systems II</option>
+                    <option value="EENG 393">EENG 393 - Analogue Electronics I</option>
+                    <option value="MATH 322">MATH 322 - Ordinary differential equation</option>
+                    <option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
+                    <option value="EENG 323">EENG 323 - Industrial Attachment</option>
+                    <option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
+                    <option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
+                    <option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
+                    <option value="EENG 363">EENG 363 - Power Electronics I</option>
+                    <option value="EENG 394">EENG 394 - Digital Electronics</option>
+                    <option value="EENG 395">EENG 395 - Analogue Electronics II</option>
+                    <option value="MATH 323">MATH 323 - Numerical Analysis I</option>
+                    <option value="EENG 425">EENG 425 - Engineering Project I</option>
+                    <option value="EENG 426">EENG 426 - Industrial Attachment</option>
+                    <option value="EENG 446">EENG 446 - Electrical Machine Design</option>
+                    <option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
+                    <option value="EENG 465">EENG 465 - Power Systems II</option>
+                    <option value="EENG 474">EENG 474 - Microprocessors I</option>
+                    <option value="EENG 475">EENG 475 - Control Engineering I</option>
+                    <option value="EENG 476">EENG 476 - Microprocessor II</option>
+                    <option value="EENG 482">EENG 482 - Signals and Systems</option>
+                    <option value="EENG 483">EENG 483 - Communication Systems</option>
+                    <option value="EENG 561">EENG 561 - Power Electronics II</option>
+                    <option value="EENG 562">EENG 562 - Power System Protection</option>
+                    <option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
+                    <option value="EENG 564">EENG 564 - Power System Analysis</option>
+                    <option value="EENG 565">EENG 565 - High Voltage Engineering</option>
+                    <option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
+                    <option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
+                    <option value="EENG 573">EENG 573 - Control Engineering II</option>
+                    <option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
+                    <option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
+                    <option value="EENG 576">EENG 576 - FPGA-based System Design</option>
+                    <option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
+                    <option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
+                    <option value="EENG 583">EENG 583 - Transmission and Switching</option>
+                    <option value="EENG 584">EENG 584 - Digital Signal Processing</option>
+                    <option value="EENG 585">EENG 585 - Optical Communication</option>
+                    <option value="EENG 591">EENG 591 - Option-Electronics</option>
+                    <option value="EENG 592">EENG 592 - Digital System Design</option>
+                    <option value="EENG 593">EENG 593 - Integrated Electronics</option>
 
 
-        <!-- Add other 2nd-year units -->
-      </select>
-      <button type="submit">Submit Complaint</button>
-    </form>
-  </section>
-</main>
+                    <!-- Add other 2nd-year units -->
+                </select>
+                <button type="submit">Submit Complaint</button>
+            </form>
+        </section>
 
-<script>
-  function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
-  }
-  function showTab(id) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.target.classList.add('active');
-  }
-</script>
+        <section id="year4" class="tab-content">
+            <form class="support-form" id="form-year4">
+                <h2>Missing Marks Complaint (4th Year)</h2>
+                <input name="Name" placeholder="Your Name" required>
+                <input name="RegNo" placeholder="Your Registration Number" required>
+                <input name="Lecturer" placeholder="Lecturer's Name" required>
+                <select name="Unit" required>
+                    <option value="">-- Select Unit --</option>
+                    <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+                    <option value="COMS 101">COMS 101 - Communication Skills</option>
+                    <option value="COSC 121">COSC 121 - Intro to Computers</option>
+                    <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+                    <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+                    <option value="MATH 121">MATH 121 - Calculus I</option>
+                    <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+                    <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+                    <option value="PHYS 112">PHYS 112 - Physics I</option>
+                    <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+                    <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+                    <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+                    <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+                    <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+                    <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+                    <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+                    <option value="PHYS 113">PHYS 113 - Physics II</option>
+                    <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+                    <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+                    <option value="EENG 215">EENG 215 - Workshop Practice III</option>
+                    <option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
+                    <option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
+                    <option value="EENG 271">EENG 271 - Transducers and Sensors</option>
+                    <option value="EENG 291">EENG 291 - Physical Electronics I</option>
+                    <option value="MATH 221">MATH 221 - Calculus II</option>
+                    <option value="MATH 241">MATH 241 - Probability and Statistics</option>
+                    <option value="EENG 221">EENG 221 - Industrial Attachment</option>
+                    <option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
+                    <option value="EENG 241">EENG 241 - Electrical Machines I</option>
+                    <option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
+                    <option value="EENG 272">EENG 272 - Control Systems I</option>
+                    <option value="EENG 292">EENG 292 - Physical Electronics II</option>
+                    <option value="MATH 203">MATH 203 - Introduction to Analysis</option>
+                    <option value="MATH 222">MATH 222 - Vector Analysis</option>
+                    <option value="EENG 342">EENG 342 - Electrical Machines II</option>
+                    <option value="EENG 343">EENG 343 - Electrical Motors I</option>
+                    <option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
+                    <option value="EENG 361">EENG 361 - Power Systems I</option>
+                    <option value="EENG 373">EENG 373 - Control Systems II</option>
+                    <option value="EENG 393">EENG 393 - Analogue Electronics I</option>
+                    <option value="MATH 322">MATH 322 - Ordinary differential equation</option>
+                    <option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
+                    <option value="EENG 323">EENG 323 - Industrial Attachment</option>
+                    <option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
+                    <option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
+                    <option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
+                    <option value="EENG 363">EENG 363 - Power Electronics I</option>
+                    <option value="EENG 394">EENG 394 - Digital Electronics</option>
+                    <option value="EENG 395">EENG 395 - Analogue Electronics II</option>
+                    <option value="MATH 323">MATH 323 - Numerical Analysis I</option>
+                    <option value="EENG 425">EENG 425 - Engineering Project I</option>
+                    <option value="EENG 426">EENG 426 - Industrial Attachment</option>
+                    <option value="EENG 446">EENG 446 - Electrical Machine Design</option>
+                    <option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
+                    <option value="EENG 465">EENG 465 - Power Systems II</option>
+                    <option value="EENG 474">EENG 474 - Microprocessors I</option>
+                    <option value="EENG 475">EENG 475 - Control Engineering I</option>
+                    <option value="EENG 476">EENG 476 - Microprocessor II</option>
+                    <option value="EENG 482">EENG 482 - Signals and Systems</option>
+                    <option value="EENG 483">EENG 483 - Communication Systems</option>
+                    <option value="EENG 561">EENG 561 - Power Electronics II</option>
+                    <option value="EENG 562">EENG 562 - Power System Protection</option>
+                    <option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
+                    <option value="EENG 564">EENG 564 - Power System Analysis</option>
+                    <option value="EENG 565">EENG 565 - High Voltage Engineering</option>
+                    <option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
+                    <option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
+                    <option value="EENG 573">EENG 573 - Control Engineering II</option>
+                    <option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
+                    <option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
+                    <option value="EENG 576">EENG 576 - FPGA-based System Design</option>
+                    <option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
+                    <option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
+                    <option value="EENG 583">EENG 583 - Transmission and Switching</option>
+                    <option value="EENG 584">EENG 584 - Digital Signal Processing</option>
+                    <option value="EENG 585">EENG 585 - Optical Communication</option>
+                    <option value="EENG 591">EENG 591 - Option-Electronics</option>
+                    <option value="EENG 592">EENG 592 - Digital System Design</option>
+                    <option value="EENG 593">EENG 593 - Integrated Electronics</option>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  const app = initializeApp({
-    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-    authDomain: "bsceee-webpage.firebaseapp.com",
-    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-    projectId: "bsceee-webpage",
-    storageBucket: "bsceee-webpage.appspot.com",
-    messagingSenderId: "281106710079",
-    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
-  });
-  const db = getDatabase(app);
+                    <!-- Add other 2nd-year units -->
+                </select>
+                <button type="submit">Submit Complaint</button>
+            </form>
+        </section>
 
-  // 2nd year complaint logic with duplicate prevention
-  const form2 = document.getElementById("form-year2");
-  form2.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const regNo = form2.RegNo.value.trim().toUpperCase();
-    const unit = form2.Unit.value;
+        <section id="year5" class="tab-content">
+            <form class="support-form" id="form-year5">
+                <h2>Missing Marks Complaint (5th Year)</h2>
+                <input name="Name" placeholder="Your Name" required>
+                <input name="RegNo" placeholder="Your Registration Number" required>
+                <input name="Lecturer" placeholder="Lecturer's Name" required>
+                <select name="Unit" required>
+                    <option value="">-- Select Unit --</option>
+                    <option value="CHEM 110">CHEM 110 - Inorganic Chemistry</option>
+                    <option value="COMS 101">COMS 101 - Communication Skills</option>
+                    <option value="COSC 121">COSC 121 - Intro to Computers</option>
+                    <option value="EENG 111">EENG 111 - Workshop Practice I</option>
+                    <option value="EENG 112">EENG 112 - Engineering Drawing I</option>
+                    <option value="MATH 121">MATH 121 - Calculus I</option>
+                    <option value="MATH 122">MATH 122 - Basic Mathematics</option>
+                    <option value="MATH 124">MATH 124 - Geometry and Linear Algebra</option>
+                    <option value="PHYS 112">PHYS 112 - Physics I</option>
+                    <option value="PHYS 121">PHYS 121 - Physics Practical I</option>
+                    <option value="CHEM 120">CHEM 120 - Physical Chemistry</option>
+                    <option value="COSC 113">COSC 113 - Computers for Engineering</option>
+                    <option value="EENG 113">EENG 113 - Engineering Drawing II</option>
+                    <option value="EENG 114">EENG 114 - Workshop Practice II</option>
+                    <option value="MATH 141">MATH 141 - Introductory Statistics</option>
+                    <option value="PHIL 100">PHIL 100 - Intro to Philosophy</option>
+                    <option value="PHYS 113">PHYS 113 - Physics II</option>
+                    <option value="PHYS 122">PHYS 122 - Physics Practical II</option>
+                    <option value="ZOOL 143">ZOOL 143 - HIV/AIDS and Society</option>
+                    <option value="EENG 215">EENG 215 - Workshop Practice III</option>
+                    <option value="EENG 231">EENG 231 - Electrical Engineering Materials</option>
+                    <option value="EENG 232">EENG 232 - Electromagnetic Field Theory</option>
+                    <option value="EENG 271">EENG 271 - Transducers and Sensors</option>
+                    <option value="EENG 291">EENG 291 - Physical Electronics I</option>
+                    <option value="MATH 221">MATH 221 - Calculus II</option>
+                    <option value="MATH 241">MATH 241 - Probability and Statistics</option>
+                    <option value="EENG 221">EENG 221 - Industrial Attachment</option>
+                    <option value="EENG 222">EENG 222 - Technical Report Writing and Presentation Skills</option>
+                    <option value="EENG 241">EENG 241 - Electrical Machines I</option>
+                    <option value="EENG 251">EENG 251 - Circuit and Network Analysis I</option>
+                    <option value="EENG 272">EENG 272 - Control Systems I</option>
+                    <option value="EENG 292">EENG 292 - Physical Electronics II</option>
+                    <option value="MATH 203">MATH 203 - Introduction to Analysis</option>
+                    <option value="MATH 222">MATH 222 - Vector Analysis</option>
+                    <option value="EENG 342">EENG 342 - Electrical Machines II</option>
+                    <option value="EENG 343">EENG 343 - Electrical Motors I</option>
+                    <option value="EENG 352">EENG 352 - Circuit and Network Analysis II</option>
+                    <option value="EENG 361">EENG 361 - Power Systems I</option>
+                    <option value="EENG 373">EENG 373 - Control Systems II</option>
+                    <option value="EENG 393">EENG 393 - Analogue Electronics I</option>
+                    <option value="MATH 322">MATH 322 - Ordinary differential equation</option>
+                    <option value="COSC 316">COSC 316 - Embedded Software Development Principles</option>
+                    <option value="EENG 323">EENG 323 - Industrial Attachment</option>
+                    <option value="EENG 353">EENG 353 - Electronic Devices & Circuits</option>
+                    <option value="EENG 354">EENG 354 - Systems Digital Logic Design</option>
+                    <option value="EENG 362">EENG 362 - Renewable Energy Systems</option>
+                    <option value="EENG 363">EENG 363 - Power Electronics I</option>
+                    <option value="EENG 394">EENG 394 - Digital Electronics</option>
+                    <option value="EENG 395">EENG 395 - Analogue Electronics II</option>
+                    <option value="MATH 323">MATH 323 - Numerical Analysis I</option>
+                    <option value="EENG 425">EENG 425 - Engineering Project I</option>
+                    <option value="EENG 426">EENG 426 - Industrial Attachment</option>
+                    <option value="EENG 446">EENG 446 - Electrical Machine Design</option>
+                    <option value="EENG 455">EENG 455 - Electrical Network Analysis</option>
+                    <option value="EENG 465">EENG 465 - Power Systems II</option>
+                    <option value="EENG 474">EENG 474 - Microprocessors I</option>
+                    <option value="EENG 475">EENG 475 - Control Engineering I</option>
+                    <option value="EENG 476">EENG 476 - Microprocessor II</option>
+                    <option value="EENG 482">EENG 482 - Signals and Systems</option>
+                    <option value="EENG 483">EENG 483 - Communication Systems</option>
+                    <option value="EENG 561">EENG 561 - Power Electronics II</option>
+                    <option value="EENG 562">EENG 562 - Power System Protection</option>
+                    <option value="EENG 563">EENG 563 - Electrical Power Transmission</option>
+                    <option value="EENG 564">EENG 564 - Power System Analysis</option>
+                    <option value="EENG 565">EENG 565 - High Voltage Engineering</option>
+                    <option value="EENG 571">EENG 571 - Instrumentation and Measurements</option>
+                    <option value="EENG 572">EENG 572 - Artificial Neural Networks & Intelligent systems</option>
+                    <option value="EENG 573">EENG 573 - Control Engineering II</option>
+                    <option value="EENG 574">EENG 574 - Programmable Logic Controller</option>
+                    <option value="EENG 575">EENG 575 - Digital Control and Embedded systems</option>
+                    <option value="EENG 576">EENG 576 - FPGA-based System Design</option>
+                    <option value="EENG 581">EENG 581 - Satellite Communication Engineering</option>
+                    <option value="EENG 582">EENG 582 - Wireless and Mobile Communication II</option>
+                    <option value="EENG 583">EENG 583 - Transmission and Switching</option>
+                    <option value="EENG 584">EENG 584 - Digital Signal Processing</option>
+                    <option value="EENG 585">EENG 585 - Optical Communication</option>
+                    <option value="EENG 591">EENG 591 - Option-Electronics</option>
+                    <option value="EENG 592">EENG 592 - Digital System Design</option>
+                    <option value="EENG 593">EENG 593 - Integrated Electronics</option>
 
-    const regRef = ref(db, 'registrations/' + regNo);
-    const regSnap = await get(regRef);
-    if (!regSnap.exists()) return alert("This Reg Number is not registered.");
 
-    const complaintsRef = ref(db, 'complaints/' + regNo);
-    const complaintsSnap = await get(complaintsRef);
-    if (complaintsSnap.exists()) {
-      for (const entry of Object.values(complaintsSnap.val())) {
-        if (entry.unit === unit) return alert("Complaint already exists for this unit.");
-      }
-    }
-    const timestamp = Date.now();
-    await set(ref(db, `complaints/${regNo}/${timestamp}`), {
-      regNo,
-      unit,
-      type: "Missing Marks",
-      submittedAt: new Date().toISOString()
-    });
-    alert("Complaint submitted!");
-    form2.reset();
-  });
+                    <!-- Add other 2nd-year units -->
+                </select>
+                <button type="submit">Submit Complaint</button>
+            </form>
+        </section>
+    </main>
 
-  // Other years (open input, unique paths)
-  ["form-year1", "form-year3", "form-year4", "form-year5"].forEach(id => {
-    const form = document.getElementById(id);
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = form.Name.value.trim();
-      const regNo = form.RegNo.value.trim().toUpperCase();
-      const unit = form.Unit.value.trim();
-      const lecturer = form.Lecturer.value.trim();
-      if (!name || !regNo || !unit || !lecturer) return alert("Fill in all fields.");
-      const timestamp = Date.now();
-      const yearKey = id.split("-")[1];
-      await set(ref(db, `complaints_${yearKey}/${regNo}/${timestamp}`), {
-        name,
-        regNo,
-        unit,
-        lecturer,
-        type: "Missing Marks",
-        submittedAt: new Date().toISOString()
-      });
-      alert("Complaint submitted!");
-      form.reset();
-    });
-  });
-</script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        const app = initializeApp({
+            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+            authDomain: "bsceee-webpage.firebaseapp.com",
+            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+            projectId: "bsceee-webpage",
+            storageBucket: "bsceee-webpage.appspot.com",
+            messagingSenderId: "281106710079",
+            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a"
+        });
+        const db = getDatabase(app);
+
+        // 2nd year complaint logic with duplicate prevention
+        const form2 = document.getElementById("form-year2");
+        form2.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const regNo = form2.RegNo.value.trim().toUpperCase();
+            const unit = form2.Unit.value;
+
+            const regRef = ref(db, 'registrations/' + regNo);
+            const regSnap = await get(regRef);
+            if (!regSnap.exists()) return alert("This Reg Number is not registered.");
+
+            const complaintsRef = ref(db, 'complaints/' + regNo);
+            const complaintsSnap = await get(complaintsRef);
+            if (complaintsSnap.exists()) {
+                for (const entry of Object.values(complaintsSnap.val())) {
+                    if (entry.unit === unit) return alert("Complaint already exists for this unit.");
+                }
+            }
+            const timestamp = Date.now();
+            await set(ref(db, `complaints/${regNo}/${timestamp}`), {
+                regNo,
+                unit,
+                type: "Missing Marks",
+                submittedAt: new Date().toISOString()
+            });
+            alert("Complaint submitted!");
+            form2.reset();
+        });
+
+        // Other years (open input, unique paths)
+        ["form-year1", "form-year3", "form-year4", "form-year5"].forEach(id => {
+            const form = document.getElementById(id);
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const name = form.Name.value.trim();
+                const regNo = form.RegNo.value.trim().toUpperCase();
+                const unit = form.Unit.value.trim();
+                const lecturer = form.Lecturer.value.trim();
+                if (!name || !regNo || !unit || !lecturer) return alert("Fill in all fields.");
+                const timestamp = Date.now();
+                const yearKey = id.split("-")[1];
+                await set(ref(db, `complaints_${yearKey}/${regNo}/${timestamp}`), {
+                    name,
+                    regNo,
+                    unit,
+                    lecturer,
+                    type: "Missing Marks",
+                    submittedAt: new Date().toISOString()
+                });
+                alert("Complaint submitted!");
+                form.reset();
+            });
+        });
+
+
+        // Anonymous Issues Submission
+        const anonymousForm = document.getElementById('form-anonymous-year2');
+        anonymousForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const issueType = anonymousForm.IssueType.value;
+            const description = anonymousForm.Description.value.trim();
+
+            if (!issueType || !description) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const timestamp = Date.now();
+            await set(ref(db, `anonymous_issues/year2/${timestamp}`), {
+                issueType,
+                description,
+                submittedAt: new Date().toISOString()
+            });
+
+            alert("Anonymous issue submitted successfully!");
+            anonymousForm.reset();
+        });
+    </script>
 </body>
+
 </html>
-
-
-
-
