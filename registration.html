@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Semester Registration - BSCEEE Y2S1</title>
     <link rel="stylesheet" href="style.css" />
-     <link rel="icon" href="pngegg.png">
     <style>
         .registration-form {
             max-width: 600px;
@@ -23,7 +22,8 @@
             color: #004080;
         }
 
-        .registration-form input {
+        .registration-form input,
+        .registration-form select {
             width: 100%;
             padding: 10px;
             font-size: 16px;
@@ -48,16 +48,25 @@
             background-color: #003366;
         }
 
+        .shift-status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
 
+        .shift-full {
+            background-color: #ffcccc;
+            color: #cc0000;
+            border: 1px solid #cc0000;
+        }
 
-
-
-
-
-
-
-
-
+        .shift-available {
+            background-color: #ccffcc;
+            color: #006600;
+            border: 1px solid #006600;
+        }
 
         .groupRegistration {
             max-width: 600px;
@@ -213,6 +222,28 @@
             </form>
         </section>
 
+
+
+        <section class="registration-form">
+            <h2>Trip Shift Registration</h2>
+            <div id="shift1Status" class="shift-status shift-available">
+                Shift 1: 0/51 registered
+            </div>
+            <div id="shift2Status" class="shift-status shift-available">
+                Shift 2: 0/52 registered
+            </div>
+            <form id="tripForm">
+                <input type="text" id="tripName" placeholder="Full Name" required>
+                <input type="text" id="tripRegNo" placeholder="Registration Number" required>
+                <select id="tripShift" required>
+                    <option value="">Select Shift</option>
+                    <option value="shift1">Shift 1 (Max: 51 students)</option>
+                    <option value="shift2">Shift 2 (Max: 52 students)</option>
+                </select>
+                <button type="submit" id="tripSubmitBtn">Register for Trip</button>
+            </form>
+        </section>
+
     </main>
 
     <!-- Sidebar Script -->
@@ -223,9 +254,16 @@
     </script>
     <!-- Firebase App and DB -->
     <script type="module">
-        // Import Firebase modules
+        // Import Firebase modules - ADDED push and onValue
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            push,
+            onValue  // Added onValue import
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
         // Firebase config
         const firebaseConfig = {
@@ -436,8 +474,172 @@
                 alert("Something went wrong. Please try again.");
             }
         });
+
+        // Trip Shift Registration Functionality
+        const tripForm = document.getElementById('tripForm');
+        const shift1Status = document.getElementById('shift1Status');
+        const shift2Status = document.getElementById('shift2Status');
+        const tripShiftSelect = document.getElementById('tripShift');
+
+        // Track shift counts
+        let shift1Count = 0;
+        let shift2Count = 0;
+        const SHIFT1_MAX = 51;
+        const SHIFT2_MAX = 52;
+
+        // Function to update shift status display
+        function updateShiftStatus() {
+            shift1Status.textContent = `Shift 1: ${shift1Count}/${SHIFT1_MAX} registered`;
+            shift2Status.textContent = `Shift 2: ${shift2Count}/${SHIFT2_MAX} registered`;
+
+            // Update status colors
+            if (shift1Count >= SHIFT1_MAX) {
+                shift1Status.className = 'shift-status shift-full';
+                shift1Status.innerHTML += ' (FULL)';
+            } else {
+                shift1Status.className = 'shift-status shift-available';
+            }
+
+            if (shift2Count >= SHIFT2_MAX) {
+                shift2Status.className = 'shift-status shift-full';
+                shift2Status.innerHTML += ' (FULL)';
+            } else {
+                shift2Status.className = 'shift-status shift-available';
+            }
+
+            // Update select options
+            const shift1Option = tripShiftSelect.querySelector('option[value="shift1"]');
+            const shift2Option = tripShiftSelect.querySelector('option[value="shift2"]');
+
+            if (shift1Count >= SHIFT1_MAX) {
+                shift1Option.disabled = true;
+                shift1Option.textContent = 'Shift 1 (FULL - Max: 51 students)';
+            } else {
+                shift1Option.disabled = false;
+                shift1Option.textContent = 'Shift 1 (Max: 51 students)';
+            }
+
+            if (shift2Count >= SHIFT2_MAX) {
+                shift2Option.disabled = true;
+                shift2Option.textContent = 'Shift 2 (FULL - Max: 52 students)';
+            } else {
+                shift2Option.disabled = false;
+                shift2Option.textContent = 'Shift 2 (Max: 52 students)';
+            }
+        }
+
+        // Load current shift counts from Firebase
+        function loadShiftCounts() {
+            const shift1Ref = ref(db, 'trip/shift1');
+            const shift2Ref = ref(db, 'trip/shift2');
+
+            onValue(shift1Ref, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    shift1Count = Object.keys(data).length;
+                } else {
+                    shift1Count = 0;
+                }
+                updateShiftStatus();
+            });
+
+            onValue(shift2Ref, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    shift2Count = Object.keys(data).length;
+                } else {
+                    shift2Count = 0;
+                }
+                updateShiftStatus();
+            });
+        }
+
+        // Handle trip registration form submission
+        tripForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('tripName').value.trim();
+            const regNo = document.getElementById('tripRegNo').value.trim().toUpperCase();
+            const shift = document.getElementById('tripShift').value;
+
+            if (!name || !regNo || !shift) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Check if shift is full
+            if (shift === 'shift1' && shift1Count >= SHIFT1_MAX) {
+                alert("Shift 1 is full! Please select Shift 2.");
+                tripShiftSelect.value = 'shift2';
+                return;
+            }
+
+            if (shift === 'shift2' && shift2Count >= SHIFT2_MAX) {
+                alert("Shift 2 is full! Please select Shift 1.");
+                tripShiftSelect.value = 'shift1';
+                return;
+            }
+
+            // Check if registration number already registered for trip
+            const tripRef = ref(db, 'trip');
+            try {
+                const snapshot = await get(tripRef);
+                let alreadyRegistered = false;
+                let registeredShift = '';
+
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+
+                    // Check shift1
+                    if (data.shift1) {
+                        for (const key in data.shift1) {
+                            if (data.shift1[key].regNo === regNo) {
+                                alreadyRegistered = true;
+                                registeredShift = 'Shift 1';
+                                break;
+                            }
+                        }
+                    }
+
+                    // Check shift2
+                    if (!alreadyRegistered && data.shift2) {
+                        for (const key in data.shift2) {
+                            if (data.shift2[key].regNo === regNo) {
+                                alreadyRegistered = true;
+                                registeredShift = 'Shift 2';
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (alreadyRegistered) {
+                    alert(`Registration number ${regNo} is already registered for ${registeredShift}.`);
+                    return;
+                }
+
+                // Register for selected shift - FIXED: Using push correctly
+                const shiftRef = ref(db, `trip/${shift}`);
+                const newRegistrationRef = push(shiftRef);
+                await set(newRegistrationRef, {
+                    name: name,
+                    regNo: regNo,
+                    shift: shift,
+                    timestamp: new Date().toISOString()
+                });
+
+                alert(`Successfully registered for ${shift === 'shift1' ? 'Shift 1' : 'Shift 2'}!`);
+                tripForm.reset();
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
+
+        // Load initial shift counts when page loads
+        loadShiftCounts();
     </script>
 </body>
 
 </html>
-
