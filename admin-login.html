@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - BSCEEE Y2S1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #004080;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .login-header i {
+            font-size: 3em;
+            color: #004080;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #004080;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #004080;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #003366;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #004080;
+            text-decoration: none;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .role-selector {
+            margin-bottom: 20px;
+        }
+
+        .role-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-lock"></i>
+            <h1>Admin Login</h1>
+            <p>BSCEEE Y2S1 Control Panel</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">Invalid credentials</span>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="adminEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="adminEmail" placeholder="Enter admin email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="adminPassword"><i class="fas fa-key"></i> Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Login to Admin Panel
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i> Authenticating...
+        </div>
+
+        <div class="back-link">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Homepage</a>
+        </div>
+
+        <div class="login-footer">
+            <p>Restricted Access - Authorized Personnel Only</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+            authDomain: "bsceee-webpage.firebaseapp.com",
+            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+            projectId: "bsceee-webpage",
+            storageBucket: "bsceee-webpage.appspot.com",
+            messagingSenderId: "281106710079",
+            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+            measurementId: "G-B1M7SSEZYP"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // ALWAYS show login form, don't auto-redirect
+        let autoRedirectEnabled = false;
+
+        // Login function
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+
+            // Enable auto-redirect for this session
+            autoRedirectEnabled = true;
+
+            // Sign in with email and password
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+
+                    // Check if user is admin
+                    return db.ref('admins/' + user.uid).once('value');
+                })
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        // User is admin, redirect to dashboard
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        // User is not admin, sign them out
+                        auth.signOut();
+                        showError('Access denied. You are not authorized as an admin.');
+                    }
+                })
+                .catch((error) => {
+                    // Handle errors
+                    let errorMessage = 'Login failed. Please try again.';
+
+                    switch (error.code) {
+                        case 'auth/invalid-email':
+                            errorMessage = 'Invalid email address.';
+                            break;
+                        case 'auth/user-disabled':
+                            errorMessage = 'This account has been disabled.';
+                            break;
+                        case 'auth/user-not-found':
+                            errorMessage = 'No account found with this email.';
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage = 'Incorrect password.';
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMessage = 'Too many failed attempts. Please try again later.';
+                            break;
+                    }
+
+                    showError(errorMessage);
+                })
+                .finally(() => {
+                    document.getElementById('loading').style.display = 'none';
+                });
+        });
+
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        // Check if user is already logged in - but don't auto-redirect
+        auth.onAuthStateChanged((user) => {
+            if (user && autoRedirectEnabled) {
+                // Only redirect if we just logged in
+                db.ref('admins/' + user.uid).once('value').then((snapshot) => {
+                    if (snapshot.exists()) {
+                        window.location.href = 'admin-dashboard.html';
+                    }
+                });
+            }
+        });
+
+        // Enter key to submit form
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Add logout link for testing
+        document.getElementById('loginForm').innerHTML += `
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="#" onclick="forceLogout()" style="color: #666; font-size: 0.9em;">
+            <i class="fas fa-sign-out-alt"></i> Clear Session & Show Login
+        </a>
+    </div>
+`;
+
+        function forceLogout() {
+            auth.signOut().then(() => {
+                location.reload();
+            });
+        }
+    </script>
+
+</body>
+
+</html>
