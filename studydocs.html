@@ -2,252 +2,282 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BSCEEEY2S1 - Study Documents</title>
-    <link rel="stylesheet" href="style.css">
-     <link rel="icon" href="pngegg.png">
-    <style>
-        /* Your existing CSS styles */
-        .collapsible {
-            background-color: #f2f2f2;
-            color: #000;
-            cursor: pointer;
-            padding: 12px;
-            width: 100%;
-            border: none;
-            text-align: left;
-            outline: none;
-            font-size: 16px;
-            font-weight: bold;
-            border-bottom: 1px solid #ccc;
-            transition: background-color 0.3s;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSCEEEY2S1 - Study Documents</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" href="pngegg.png">
+  <style>
+    /* Your existing CSS styles */
+    .collapsible {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      /* ADD THIS LINE */
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      text-align: left;
+      /* ADD THIS TOO */
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 600;
+    }
 
-        .collapsible:hover {
-            background-color: #e0e0e0;
-        }
+    .collapsible:hover {
+      background-color: var(--bg-tertiary);
+      /* was #e0e0e0 */
+    }
 
-        .content {
-            padding: 0 15px;
-            display: none;
-            overflow: hidden;
-            background-color: #fff;
-        }
+    .content {
+      padding: 0 15px;
+      display: none;
+      overflow: hidden;
+      background-color: var(--bg-primary);
+      /* was #fff */
+    }
 
-        .unit ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
+    .unit ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
 
-        .unit ul li a {
-            text-decoration: none;
-            color: #0066cc;
-        }
+    .unit ul li a {
+      text-decoration: none;
+      color: var(--primary);
+      /* was #0066cc */
+    }
 
-        .unit ul li a:hover {
-            text-decoration: underline;
-        }
+    .unit ul li a:hover {
+      text-decoration: underline;
+    }
 
-        .unit {
-            margin-left: 20px;
-        }
+    .unit {
+      margin-left: 20px;
+    }
 
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
 
-        .error {
-            text-align: center;
-            padding: 20px;
-            color: red;
-            background: #ffe6e6;
-            margin: 10px;
-            border-radius: 5px;
-        }
-    </style>
+    .error {
+      text-align: center;
+      padding: 20px;
+      color: red;
+      background: #ffe6e6;
+      margin: 10px;
+      border-radius: 5px;
+    }
+
+
+    .study-docs h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+  </style>
 </head>
 
-<body>
+<div id="overlay"></div>
 
-    <!-- Top Nav -->
-    <header>
-        <nav>
-            <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-            <div class="title">
-                <h1>Study Documents</h1>
-            </div>
-            <div class="logo">
-                <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
-            </div>
-        </nav>
-    </header>
-
-    <!-- Sidebar -->
-    <div id="sidebar">
-        <a href="index.html">HOME</a>
-        <a href="timetable.html">TIMETABLE</a>
-        <a href="assignments.html">ASSIGNMENT</a>
-        <a href="studydocs.html">STUDY DOCUMENTS</a>
-        <a href="gallery.html">GALLERY</a>
-        <a href="sports.html">SPORTS</a>
-        <a href="personell.html">PERSONNEL</a>
-        <a href="registration.html">SEMESTER REGISTRATION</a>
-        <a href="support.html">ACADEMIC SUPPORT</a>
+<header>
+  <nav>
+    <div class="nav-left">
+      <button id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="logo">
+        <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo">
+        <div class="logo-text">
+          <h1>Chuka University</h1>
+          <p>Faculty of Engineering</p>
+        </div>
+      </div>
     </div>
+    <div class="nav-actions">
+      <div id="adminIndicator">
+        <i class="fas fa-crown"></i> Admin
+      </div>
+      <button id="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+</header>
 
-    <!-- Main Content -->
-    <section class="study-docs">
-        <h2 style="margin-top: 25px;">Study Documents</h2>
+<div id="sidebar">
+  <a href="index.html"><i class="fas fa-home"></i> Home</a>
+  <a href="timetable.html"><i class="fas fa-calendar"></i> Timetable</a>
+  <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+  <a href="studydocs.html"><i class="fas fa-book"></i> Study Documents</a>
+  <a href="gallery.html"><i class="fas fa-images"></i> Gallery</a>
+  <a href="sports.html"><i class="fas fa-futbol"></i> Sports</a>
+  <a href="personell.html"><i class="fas fa-users"></i> Personnel</a>
+  <a href="registration.html"><i class="fas fa-clipboard-list"></i> Registration</a>
+  <a href="support.html"><i class="fas fa-life-ring"></i> Academic Support</a>
+  <a href="admin-login.html" id="adminLoginLink"><i class="fas fa-lock"></i> Admin Login</a>
+  <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none;"><i class="fas fa-cogs"></i>
+    Dashboard</a>
+</div>
 
-        <!-- Loading State -->
-        <div id="loadingState" class="loading">
-            <p>📚 Loading study documents...</p>
-        </div>
 
-        <!-- Error State -->
-        <div id="errorState" class="error" style="display: none;">
-            <p>❌ Error loading documents. Please try again later.</p>
-        </div>
+<!-- Main Content -->
+<section class="study-docs">
+  <h2 style="margin-top: 60px;">Study Documents</h2>
 
-        <!-- Dynamic Content will be inserted here -->
-        <div id="studyDocsContainer"></div>
+  <!-- Loading State -->
+  <div id="loadingState" class="loading">
+    <p>📚 Loading study documents...</p>
+  </div>
 
-    </section>
+  <!-- Error State -->
+  <div id="errorState" class="error" style="display: none;">
+    <p>❌ Error loading documents. Please try again later.</p>
+  </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <!-- Dynamic Content will be inserted here -->
+  <div id="studyDocsContainer"></div>
 
-    <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
-            authDomain: "bsceee-webpage.firebaseapp.com",
-            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
-            projectId: "bsceee-webpage",
-            storageBucket: "bsceee-webpage.appspot.com",
-            messagingSenderId: "281106710079",
-            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
-            measurementId: "G-B1M7SSEZYP"
-        };
+</section>
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-        // Load study documents from Firebase
-        function loadStudyDocuments() {
-            const loadingElement = document.getElementById('loadingState');
-            const errorElement = document.getElementById('errorState');
-            const container = document.getElementById('studyDocsContainer');
+<script>
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+    authDomain: "bsceee-webpage.firebaseapp.com",
+    databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+    projectId: "bsceee-webpage",
+    storageBucket: "bsceee-webpage.appspot.com",
+    messagingSenderId: "281106710079",
+    appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+    measurementId: "G-B1M7SSEZYP"
+  };
 
-            db.ref('studyDocuments').once('value')
-                .then((snapshot) => {
-                    const studyData = snapshot.val();
-                    loadingElement.style.display = 'none';
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-                    if (!studyData) {
-                        container.innerHTML = '<p>No study documents available yet.</p>';
-                        return;
-                    }
+  // Load study documents from Firebase
+  function loadStudyDocuments() {
+    const loadingElement = document.getElementById('loadingState');
+    const errorElement = document.getElementById('errorState');
+    const container = document.getElementById('studyDocsContainer');
 
-                    // Generate HTML from Firebase data
-                    container.innerHTML = generateStudyDocsHTML(studyData);
+    db.ref('studyDocuments').once('value')
+      .then((snapshot) => {
+        const studyData = snapshot.val();
+        loadingElement.style.display = 'none';
 
-                    // Initialize collapsible functionality
-                    initializeCollapsibles();
-                })
-                .catch((error) => {
-                    console.error('Error loading study documents:', error);
-                    loadingElement.style.display = 'none';
-                    errorElement.style.display = 'block';
-                });
+        if (!studyData) {
+          container.innerHTML = '<p>No study documents available yet.</p>';
+          return;
         }
 
-        function generateStudyDocsHTML(studyData) {
-            let html = '';
+        // Generate HTML from Firebase data
+        container.innerHTML = generateStudyDocsHTML(studyData);
 
-            // Get all semesters and sort them logically
-            const semesters = Object.keys(studyData);
+        // Initialize collapsible functionality
+        initializeCollapsibles();
+      })
+      .catch((error) => {
+        console.error('Error loading study documents:', error);
+        loadingElement.style.display = 'none';
+        errorElement.style.display = 'block';
+      });
+  }
 
-            // Sort semesters: predefined ones first, then custom ones alphabetically
-            const predefinedOrder = ['year1sem1', 'year1sem2', 'year2sem1', 'year2sem2'];
-            const customSemesters = semesters.filter(s => !predefinedOrder.includes(s)).sort();
-            const sortedSemesters = [...predefinedOrder.filter(s => semesters.includes(s)), ...customSemesters];
+  function generateStudyDocsHTML(studyData) {
+    let html = '';
 
-            sortedSemesters.forEach(semesterKey => {
-                const semesterName = getSemesterDisplayName(semesterKey);
-                html += `
+    // Get all semesters and sort them logically
+    const semesters = Object.keys(studyData);
+
+    // Sort semesters: predefined ones first, then custom ones alphabetically
+    const predefinedOrder = ['year1sem1', 'year1sem2', 'year2sem1', 'year2sem2'];
+    const customSemesters = semesters.filter(s => !predefinedOrder.includes(s)).sort();
+    const sortedSemesters = [...predefinedOrder.filter(s => semesters.includes(s)), ...customSemesters];
+
+    sortedSemesters.forEach(semesterKey => {
+      const semesterName = getSemesterDisplayName(semesterKey);
+      html += `
             <div class="semester">
                 <button class="collapsible">${semesterName}</button>
                 <div class="content">`;
 
-                // Sort courses alphabetically
-                const sortedCourses = Object.keys(studyData[semesterKey]).sort();
+      // Sort courses alphabetically
+      const sortedCourses = Object.keys(studyData[semesterKey]).sort();
 
-                sortedCourses.forEach(courseCode => {
-                    const courseData = studyData[semesterKey][courseCode];
-                    html += `
+      sortedCourses.forEach(courseCode => {
+        const courseData = studyData[semesterKey][courseCode];
+        html += `
                 <div class="unit">
                     <button class="collapsible">${courseCode}</button>
                     <div class="content">
                         <ul>`;
 
-                    // Convert to array and sort by timestamp (newest first)
-                    const documents = Object.values(courseData).sort((a, b) =>
-                        new Date(b.timestamp) - new Date(a.timestamp)
-                    );
+        // Convert to array and sort by timestamp (newest first)
+        const documents = Object.values(courseData).sort((a, b) =>
+          new Date(b.timestamp) - new Date(a.timestamp)
+        );
 
-                    documents.forEach(doc => {
-                        const typeIcon = doc.type === 'exam' ? '📝' : doc.type === 'cat' ? '📊' : '📓';
-                        html += `
+        documents.forEach(doc => {
+          const typeIcon = doc.type === 'exam' ? '📝' : doc.type === 'cat' ? '📊' : '📓';
+          html += `
                         <li><a href="${doc.driveLink}" target="_blank">${typeIcon} ${doc.title}</a></li>`;
-                    });
+        });
 
-                    html += `
+        html += `
                         </ul>
                     </div>
                 </div>`;
-                });
+      });
 
-                html += `
+      html += `
                 </div>
             </div>`;
-            });
+    });
 
-            return html;
-        }
+    return html;
+  }
 
-        function getSemesterDisplayName(semesterKey) {
-            const names = {
-                'year1sem1': 'Year 1 Semester 1',
-                'year1sem2': 'Year 1 Semester 2',
-                'year2sem1': 'Year 2 Semester 1',
-                'year2sem2': 'Year 2 Semester 2'
-            };
-            // For custom semesters, format them nicely
-            if (!names[semesterKey]) {
-                // Convert "year3sem1" to "Year 3 Semester 1"
-                return semesterKey.replace(/(year)(\d+)(sem)(\d+)/, 'Year $2 Semester $4')
-                    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between words
-                    .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter of each word
-            }
-            return names[semesterKey];
-        }
+  function getSemesterDisplayName(semesterKey) {
+    const names = {
+      'year1sem1': 'Year 1 Semester 1',
+      'year1sem2': 'Year 1 Semester 2',
+      'year2sem1': 'Year 2 Semester 1',
+      'year2sem2': 'Year 2 Semester 2'
+    };
+    // For custom semesters, format them nicely
+    if (!names[semesterKey]) {
+      // Convert "year3sem1" to "Year 3 Semester 1"
+      return semesterKey.replace(/(year)(\d+)(sem)(\d+)/, 'Year $2 Semester $4')
+        .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between words
+        .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter of each word
+    }
+    return names[semesterKey];
+  }
 
-        // Generate courses HTML for a semester
-        function generateCoursesHTML(coursesData) {
-            let html = '';
+  // Generate courses HTML for a semester
+  function generateCoursesHTML(coursesData) {
+    let html = '';
 
-            // Sort courses alphabetically
-            const sortedCourses = Object.keys(coursesData).sort();
+    // Sort courses alphabetically
+    const sortedCourses = Object.keys(coursesData).sort();
 
-            sortedCourses.forEach(courseCode => {
-                const courseData = coursesData[courseCode];
-                html += `
+    sortedCourses.forEach(courseCode => {
+      const courseData = coursesData[courseCode];
+      html += `
           <div class="unit">
             <button class="collapsible">${courseCode}</button>
             <div class="content">
@@ -255,22 +285,22 @@
             </div>
           </div>
         `;
-            });
+    });
 
-            return html;
-        }
+    return html;
+  }
 
-        // Generate documents list for a course
-        function generateDocumentsHTML(courseData) {
-            let html = '<ul>';
+  // Generate documents list for a course
+  function generateDocumentsHTML(courseData) {
+    let html = '<ul>';
 
-            // Convert object to array and sort by timestamp (newest first)
-            const documents = Object.values(courseData).sort((a, b) =>
-                new Date(b.timestamp) - new Date(a.timestamp)
-            );
+    // Convert object to array and sort by timestamp (newest first)
+    const documents = Object.values(courseData).sort((a, b) =>
+      new Date(b.timestamp) - new Date(a.timestamp)
+    );
 
-            documents.forEach(doc => {
-                html += `
+    documents.forEach(doc => {
+      html += `
           <li>
             <a href="${doc.driveLink}" target="_blank" rel="noopener">
               ${doc.title}
@@ -278,72 +308,102 @@
             </a>
           </li>
         `;
-            });
+    });
 
-            html += '</ul>';
-            return html;
-        }
+    html += '</ul>';
+    return html;
+  }
 
-        // Helper function to get semester display name
-        function getSemesterDisplayName(semesterKey) {
-            const names = {
-                'year1sem1': 'Year 1 Semester 1',
-                'year1sem2': 'Year 1 Semester 2',
-                'year2sem1': 'Year 2 Semester 1',
-                'year2sem2': 'Year 2 Semester 2'
-            };
-            return names[semesterKey] || semesterKey;
-        }
+  // Helper function to get semester display name
+  function getSemesterDisplayName(semesterKey) {
+    const names = {
+      'year1sem1': 'Year 1 Semester 1',
+      'year1sem2': 'Year 1 Semester 2',
+      'year2sem1': 'Year 2 Semester 1',
+      'year2sem2': 'Year 2 Semester 2'
+    };
+    return names[semesterKey] || semesterKey;
+  }
 
-        // Helper function to get document type badge
-        function getDocTypeBadge(type) {
-            const badges = {
-                'exam': ' 📝',
-                'cat': ' 📊',
-                'notes': ' 📓',
-                'other': ' 📎'
-            };
-            return badges[type] || '';
-        }
+  // Helper function to get document type badge
+  function getDocTypeBadge(type) {
+    const badges = {
+      'exam': ' 📝',
+      'cat': ' 📊',
+      'notes': ' 📓',
+      'other': ' 📎'
+    };
+    return badges[type] || '';
+  }
 
-        // Initialize collapsible functionality
-        function initializeCollapsibles() {
-            const collapsibles = document.querySelectorAll(".collapsible");
-            collapsibles.forEach(button => {
-                button.addEventListener("click", function () {
-                    this.classList.toggle("active");
-                    const content = this.nextElementSibling;
-                    content.style.display = content.style.display === "block" ? "none" : "block";
-                });
-            });
-        }
+  // Initialize collapsible functionality
+  function initializeCollapsibles() {
+    const collapsibles = document.querySelectorAll(".collapsible");
+    collapsibles.forEach(button => {
+      button.addEventListener("click", function () {
+        this.classList.toggle("active");
+        const content = this.nextElementSibling;
+        content.style.display = content.style.display === "block" ? "none" : "block";
+      });
+    });
+  }
 
-        // Your existing sidebar functions
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("active");
-        }
+  // Theme Toggle
+  const themeToggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
 
-        // Load documents when page loads
-        document.addEventListener("DOMContentLoaded", function () {
-            loadStudyDocuments();
-        });
-    </script>
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
 
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
-                    <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
-        </div>
-    </footer>
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  });
+
+  function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+  }
+
+  // Sidebar Toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+
+  // Load documents when page loads
+  document.addEventListener("DOMContentLoaded", function () {
+    loadStudyDocuments();
+  });
+</script>
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+  </div>
+</footer>
 </body>
 
 </html>
-
