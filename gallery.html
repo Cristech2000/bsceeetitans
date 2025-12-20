@@ -1,98 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery - BSCEEE Y2S1</title>
   <link rel="stylesheet" href="style.css" />
-   <link rel="icon" href="pngegg.png">
-  <STYle>/* Thumbnail images */
-.image-grid img {
-  width: 160px;
-  height: auto;
-  margin: 10px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: transform 0.2s ease;
-}
-.image-grid img:hover {
-  transform: scale(1.05);
-}
+  <link rel="icon" href="pngegg.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <STYle>
+    /* Thumbnail images */
+    .image-grid img {
+      width: 160px;
+      height: auto;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: transform 0.2s ease;
+    }
 
-/* Modal styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.95);
-}
+    .image-grid img:hover {
+      transform: scale(1.05);
+    }
 
-.modal-content {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  margin: auto;
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
-  object-fit: contain;
-}
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.95);
+    }
 
-.closeBtn {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  font-size: 40px;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 10000;
-}
-</STYle>
+    .modal-content {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      object-fit: contain;
+    }
+
+    .closeBtn {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      font-size: 40px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10000;
+    }
+  </STYle>
 </head>
+
 <body>
 
   <!-- Top Nav -->
+  <div id="overlay"></div>
+
   <header>
     <nav>
-      <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-      <div class="title">
-        <h1>Gallery</h1>
+      <div class="nav-left">
+        <button id="menuBtn"><i class="fas fa-bars"></i></button>
+        <div class="logo">
+          <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo">
+          <div class="logo-text">
+            <h1>Chuka University</h1>
+            <p>Faculty of Engineering</p>
+          </div>
+        </div>
       </div>
-      <div class="logo">
-        <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+      <div class="nav-actions">
+        <div id="adminIndicator">
+          <i class="fas fa-crown"></i> Admin
+        </div>
+        <button id="themeToggle">
+          <i class="fas fa-moon"></i>
+        </button>
       </div>
     </nav>
   </header>
 
-  <!-- Sidebar -->
   <div id="sidebar">
-    <a href="index.html">HOME</a>
-    <a href="timetable.html">TIMETABLE</a>
-    <a href="assignments.html">ASSIGNMENT</a>
-    <a href="studydocs.html">STUDY DOCUMENTS</a>
-    <a href="announcement.html">ANNOUNCEMENT</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="sports.html">SPORTS</a>
-    <a href="personell.html">PERSONNEL</a>
-     <a href="registration.html">SEMESTER REGISTRATION</a>
-    <a href="support.html">ACADEMIC SUPPORT</a>
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="timetable.html"><i class="fas fa-calendar"></i> Timetable</a>
+    <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="studydocs.html"><i class="fas fa-book"></i> Study Documents</a>
+    <a href="gallery.html"><i class="fas fa-images"></i> Gallery</a>
+    <a href="sports.html"><i class="fas fa-futbol"></i> Sports</a>
+    <a href="personell.html"><i class="fas fa-users"></i> Personnel</a>
+    <a href="registration.html"><i class="fas fa-clipboard-list"></i> Registration</a>
+    <a href="support.html"><i class="fas fa-life-ring"></i> Academic Support</a>
+    <a href="admin-login.html" id="adminLoginLink"><i class="fas fa-lock"></i> Admin Login</a>
+    <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none;"><i class="fas fa-cogs"></i>
+      Dashboard</a>
   </div>
+
 
   <!-- Main Content -->
   <main class="content">
-    
+
     <!-- Event 1: Engineering Day -->
     <section class="event-gallery">
       <h2>Engineering Day 2025</h2>
-      <p>On 4th March 2025, we joined the global community in celebrating World Engineering Day under the theme <strong>“Shaping our sustainable future  through engineering”</strong>
-The event showcased student-led walk around Chuka town to spread awareness about enginering to the community and a public lecture presented by professor Marcel Ohanga. It was a day filled with inspiration, collaboration, and a renewed commitment to using engineering for the betterment of society.
+      <p>On 4th March 2025, we joined the global community in celebrating World Engineering Day under the theme
+        <strong>“Shaping our sustainable future through engineering”</strong>
+        The event showcased student-led walk around Chuka town to spread awareness about enginering to the community and
+        a public lecture presented by professor Marcel Ohanga. It was a day filled with inspiration, collaboration, and
+        a renewed commitment to using engineering for the betterment of society.
 
-</p>
+      </p>
       <div class="image-grid">
         <img src="GALLERY\ENGINEERING DAY\E1.jpg" alt="Lab Session 1" onclick="openModal(this)">
         <img src="GALLERY\ENGINEERING DAY\E2.jpg" alt="Lab Session 1" onclick="openModal(this)">
@@ -116,94 +142,139 @@ The event showcased student-led walk around Chuka town to spread awareness about
     <!-- Event 2: Lab Practical Sessions -->
     <section class="event-gallery">
       <h2>Trip to Weru tea factory Y1S2- 24th february, 2025</h2>
-      <p>On this day, the second-year Electrical and Electronics Engineering students embarked on an educational trip to Weru Tea Factory as part of the Engineering Workshop I (Mechanical Workshop) unit.
+      <p>On this day, the second-year Electrical and Electronics Engineering students embarked on an educational trip to
+        Weru Tea Factory as part of the Engineering Workshop I (Mechanical Workshop) unit.
 
-The visit offered a practical glimpse into the mechanical processes behind tea production, including machinery operation, maintenance systems, and factory automation.</p>
+        The visit offered a practical glimpse into the mechanical processes behind tea production, including machinery
+        operation, maintenance systems, and factory automation.</p>
       <div class="image-grid">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.14_7dcb6de9.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_e368f92c.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_d7f0ccdf.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_8a66f5c9.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_a30b90c9.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_78b563d6.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_34b9b7c9.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.11_ac7a2abf.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.11_62ad2f23.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.09_7b932b6f.jpg" alt="Lab Session 1" onclick="openModal(this)">
-        
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.14_7dcb6de9.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_e368f92c.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_d7f0ccdf.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.13_8a66f5c9.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_a30b90c9.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_78b563d6.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.12_34b9b7c9.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.11_ac7a2abf.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.11_62ad2f23.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+        <img src="GALLERY\weruu\WhatsApp Image 2025-06-17 at 11.53.09_7b932b6f.jpg" alt="Lab Session 1"
+          onclick="openModal(this)">
+
       </div>
     </section>
 
     <!-- Add more events below in the same format -->
     <!-- Modal for full image view -->
-<div id="imageModal" class="modal">
-  <span class="closeBtn" onclick="closeModal()">&times;</span>
-  <img class="modal-content" id="modalImage" />
-</div>
-<script>
-  function openModal(img) {
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImage");
-    modal.style.display = "block";
-    modalImg.src = img.src;
-  }
+    <div id="imageModal" class="modal">
+      <span class="closeBtn" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImage" />
+    </div>
+    <script>
+      function openModal(img) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modal.style.display = "block";
+        modalImg.src = img.src;
+      }
 
-  function closeModal() {
-    document.getElementById("imageModal").style.display = "none";
-  }
-</script>
+      function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+      }
+    </script>
 
   </main>
 
   <!-- Sidebar Script -->
   <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const icon = themeToggle.querySelector('i');
+      icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
     }
+
+    // Sidebar Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
   </script>
 
   <!-- Fullscreen Modal Viewer -->
-<div id="imageModal" class="modal">
-  <span class="closeBtn" onclick="closeModal()">&times;</span>
-  <img class="modal-content" id="modalImage">
-</div>
-<script>
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
+  <div id="imageModal" class="modal">
+    <span class="closeBtn" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+  <script>
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
 
-  document.querySelectorAll(".image-grid img").forEach(img => {
-    img.addEventListener("click", () => {
-      modal.style.display = "block";
-      modalImg.src = img.src;
+    document.querySelectorAll(".image-grid img").forEach(img => {
+      img.addEventListener("click", () => {
+        modal.style.display = "block";
+        modalImg.src = img.src;
+      });
     });
-  });
 
-  function closeModal() {
-    modal.style.display = "none";
-  }
-
-  // Optional: Close modal if you click outside the image
-  window.onclick = function(event) {
-    if (event.target === modal) {
-      closeModal();
+    function closeModal() {
+      modal.style.display = "none";
     }
-  }
-</script>
 
-<footer class="site-footer">
-  <div class="footer-content">
-    <div class="footer-links">
-      <h3>Quick Links</h3>
-      <ul>
-        <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
-        <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
-      </ul>
+    // Optional: Close modal if you click outside the image
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+          <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
-  </div>
-</footer>
+    <div class="footer-bottom">
+      <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+    </div>
+  </footer>
 </body>
-</html>
 
+</html>
