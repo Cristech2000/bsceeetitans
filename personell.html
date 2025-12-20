@@ -6,9 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BSCEEEY2S1 - Personnel</title>
   <link rel="stylesheet" href="style.css">
-   <link rel="icon" href="pngegg.png">
+  <link rel="icon" href="pngegg.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    .lecturer-grid,
+    <style>.lecturer-grid,
     .personnel-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -18,7 +19,7 @@
 
     .lecturer-card,
     .person {
-      background: #f0f4f8;
+      background: var(--bg-primary);
       padding: 15px 20px;
       border-left: 5px solid #004080;
       border-radius: 8px;
@@ -31,7 +32,10 @@
       transform: translateY(-5px);
     }
 
-    .lecturer-card h3,
+    .lecturer-card h3 {
+      color: var(--primary);
+    }
+
     .person h3 {
       margin-bottom: 5px;
       color: #003060;
@@ -88,30 +92,46 @@
 
 <body>
   <!-- Top Nav -->
+  <div id="overlay"></div>
+
   <header>
     <nav>
-      <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-      <div class="title">
-        <h1>Personnel</h1>
+      <div class="nav-left">
+        <button id="menuBtn"><i class="fas fa-bars"></i></button>
+        <div class="logo">
+          <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo">
+          <div class="logo-text">
+            <h1>Chuka University</h1>
+            <p>Faculty of Engineering</p>
+          </div>
+        </div>
       </div>
-      <div class="logo">
-        <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
+      <div class="nav-actions">
+        <div id="adminIndicator">
+          <i class="fas fa-crown"></i> Admin
+        </div>
+        <button id="themeToggle">
+          <i class="fas fa-moon"></i>
+        </button>
       </div>
     </nav>
   </header>
 
-  <!-- Sidebar -->
   <div id="sidebar">
-    <a href="index.html">HOME</a>
-    <a href="timetable.html">TIMETABLE</a>
-    <a href="assignments.html">ASSIGNMENT</a>
-    <a href="studydocs.html">STUDY DOCUMENTS</a>
-    <a href="gallery.html">GALLERY</a>
-    <a href="sports.html">SPORTS</a>
-    <a href="personell.html">PERSONNEL</a>
-    <a href="registration.html">REGISTRATION</a>
-    <a href="support.html">ACADEMIC SUPPORT</a>
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="timetable.html"><i class="fas fa-calendar"></i> Timetable</a>
+    <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="studydocs.html"><i class="fas fa-book"></i> Study Documents</a>
+    <a href="gallery.html"><i class="fas fa-images"></i> Gallery</a>
+    <a href="sports.html"><i class="fas fa-futbol"></i> Sports</a>
+    <a href="personell.html"><i class="fas fa-users"></i> Personnel</a>
+    <a href="registration.html"><i class="fas fa-clipboard-list"></i> Registration</a>
+    <a href="support.html"><i class="fas fa-life-ring"></i> Academic Support</a>
+    <a href="admin-login.html" id="adminLoginLink"><i class="fas fa-lock"></i> Admin Login</a>
+    <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none;"><i class="fas fa-cogs"></i>
+      Dashboard</a>
   </div>
+
 
   <!-- Main Content -->
   <main class="content">
@@ -303,11 +323,42 @@
       loadLecturers(semester);
     }
 
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      const icon = themeToggle.querySelector('i');
+      icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
     }
+
+    // Sidebar Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
   </script>
 </body>
 
 </html>
-
