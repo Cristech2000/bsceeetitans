@@ -16,22 +16,23 @@
     <style>
         /* Custom Sections Styles */
         .custom-section {
-            padding: 60px 20px;
-            margin: 40px 0;
-            width: 100%;
-            border-radius: 0;
-            box-shadow: none;
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
         }
 
-        .custom-section .section-content {
-            max-width: 1200px;
-            margin: 0px;
-            padding: 0 20px;
-
+        .custom-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px var(--shadow-lg);
         }
 
         .custom-section h2 {
-            color: #004080;
+            color: var(--primary);
             text-align: center;
             margin-bottom: 30px;
             font-size: 2em;
@@ -52,15 +53,24 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 20px;
+
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
         }
 
         .document-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
         }
 
         .document-card:hover {
@@ -179,6 +189,7 @@
             margin-bottom: 15px;
             font-size: 2.2em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            text-align: center;
         }
 
         .christmas-banner p {
@@ -215,6 +226,7 @@
         }
 
         .exam-motivation h2 {
+            text-align: center;
             color: #ffd700;
             font-size: 2.2em;
             margin-bottom: 20px;
@@ -328,7 +340,7 @@
 
         .snowflake {
             position: absolute;
-            color: grey;
+            color: blue;
             text-shadow:
                 0 0 8px rgba(255, 255, 255, 0.9),
                 0 0 16px rgba(255, 255, 255, 0.7);
@@ -359,33 +371,6 @@
             }
         }
 
-        /* Christmas Navbar Decorations */
-        header nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: rgb(30, 122, 198);
-            height: 80px;
-            padding: 0 20px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        header nav::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: repeating-linear-gradient(90deg,
-                    #ff0000 0px, #ff0000 10px,
-                    #00ff00 10px, #00ff00 20px,
-                    #ffffff 20px, #ffffff 30px);
-            z-index: 1000;
-        }
 
         /* Christmas Footer */
         .site-footer {
@@ -440,40 +425,40 @@
     <!-- Top Nav -->
     <header>
         <nav>
-            <button id="toggleBtn" onclick="toggleSidebar()">☰</button>
-            <div class="title">
-                <h1>Chuka University</h1>
-                <p style="padding-left: 25px;">Faculty of Engineering</p>
+            <div class="nav-left">
+                <button id="menuBtn"><i class="fas fa-bars"></i></button>
+                <div class="logo">
+                    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo">
+                    <div class="logo-text">
+                        <h1>Chuka University</h1>
+                        <p>Faculty of Engineering</p>
+                    </div>
+                </div>
             </div>
-            <div class="logo">
-                <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo" />
-            </div>
-            <!-- Admin Indicator (shown when logged in) -->
-            <div id="adminIndicator" style="display: none; color: white; margin-right: 20px;">
-                <i class="fas fa-crown"></i> Admin Mode
+            <div class="nav-actions">
+                <div id="adminIndicator">
+                    <i class="fas fa-crown"></i> Admin
+                </div>
+                <button id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </nav>
     </header>
 
-    <!-- Sidebar -->
     <div id="sidebar">
-        <a href="index.html">HOME</a>
-        <a href="timetable.html">TIMETABLE</a>
-        <a href="assignments.html">ASSIGNMENT</a>
-        <a href="studydocs.html">STUDY DOCUMENTS</a>
-        <a href="gallery.html">GALLERY</a>
-        <a href="sports.html">SPORTS</a>
-        <a href="personell.html">PERSONNEL</a>
-        <a href="registration.html">SEMESTER REGISTRATION</a>
-        <a href="support.html">ACADEMIC SUPPORT</a>
-        <!-- Admin Login Link -->
-        <a href="admin-login.html" id="adminLoginLink" style="background: rgba(255,255,255,0.1);">
-            <i class="fas fa-lock"></i> Admin Login
-        </a>
-        <!-- Admin Dashboard Link (shown when logged in) -->
-        <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none; background: #ffd700; color: #000;">
-            <i class="fas fa-cogs"></i> Admin Dashboard
-        </a>
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="timetable.html"><i class="fas fa-calendar"></i> Timetable</a>
+        <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+        <a href="studydocs.html"><i class="fas fa-book"></i> Study Documents</a>
+        <a href="gallery.html"><i class="fas fa-images"></i> Gallery</a>
+        <a href="sports.html"><i class="fas fa-futbol"></i> Sports</a>
+        <a href="personell.html"><i class="fas fa-users"></i> Personnel</a>
+        <a href="registration.html"><i class="fas fa-clipboard-list"></i> Registration</a>
+        <a href="support.html"><i class="fas fa-life-ring"></i> Academic Support</a>
+        <a href="admin-login.html" id="adminLoginLink"><i class="fas fa-lock"></i> Admin Login</a>
+        <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none;"><i class="fas fa-cogs"></i>
+            Dashboard</a>
     </div>
 
     <!-- Main Content -->
@@ -558,7 +543,7 @@
 
         <!-- Section 4: News -->
         <section class="news" id="section-news">
-            <h2>Latest News</h2>
+            <h2><i class="fas fa-newspaper"></i> Latest News</h2>
             <div id="newsContent">
                 <p>📰 <a href="https://ieee-pes.org/news/just-announced-2025-ieee-power-energy-society-award-recipients/"
                         target="_blank">2025 IEEE Power & Energy Society Awards winners announced</a>: Industry leaders
@@ -580,7 +565,7 @@
 
         <!-- Section 5: Fun Facts -->
         <section class="fun-facts" id="section-funfacts">
-            <h2>⚡ Fun Engineering Facts</h2>
+            <h2><i class="fas fa-lightbulb"></i> Fun Engineering Facts</h2>
             <ul id="funFactsContent">
                 <li>The human brain produces about 20 watts of power — enough to dimly light a small LED bulb.</li>
                 <li>Elevators are the safest form of transport. They have up to 10 separate braking systems, and
@@ -597,7 +582,7 @@
 
         <!-- Section 6: Student Spotlight -->
         <section class="spotlight" id="section-spotlight">
-            <h2>🌟 Student Spotlight</h2>
+            <h2><i class="fas fa-star"></i> Student Spotlight</h2>
             <div id="spotlightContent">
                 <p>Each semester, we'll feature students who show outstanding performance, innovation, leadership, or
                     community impact.</p>
@@ -612,7 +597,7 @@
 
         <!-- Section 7: Weekly Quiz -->
         <section class="quiz" id="section-quiz">
-            <h2>📝 Weekly Quiz</h2>
+            <h2><i class="fas fa-brain"></i> Weekly Quiz</h2>
             <div id="quizContent">
                 <p><strong>Background information:</strong> An engineering student is tasked with building a
                     rechargeable autonomous robot using the following components: an Arduino Uno, an ultrasonic sensor,
@@ -954,10 +939,50 @@
             });
         });
 
-        // Your existing functions
-        function toggleSidebar() {
-            document.getElementById("sidebar").classList.toggle("active");
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            const icon = themeToggle.querySelector('i');
+            icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
+
+        // Sidebar Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Auth State
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                checkAdminStatus(user.uid);
+            } else {
+                hideAdminFeatures();
+            }
+        });
 
         // Image Modal functions
         const modal = document.getElementById("imageModal");
@@ -1076,7 +1101,7 @@
         }
 
         function renderCustomSection(section) {
-            const bgStyle = section.backgroundColor ? `style="background: ${section.backgroundColor};"` : '';
+            const bgStyle = ''; // Remove background style completely
 
             return `
         <section class="custom-section" id="${section.id}" ${bgStyle}>
