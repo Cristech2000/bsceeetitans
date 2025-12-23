@@ -4,7 +4,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Force HTTPS for PWA -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>BSCEEEY2S1</title>
+    <link rel="manifest" href="manifest.json">
+    <!-- iOS Safari PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="BSCEEE Y2S1">
+    <link rel="apple-touch-icon" href="pngegg.png">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="pngegg.png">
     <!-- Add Firebase -->
@@ -417,6 +425,71 @@
                 transform: translateY(0);
             }
         }
+
+        /* ==================== INSTALL BUTTON STYLES ==================== */
+        #installButton {
+            background: linear-gradient(135deg, #004080 0%, #0066cc 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(0, 64, 128, 0.3);
+        }
+
+        #installButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 64, 128, 0.4);
+            background: linear-gradient(135deg, #003366 0%, #0055aa 100%);
+        }
+
+        #installButton:active {
+            transform: translateY(0);
+        }
+
+        #installButton i {
+            margin-right: 5px;
+        }
+
+        /* Dark theme support */
+        [data-theme="dark"] #installButton {
+            background: linear-gradient(135deg, #0066cc 0%, #004080 100%);
+            box-shadow: 0 2px 5px rgba(0, 102, 204, 0.3);
+        }
+
+        [data-theme="dark"] #installButton:hover {
+            background: linear-gradient(135deg, #0055aa 0%, #003366 100%);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.4);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            #installButton {
+                padding: 8px 12px;
+                font-size: 0.8em;
+                margin-right: 5px;
+            }
+
+            #installButton span {
+                display: none;
+                /* Hide text on mobile, show only icon */
+            }
+
+            #installButton i {
+                margin-right: 0;
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #installButton {
+                padding: 6px 10px;
+            }
+        }
     </style>
 </head>
 
@@ -439,9 +512,13 @@
                 <div id="adminIndicator">
                     <i class="fas fa-crown"></i> Admin
                 </div>
+                <button id="installButton" style="display: none;">
+                    <i class="fas fa-download"></i> Install App
+                </button>
                 <button id="themeToggle">
                     <i class="fas fa-moon"></i>
                 </button>
+
             </div>
         </nav>
     </header>
@@ -917,8 +994,141 @@
             document.getElementById('adminDashboardLink').style.display = 'none';
             document.getElementById('adminLoginLink').style.display = 'block';
         }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
+            // Register Service Worker for PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
+
+            // ==================== PWA INSTALL BUTTON ====================
+            let deferredPrompt;
+            const installButton = document.getElementById('installButton');
+
+            console.log('🔍 PWA Debug - Install button found:', installButton);
+
+            if (installButton) {
+                console.log('✅ Install button exists in DOM');
+
+                // Listen for the beforeinstallprompt event
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    // Store the event for later use
+                    deferredPrompt = e;
+                    // Show our install button
+                    installButton.style.display = 'block';
+
+                    console.log('🎉 PWA install is available!');
+                    console.log('Browser will also show install prompt');
+
+                    // You can CHOOSE: let browser show prompt OR use your button
+                    // Option A: Let browser show prompt (remove e.preventDefault())
+                    // Option B: Use only your button (keep e.preventDefault())
+
+                    // For now, let's use both
+                    // e.preventDefault(); // Comment this out to let browser show prompt
+                });
+
+                // Handle install button click - ALWAYS show instructions
+                installButton.addEventListener('click', async () => {
+                    console.log('Install button clicked!');
+
+                    // First try PWA install if available
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+
+                        if (outcome === 'accepted') {
+                            installButton.innerHTML = '<i class="fas fa-check"></i> Installed';
+                            installButton.disabled = true;
+                            installButton.style.background = 'green';
+                            return;
+                        }
+                    }
+
+                    // Show comprehensive instructions
+                    const instructions = `
+📱 **HOW TO INSTALL THIS APP**
+
+**For Desktop (Chrome/Edge):**
+1. Look for the INSTALL icon (📥) in the address bar
+2. OR Click the menu (⋮) → "Install BSCEEE Y2S1"
+
+**For iPhone/iPad (Safari):**
+1. Tap the SHARE button (⎋)
+2. Scroll down, tap "Add to Home Screen"
+3. Tap "Add" in top right
+
+**For Android (Chrome):**
+1. Tap the menu (⋮ or ⫶)
+2. Tap "Add to Home Screen" or "Install App"
+3. Tap "Add" or "Install"
+
+**If no option appears:**
+• Refresh the page
+• Visit the site multiple times (iOS needs this)
+• Make sure you're using Chrome/Edge/Safari
+
+Once installed, it will open like a regular app! 🚀
+                    `;
+
+                    // Create a nice alert or modal
+                    alert(instructions);
+                });
+
+                // Hide install button if app is already installed
+                window.addEventListener('appinstalled', () => {
+                    console.log('PWA was installed');
+                    installButton.style.display = 'none';
+                    deferredPrompt = null;
+                });
+
+
+            } else {
+                console.error('❌ Install button NOT FOUND in DOM!');
+            }
+
+
+            // Check PWA requirements
+            function checkPWARequirements() {
+                console.log('🔍 PWA Requirements Check:');
+
+                // Check HTTPS/localhost
+                const isSecure = window.location.protocol === 'https:' ||
+                    window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1';
+                console.log('1. HTTPS/Localhost:', isSecure, window.location.href);
+
+                // Check service worker
+                console.log('2. Service Worker support:', 'serviceWorker' in navigator);
+
+                // Check manifest
+                const manifestLink = document.querySelector('link[rel="manifest"]');
+                console.log('3. Manifest link:', manifestLink?.href);
+
+                // Check icons
+                console.log('4. Icons in manifest:', manifestLink ? 'Check manifest.json' : 'No manifest');
+
+                // Check if already installed
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+                console.log('5. Already installed (standalone):', isStandalone);
+
+                if (!isSecure) {
+                    console.error('❌ PWA requires HTTPS or localhost!');
+                }
+                if (!manifestLink) {
+                    console.error('❌ No manifest found!');
+                }
+            }
+
+            // Call it
+            checkPWARequirements();
             loadContent();
 
             let isInitialLoad = true;
@@ -1350,6 +1560,9 @@
 
             console.log('✅ All initialization complete');
         });
+
+
+
 
 
 
