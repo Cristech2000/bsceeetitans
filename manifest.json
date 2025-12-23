@@ -1,0 +1,23 @@
+{
+    "name": "BSCEEE Y2S1",
+    "short_name": "BSCEEE",
+    "description": "Chuka University Electrical Engineering Class Portal",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#004080",
+    "theme_color": "#004080",
+    "icons": [
+        {
+            "src": "pngegg.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "pngegg.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
