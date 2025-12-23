@@ -1007,7 +1007,20 @@
                         console.log('Service Worker registration failed:', error);
                     });
             }
-
+// Add to your script (inside DOMContentLoaded)
+window.addEventListener('load', function() {
+    // Trigger PWA eligibility by visiting multiple times
+    let visitCount = localStorage.getItem('pwa_visit_count') || 0;
+    visitCount++;
+    localStorage.setItem('pwa_visit_count', visitCount);
+    
+    console.log(`Visit count: ${visitCount}`);
+    
+    if (visitCount >= 2) {
+        // Safari usually needs 2+ visits
+        console.log('Safari should show install option now');
+    }
+});
             // ==================== PWA INSTALL BUTTON ====================
             let deferredPrompt;
             const installButton = document.getElementById('installButton');
@@ -1571,5 +1584,6 @@ Once installed, it will open like a regular app! 🚀
 </body>
 
 </html>
+
 
 
