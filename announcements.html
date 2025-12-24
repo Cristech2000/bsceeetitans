@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Announcements - BSCEEE Y2S1</title>
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS Safari PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="BSCEEE Announcements">
+    <link rel="apple-touch-icon" href="pngegg.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="pngegg.png">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ==================== ANNOUNCEMENTS PAGE STYLES ==================== */
+
+        /* Page Header */
+        .announcements-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #004080 0%, #0066cc 100%);
+            color: white;
+            margin-bottom: 30px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 64, 128, 0.3);
+        }
+
+        .announcements-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .announcements-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #004080;
+            color: white;
+            border-color: #004080;
+        }
+
+        /* Announcements Container */
+        .announcements-list {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Announcement Card */
+        .announcement-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Type Badges */
+        .announcement-type {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .type-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .type-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .type-important {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .type-urgent {
+            background: #dc3545;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .type-event {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .type-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Announcement Content */
+        .announcement-title {
+            font-size: 1.5em;
+            color: #004080;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .announcement-message {
+            color: #333;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
+
+        /* Announcement Footer */
+        .announcement-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .announcement-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .announcement-audience {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Important Star */
+        .important-star {
+            color: #ffc107;
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        /* No Announcements */
+        .no-announcements {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .no-announcements i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+            font-size: 2em;
+            color: #004080;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Link Style */
+        .announcement-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .announcement-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Back to Home Button */
+        .back-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #004080;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-home:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .announcements-header h1 {
+                font-size: 2em;
+            }
+
+            .announcements-header p {
+                font-size: 1em;
+            }
+
+            .announcement-item {
+                padding: 20px;
+            }
+
+            .announcement-title {
+                font-size: 1.3em;
+            }
+
+            .announcement-footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .back-home {
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+
+            .back-home span {
+                display: none;
+            }
+        }
+
+        /* Dark Theme Support */
+        [data-theme="dark"] .announcement-item {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .announcement-title {
+            color: var(--primary);
+        }
+
+        [data-theme="dark"] .announcement-message {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .announcement-footer {
+            border-top-color: var(--border);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .no-announcements {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .filter-btn {
+            background: var(--bg-secondary);
+            border-color: var(--border);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        [data-theme="dark"] .back-home {
+            background: rgba(var(--bg-primary-rgb), 0.9);
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Nav -->
+    <header>
+        <nav>
+            <div class="nav-left">
+                <button id="menuBtn"><i class="fas fa-bars"></i></button>
+                <div class="logo">
+                    <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo">
+                    <div class="logo-text">
+                        <h1>Chuka University</h1>
+                        <p>Faculty of Engineering</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <div id="adminIndicator">
+                    <i class="fas fa-crown"></i> Admin
+                </div>
+                <button id="installButton" style="display: none;">
+                    <i class="fas fa-download"></i> Install App
+                </button>
+                <button id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+            </div>
+        </nav>
+    </header>
+
+    <div id="sidebar">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="timetable.html"><i class="fas fa-calendar"></i> Timetable</a>
+        <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+        <a href="studydocs.html"><i class="fas fa-book"></i> Study Documents</a>
+        <a href="gallery.html"><i class="fas fa-images"></i> Gallery</a>
+        <a href="sports.html"><i class="fas fa-futbol"></i> Sports</a>
+        <a href="personell.html"><i class="fas fa-users"></i> Personnel</a>
+        <a href="registration.html"><i class="fas fa-clipboard-list"></i> Registration</a>
+        <a href="support.html"><i class="fas fa-life-ring"></i> Academic Support</a>
+        <a href="admin-login.html" id="adminLoginLink"><i class="fas fa-lock"></i> Admin Login</a>
+        <a href="admin-dashboard.html" id="adminDashboardLink" style="display: none;"><i class="fas fa-cogs"></i>
+            Dashboard</a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterAnnouncements('all')">All Announcements</button>
+        <button class="filter-btn" onclick="filterAnnouncements('important')">Important</button>
+        <button class="filter-btn" onclick="filterAnnouncements('urgent')">Urgent</button>
+        <button class="filter-btn" onclick="filterAnnouncements('event')">Events</button>
+        <button class="filter-btn" onclick="filterAnnouncements('info')">Information</button>
+    </div>
+
+    <!-- Announcements List -->
+    <div class="announcements-list">
+        <div id="announcementsLoading" class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading announcements...</p>
+        </div>
+
+        <div id="announcementsContainer" style="display: none;">
+            <!-- Announcements will be loaded here -->
+        </div>
+
+        <div id="noAnnouncements" class="no-announcements" style="display: none;">
+            <i class="fas fa-bullhorn"></i>
+            <h3>No Announcements Yet</h3>
+            <p>Check back later for updates and announcements.</p>
+        </div>
+    </div>
+
+    <!-- Firebase Configuration -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
+            authDomain: "bsceee-webpage.firebaseapp.com",
+            databaseURL: "https://bsceee-webpage-default-rtdb.firebaseio.com",
+            projectId: "bsceee-webpage",
+            storageBucket: "bsceee-webpage.appspot.com",
+            messagingSenderId: "281106710079",
+            appId: "1:281106710079:web:2c6ab931bc3cab8e4e428a",
+            measurementId: "G-B1M7SSEZYP"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Global variables
+        let allAnnouncements = [];
+        let currentFilter = 'all';
+
+        // Load announcements on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAnnouncements();
+            setupThemeToggle();
+        });
+
+        // Load announcements from Firebase
+        function loadAnnouncements() {
+            const loadingEl = document.getElementById('announcementsLoading');
+            const containerEl = document.getElementById('announcementsContainer');
+            const noAnnouncementsEl = document.getElementById('noAnnouncements');
+
+            db.ref('announcements').orderByChild('createdAt').once('value')
+                .then(snapshot => {
+                    const data = snapshot.val();
+
+                    // Hide loading
+                    loadingEl.style.display = 'none';
+
+                    if (!data) {
+                        noAnnouncementsEl.style.display = 'block';
+                        return;
+                    }
+
+                    // Convert to array and sort by date (newest first)
+                    allAnnouncements = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    })).filter(ann =>
+                        ann.status === 'active' &&
+                        ann.showOnWebsite !== false &&
+                        (!ann.expiry || new Date(ann.expiry) > new Date())
+                    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                    if (allAnnouncements.length === 0) {
+                        noAnnouncementsEl.style.display = 'block';
+                        return;
+                    }
+
+                    // Show container and display announcements
+                    containerEl.style.display = 'block';
+                    displayAnnouncements(allAnnouncements);
+
+                })
+                .catch(error => {
+                    console.error('Error loading announcements:', error);
+                    loadingEl.innerHTML = `
+                        <div style="color: #dc3545;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading announcements. Please try again later.</p>
+                            <small>${error.message}</small>
+                        </div>
+                    `;
+                });
+        }
+
+        // Display announcements
+        function displayAnnouncements(announcements) {
+            const containerEl = document.getElementById('announcementsContainer');
+            containerEl.innerHTML = '';
+
+            announcements.forEach(ann => {
+                const date = new Date(ann.createdAt);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // Type configuration
+                const typeConfig = {
+                    'info': { class: 'type-info', icon: 'ℹ️', label: 'Information' },
+                    'warning': { class: 'type-warning', icon: '⚠️', label: 'Warning' },
+                    'important': { class: 'type-important', icon: '❗', label: 'Important' },
+                    'urgent': { class: 'type-urgent', icon: '🚨', label: 'Urgent' },
+                    'event': { class: 'type-event', icon: '📅', label: 'Event' },
+                    'success': { class: 'type-success', icon: '✅', label: 'Success' }
+                };
+
+                const config = typeConfig[ann.type] || typeConfig.info;
+                const isUrgent = ann.type === 'urgent';
+
+                // Audience display
+                const audienceText = {
+                    'all': '👥 All Students',
+                    'year2': '🎓 Year 2 Students',
+                    'bsc-eee': '⚡ BSC EEE Students',
+                    'faculty': '👨‍🏫 Faculty',
+                    'admins': '🔐 Admins Only'
+                }[ann.audience] || ann.audience;
+
+                const announcementHTML = `
+                    <div class="announcement-item ${isUrgent ? 'announcement-urgent' : ''}" 
+                         style="${isUrgent ? 'color: white;' : ''}">
+                        
+                        <!-- Type Badge -->
+                        <div class="announcement-type ${config.class}">
+                            ${config.icon} ${config.label}
+                        </div>
+                        
+                        <!-- Title -->
+                        <h2 class="announcement-title">
+                            ${ann.title}
+                            ${ann.important ? '<span class="important-star"><i class="fas fa-star"></i></span>' : ''}
+                        </h2>
+                        
+                        <!-- Message -->
+                        <div class="announcement-message">
+                            ${ann.message.replace(/\n/g, '<br>')}
+                        </div>
+                        
+                        <!-- Link if available -->
+                        ${ann.link ? `
+                            <a href="${ann.link}" target="_blank" class="announcement-link">
+                                <i class="fas fa-external-link-alt"></i> More Information
+                            </a>
+                        ` : ''}
+                        
+                        <!-- Footer -->
+                        <div class="announcement-footer">
+                            <div class="announcement-date">
+                                <i class="far fa-clock"></i>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="announcement-audience">
+                                <i class="fas fa-users"></i>
+                                <span>${audienceText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                containerEl.insertAdjacentHTML('beforeend', announcementHTML);
+            });
+        }
+
+        // Filter announcements
+        function filterAnnouncements(filterType) {
+            currentFilter = filterType;
+
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            let filtered = [];
+
+            switch (filterType) {
+                case 'all':
+                    filtered = allAnnouncements;
+                    break;
+                case 'important':
+                    filtered = allAnnouncements.filter(ann => ann.important || ann.type === 'important');
+                    break;
+                case 'urgent':
+                    filtered = allAnnouncements.filter(ann => ann.type === 'urgent');
+                    break;
+                case 'event':
+                    filtered = allAnnouncements.filter(ann => ann.type === 'event');
+                    break;
+                case 'info':
+                    filtered = allAnnouncements.filter(ann => ann.type === 'info' || ann.type === 'success');
+                    break;
+                default:
+                    filtered = allAnnouncements;
+            }
+
+            displayAnnouncements(filtered);
+
+            // Show/hide no announcements message
+            const noAnnouncementsEl = document.getElementById('noAnnouncements');
+            const containerEl = document.getElementById('announcementsContainer');
+
+            if (filtered.length === 0) {
+                noAnnouncementsEl.style.display = 'block';
+                containerEl.style.display = 'none';
+            } else {
+                noAnnouncementsEl.style.display = 'none';
+                containerEl.style.display = 'block';
+            }
+        }
+
+        // Theme toggle setup
+        function setupThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+
+            // Check saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-theme', savedTheme);
+
+            if (themeToggle) {
+                updateThemeIcon(savedTheme);
+
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = html.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    html.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateThemeIcon(newTheme);
+                });
+            }
+        }
+        // Sidebar Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        function updateThemeIcon(theme) {
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const icon = themeToggle.querySelector('i');
+                icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        }
+
+        // Auto-refresh announcements every 5 minutes
+        setInterval(loadAnnouncements, 5 * 60 * 1000);
+
+        // Mark announcements as read (optional)
+        function markAsRead(announcementId) {
+            // You can implement this if you want to track read status
+            // Would require user authentication
+        }
+    </script>
+
+</body>
+
+</html>
