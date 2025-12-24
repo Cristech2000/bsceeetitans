@@ -19,6 +19,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -490,6 +491,110 @@
                 padding: 6px 10px;
             }
         }
+
+        /* ==================== NOTIFICATION BELL STYLES ==================== */
+
+        .notification-icon {
+            position: relative;
+            margin-right: 15px;
+        }
+
+        .notification-icon a {
+            color: #004080;
+            font-size: 1.3em;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .notification-icon a:hover {
+            background: rgba(0, 64, 128, 0.1);
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 5px rgba(220, 53, 69, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        /* Dark theme support */
+        [data-theme="dark"] .notification-icon a {
+            color: var(--primary);
+        }
+
+        [data-theme="dark"] .notification-icon a:hover {
+            background: rgba(var(--primary-rgb), 0.1);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .notification-icon {
+                margin-right: 10px;
+            }
+
+            .notification-icon a {
+                width: 36px;
+                height: 36px;
+                font-size: 1.2em;
+            }
+
+            .notification-badge {
+                width: 18px;
+                height: 18px;
+                font-size: 0.6em;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-15deg);
+            }
+
+            75% {
+                transform: rotate(15deg);
+            }
+        }
     </style>
 </head>
 
@@ -497,6 +602,7 @@
 
     <!-- Top Nav -->
     <header>
+        <div id="overlay"></div>
         <nav>
             <div class="nav-left">
                 <button id="menuBtn"><i class="fas fa-bars"></i></button>
@@ -508,9 +614,16 @@
                     </div>
                 </div>
             </div>
+
             <div class="nav-actions">
                 <div id="adminIndicator">
                     <i class="fas fa-crown"></i> Admin
+                </div>
+                <div class="notification-icon" id="notificationBell">
+                    <a href="announcements.html">
+                        <i class="fas fa-bell"></i>
+                        <span id="notificationCount" class="notification-badge">0</span>
+                    </a>
                 </div>
                 <button id="installButton" style="display: none;">
                     <i class="fas fa-download"></i> Install App
@@ -518,13 +631,13 @@
                 <button id="themeToggle">
                     <i class="fas fa-moon"></i>
                 </button>
-
             </div>
         </nav>
     </header>
 
     <div id="sidebar">
         <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a>
         <a href="timetable.html"><i class="fas fa-calendar"></i> Timetable</a>
         <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
         <a href="studydocs.html"><i class="fas fa-book"></i> Study Documents</a>
@@ -784,6 +897,202 @@
         const db = firebase.database();
         const auth = firebase.auth();
 
+        // ==================== FIREBASE MESSAGING SETUP ====================
+
+        // Initialize Firebase Messaging
+        let messaging = null;
+
+        function initializeMessaging() {
+            console.log('Initializing Firebase Messaging...');
+
+            try {
+                // Check if messaging is supported
+                if (!firebase.messaging.isSupported()) {
+                    console.log('Firebase Messaging not supported in this browser');
+                    return;
+                }
+
+                // Get Firebase Messaging instance
+                messaging = firebase.messaging();
+
+                console.log('Firebase Messaging initialized successfully');
+
+                // Use Firebase's automatic service worker registration
+                // It will look for firebase-messaging-sw.js in the same directory as your page
+                requestNotificationPermission();
+
+            } catch (error) {
+                console.error('Error initializing Firebase Messaging:', error);
+            }
+        }
+        // Request notification permission
+        // Request notification permission
+        function requestNotificationPermission() {
+            console.log('Requesting notification permission...');
+
+            // Check if notifications are supported
+            if (!('Notification' in window)) {
+                console.log('This browser does not support notifications');
+                return Promise.resolve('not-supported');
+            }
+
+            // Check current permission
+            if (Notification.permission === 'granted') {
+                console.log('Notification permission already granted');
+                getFCMToken();
+                return Promise.resolve('granted');
+            }
+
+            if (Notification.permission === 'denied') {
+                console.log('Notification permission denied by user');
+
+                // Show instruction to enable notifications
+                showNotificationHelp();
+                return Promise.resolve('denied');
+            }
+
+            // Request permission - show a custom prompt first
+            return showCustomNotificationPrompt().then(userResponse => {
+                if (userResponse === 'allow') {
+                    return Notification.requestPermission().then(permission => {
+                        console.log('Notification permission:', permission);
+                        if (permission === 'granted') {
+                            getFCMToken();
+                        } else if (permission === 'denied') {
+                            console.log('User denied notification permission');
+                        }
+                        return permission;
+                    });
+                } else {
+                    console.log('User declined notification prompt');
+                    return 'declined';
+                }
+            });
+        }
+
+        // Show custom notification prompt
+        function showCustomNotificationPrompt() {
+            return new Promise((resolve) => {
+                // You can create a custom modal here
+                // For now, we'll use a simple confirm
+                const shouldRequest = confirm('Enable push notifications to get instant updates about new announcements?');
+                resolve(shouldRequest ? 'allow' : 'decline');
+            });
+        }
+
+        // Show help for enabling notifications
+        function showNotificationHelp() {
+            console.log('Notifications blocked. Instructions to enable:');
+            // You could show a help modal here
+        }
+
+        // Get FCM token
+        // Get FCM token
+        function getFCMToken() {
+            if (!messaging) {
+                console.log('Messaging not initialized');
+                return;
+            }
+
+            console.log('Getting FCM token...');
+
+            // For Firebase v10, pass vapidKey in getToken()
+            messaging.getToken({
+                vapidKey: 'BMYtnObicSX3KWDOnLoOe7ZdO4qAzMO9q7tt4j1CdmUsvHYAdJfiLMWF6Y339UJKtw_2hmNnCGe58SeeiK2PX4k'
+            })
+                .then(currentToken => {
+                    if (currentToken) {
+                        console.log('FCM Token:', currentToken);
+                        // Save token to Firebase
+                        saveTokenToFirebase(currentToken);
+                    } else {
+                        console.log('No registration token available. Request permission to generate one.');
+                        // Request permission again
+                        requestNotificationPermission();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error getting FCM token:', error);
+
+                    // If permission is denied, don't try again
+                    if (error.code === 'messaging/permission-blocked') {
+                        console.log('Notification permission blocked by user');
+                    } else if (error.code === 'messaging/permission-default') {
+                        console.log('Notification permission not granted yet');
+                    }
+                });
+        }
+
+        // Save token to Firebase
+        function saveTokenToFirebase(token) {
+            const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
+
+            const tokenData = {
+                token: token,
+                userId: userId,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+
+            // Save to Firebase
+            db.ref('fcmTokens/' + userId).set(tokenData)
+                .then(() => {
+                    console.log('FCM token saved to Firebase');
+                })
+                .catch(error => {
+                    console.error('Error saving FCM token:', error);
+                });
+        }
+
+        // Listen for incoming messages
+        function setupMessageListener() {
+            if (!messaging) {
+                console.log('Messaging not initialized for listener');
+                return;
+            }
+
+            // Handle foreground messages
+            messaging.onMessage((payload) => {
+                console.log('Message received in foreground:', payload);
+
+                // Show notification
+                showNotification(payload);
+
+                // Update notification badge
+                updateNotificationBadge();
+            });
+
+            console.log('Message listener setup complete');
+        }
+
+        // Show notification
+        function showNotification(payload) {
+            const title = payload.notification?.title || 'New Announcement';
+            const body = payload.notification?.body || 'Check the class website for updates';
+
+            // Create notification
+            const notification = new Notification(title, {
+                body: body,
+                icon: 'pngegg.png',
+                badge: 'pngegg.png',
+                vibrate: [200, 100, 200],
+                data: payload.data || {}
+            });
+
+            // Handle click
+            notification.onclick = function (event) {
+                event.preventDefault();
+                window.focus();
+                notification.close();
+
+                // Navigate to announcements page
+                if (payload.data && payload.data.url) {
+                    window.location.href = payload.data.url;
+                } else {
+                    window.location.href = 'announcements.html';
+                }
+            };
+        }
         // Check admin authentication status
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -994,65 +1303,143 @@
             document.getElementById('adminDashboardLink').style.display = 'none';
             document.getElementById('adminLoginLink').style.display = 'block';
         }
+        // ==================== NOTIFICATION BELL FUNCTIONALITY ====================
 
+        // Add shake animation for bell
+        const style = document.createElement('style');
+        style.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-15deg); }
+        75% { transform: rotate(15deg); }
+    }
+`;
+        document.head.appendChild(style);
+
+        // SIMPLE VERSION - Just show total active announcements
+        // ==================== NOTIFICATION SYSTEM ====================
+
+        // Update notification badge
+        function updateNotificationBadge() {
+            console.log(`[${new Date().toLocaleTimeString()}] 🔔 updateNotificationBadge() called`);
+
+            const badge = document.getElementById('notificationCount');
+            if (!badge) {
+                console.error('❌ Badge element not found!');
+                return;
+            }
+
+            console.log('📡 Reading from Firebase: announcements');
+
+            db.ref('announcements').once('value')
+                .then(snapshot => {
+                    if (!snapshot.exists()) {
+                        console.log('📭 No announcements found');
+                        badge.textContent = '0';
+                        badge.style.display = 'none';
+                        return;
+                    }
+
+                    const data = snapshot.val();
+                    console.log('📊 Raw data:', data);
+                    console.log('📊 Number of announcements:', Object.keys(data).length);
+
+                    // Count ALL announcements (for now)
+                    const count = Object.keys(data).length;
+                    console.log(`📊 Total count: ${count}`);
+
+                    if (count > 0) {
+                        badge.textContent = count > 9 ? '9+' : count.toString();
+                        badge.style.display = 'flex';
+                        console.log(`✅ Badge updated to: ${badge.textContent}`);
+
+                        // Add animation to bell
+                        const bell = document.querySelector('.notification-icon a i');
+                        if (bell) {
+                            bell.style.animation = 'shake 0.5s ease-in-out';
+                            setTimeout(() => {
+                                bell.style.animation = '';
+                            }, 500);
+                        }
+                    } else {
+                        badge.textContent = '0';
+                        badge.style.display = 'none';
+                        console.log('✅ No announcements');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Firebase error:', error);
+                    badge.textContent = '0';
+                    badge.style.display = 'none';
+                });
+        }
+
+        // Setup notification click handler
+        function setupNotificationClick() {
+            const notificationBell = document.getElementById('notificationBell');
+            if (notificationBell) {
+                notificationBell.addEventListener('click', function (e) {
+                    console.log('🔔 Bell clicked!');
+                    // Just navigate to announcements page
+                    // No need to prevent default since it's a link
+                });
+            }
+        }
+
+        // Initialize notification system
+        function initNotificationSystem() {
+            console.log('🔔 Initializing notification system...');
+
+            // First immediate check
+            updateNotificationBadge();
+
+            // Check again after Firebase is likely ready
+            setTimeout(updateNotificationBadge, 1000);
+
+            // Check again after 3 seconds
+            setTimeout(updateNotificationBadge, 3000);
+
+            // Setup click handler
+            setupNotificationClick();
+
+            // Regular polling every 30 seconds
+            setInterval(updateNotificationBadge, 30000);
+
+            console.log('✅ Notification system initialized');
+        }
         // Initialize
+        // ==================== SINGLE DOMContentLoaded ====================
         document.addEventListener('DOMContentLoaded', function () {
-            // Register Service Worker for PWA
+            console.log('🚀 DOM fully loaded - Initializing everything...');
+
+            // 1. PWA Service Worker
+            // Register main service worker for PWA
+            // Register main service worker for PWA
             if ('serviceWorker' in navigator) {
+                // Register main app service worker with correct scope
                 navigator.serviceWorker.register('./sw.js')
                     .then(registration => {
-                        console.log('Service Worker registered:', registration);
+                        console.log('Main Service Worker registered:', registration);
                     })
                     .catch(error => {
-                        console.log('Service Worker registration failed:', error);
+                        console.log('Main Service Worker registration failed:', error);
                     });
             }
-// Add to your script (inside DOMContentLoaded)
-window.addEventListener('load', function() {
-    // Trigger PWA eligibility by visiting multiple times
-    let visitCount = localStorage.getItem('pwa_visit_count') || 0;
-    visitCount++;
-    localStorage.setItem('pwa_visit_count', visitCount);
-    
-    console.log(`Visit count: ${visitCount}`);
-    
-    if (visitCount >= 2) {
-        // Safari usually needs 2+ visits
-        console.log('Safari should show install option now');
-    }
-});
-            // ==================== PWA INSTALL BUTTON ====================
+
+            // 2. PWA Install Button
             let deferredPrompt;
             const installButton = document.getElementById('installButton');
 
-            console.log('🔍 PWA Debug - Install button found:', installButton);
-
             if (installButton) {
-                console.log('✅ Install button exists in DOM');
-
-                // Listen for the beforeinstallprompt event
                 window.addEventListener('beforeinstallprompt', (e) => {
-                    // Store the event for later use
                     deferredPrompt = e;
-                    // Show our install button
                     installButton.style.display = 'block';
-
-                    console.log('🎉 PWA install is available!');
-                    console.log('Browser will also show install prompt');
-
-                    // You can CHOOSE: let browser show prompt OR use your button
-                    // Option A: Let browser show prompt (remove e.preventDefault())
-                    // Option B: Use only your button (keep e.preventDefault())
-
-                    // For now, let's use both
-                    // e.preventDefault(); // Comment this out to let browser show prompt
+                    console.log('🎉 PWA install available!');
                 });
 
-                // Handle install button click - ALWAYS show instructions
                 installButton.addEventListener('click', async () => {
                     console.log('Install button clicked!');
 
-                    // First try PWA install if available
                     if (deferredPrompt) {
                         deferredPrompt.prompt();
                         const { outcome } = await deferredPrompt.userChoice;
@@ -1065,9 +1452,7 @@ window.addEventListener('load', function() {
                         }
                     }
 
-                    // Show comprehensive instructions
-                    const instructions = `
-📱 **HOW TO INSTALL THIS APP**
+                    alert(`📱 HOW TO INSTALL THIS APP
 
 **For Desktop (Chrome/Edge):**
 1. Look for the INSTALL icon (📥) in the address bar
@@ -1085,72 +1470,115 @@ window.addEventListener('load', function() {
 
 **If no option appears:**
 • Refresh the page
-• Visit the site multiple times (iOS needs this)
-• Make sure you're using Chrome/Edge/Safari
-
-Once installed, it will open like a regular app! 🚀
-                    `;
-
-                    // Create a nice alert or modal
-                    alert(instructions);
+• Visit the site multiple times
+• Make sure you're using Chrome/Edge/Safari`);
                 });
 
-                // Hide install button if app is already installed
                 window.addEventListener('appinstalled', () => {
                     console.log('PWA was installed');
                     installButton.style.display = 'none';
                     deferredPrompt = null;
                 });
-
-
-            } else {
-                console.error('❌ Install button NOT FOUND in DOM!');
             }
 
+            // 3. PWA Requirements Check
+            console.log('🔍 PWA Requirements Check:');
+            const isSecure = window.location.protocol === 'https:' ||
+                window.location.hostname === 'localhost' ||
+                window.location.hostname === '127.0.0.1';
+            console.log('1. HTTPS/Localhost:', isSecure);
+            console.log('2. Service Worker support:', 'serviceWorker' in navigator);
+            console.log('3. Manifest:', document.querySelector('link[rel="manifest"]')?.href);
+            console.log('4. Already installed:', window.matchMedia('(display-mode: standalone)').matches);
 
-            // Check PWA requirements
-            function checkPWARequirements() {
-                console.log('🔍 PWA Requirements Check:');
+            // 4. Visit counter for Safari PWA
+            window.addEventListener('load', function () {
+                let visitCount = localStorage.getItem('pwa_visit_count') || 0;
+                visitCount++;
+                localStorage.setItem('pwa_visit_count', visitCount);
+                console.log(`Visit count: ${visitCount}`);
 
-                // Check HTTPS/localhost
-                const isSecure = window.location.protocol === 'https:' ||
-                    window.location.hostname === 'localhost' ||
-                    window.location.hostname === '127.0.0.1';
-                console.log('1. HTTPS/Localhost:', isSecure, window.location.href);
-
-                // Check service worker
-                console.log('2. Service Worker support:', 'serviceWorker' in navigator);
-
-                // Check manifest
-                const manifestLink = document.querySelector('link[rel="manifest"]');
-                console.log('3. Manifest link:', manifestLink?.href);
-
-                // Check icons
-                console.log('4. Icons in manifest:', manifestLink ? 'Check manifest.json' : 'No manifest');
-
-                // Check if already installed
-                const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-                console.log('5. Already installed (standalone):', isStandalone);
-
-                if (!isSecure) {
-                    console.error('❌ PWA requires HTTPS or localhost!');
+                if (visitCount >= 2) {
+                    console.log('Safari should show install option now');
                 }
-                if (!manifestLink) {
-                    console.error('❌ No manifest found!');
-                }
-            }
+            });
 
-            // Call it
-            checkPWARequirements();
+            // 5. Load dynamic content
             loadContent();
 
-            let isInitialLoad = true;
+            // 6. Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-theme', savedTheme);
 
-            // Load custom sections with real-time updates
+            function updateThemeIcon(theme) {
+                const icon = themeToggle.querySelector('i');
+                icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+            updateThemeIcon(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+
+            // 7. Sidebar Toggle
+            const menuBtn = document.getElementById('menuBtn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // 8. Image Modal - FIX THIS
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("modalImage");
+
+            // ADD NULL CHECK:
+            if (modal && modalImg) {
+                const featureImages = document.querySelectorAll(".features img");
+                if (featureImages.length > 0) {
+                    featureImages.forEach(img => {
+                        img.addEventListener("click", () => {
+                            modal.style.display = "block";
+                            modalImg.src = img.src;
+                        });
+                    });
+                }
+            }
+
+            function closeModal() {
+                if (modal) modal.style.display = "none";
+            }
+            window.closeModal = closeModal;
+            function closeModal() {
+                modal.style.display = "none";
+            }
+            window.closeModal = closeModal;
+
+            // 9. Initialize Christmas Theme
+            console.log('🎄 Initializing Christmas theme...');
+            initChristmasTheme();
+
+            // 10. Load Custom Sections
+            let isInitialLoad = true;
             db.ref('customSections').on('value', function (snapshot) {
                 // Remove all existing custom sections
                 document.querySelectorAll('.custom-section').forEach(section => {
-                    section.remove();
+                    if (section.id !== 'christmas-sections') {
+                        section.remove();
+                    }
                 });
 
                 // Load new sections
@@ -1160,67 +1588,44 @@ Once installed, it will open like a regular app! 🚀
 
                 isInitialLoad = false;
             });
-        });
 
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
+            // In your DOMContentLoaded function, replace lines 11. Initialize Notification System:
 
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
+            // 11. Initialize Notification System
+            console.log('🔔 Setting up notification system...');
+            initNotificationSystem();
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
-
-        function updateThemeIcon(theme) {
-            const icon = themeToggle.querySelector('i');
-            icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-        }
-
-        // Sidebar Toggle
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-        });
-
-        // Auth State
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                checkAdminStatus(user.uid);
-            } else {
-                hideAdminFeatures();
-            }
-        });
-
-        // Image Modal functions
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-
-        document.querySelectorAll(".features img").forEach(img => {
-            img.addEventListener("click", () => {
-                modal.style.display = "block";
-                modalImg.src = img.src;
+            // Check when page becomes visible again
+            document.addEventListener('visibilitychange', function () {
+                if (!document.hidden) {
+                    console.log('🔔 Page visible, checking notifications...');
+                    updateNotificationBadge();
+                }
             });
+
+            // Also check on page load after a short delay
+            // Wait for Firebase to be ready
+            const checkFirebaseAndUpdate = () => {
+                if (firebase.apps.length > 0) {
+                    console.log('✅ Firebase ready, updating badge...');
+                    updateNotificationBadge();
+                } else {
+                    console.log('⏳ Waiting for Firebase...');
+                    setTimeout(checkFirebaseAndUpdate, 500);
+                }
+            };
+
+            // Call it after a short delay
+            setTimeout(checkFirebaseAndUpdate, 1000);
+
+            console.log('✅ ALL SYSTEMS INITIALIZED!');
+            // Initialize Firebase Messaging
+            setTimeout(() => {
+                initializeMessaging();
+                setupMessageListener();
+            }, 3000);
         });
 
-        function closeModal() {
-            modal.style.display = "none";
-        }
 
 
 
@@ -1543,36 +1948,7 @@ Once installed, it will open like a regular app! 🚀
             });
         }
 
-        // Update DOMContentLoaded to include Christmas theme
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('🚀 DOM loaded - Starting initialization');
 
-            loadContent();
-
-            // Initialize Christmas theme
-            initChristmasTheme();
-
-            // Load custom sections
-            let isInitialLoad = true;
-
-            db.ref('customSections').on('value', function (snapshot) {
-                // Remove all existing custom sections
-                document.querySelectorAll('.custom-section').forEach(section => {
-                    if (section.id !== 'christmas-sections') {
-                        section.remove();
-                    }
-                });
-
-                // Load new sections
-                if (snapshot.exists()) {
-                    loadCustomSections();
-                }
-
-                isInitialLoad = false;
-            });
-
-            console.log('✅ All initialization complete');
-        });
 
 
 
@@ -1584,6 +1960,3 @@ Once installed, it will open like a regular app! 🚀
 </body>
 
 </html>
-
-
-
