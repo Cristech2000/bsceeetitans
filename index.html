@@ -1,3 +1,5 @@
+index.html
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -892,18 +894,70 @@
             measurementId: "G-B1M7SSEZYP"
         };
 
+
+
+
+
+
+
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const auth = firebase.auth();
 
+
+
+        // ==================== BLOCK FIREBASE AUTO-REGISTRATION ====================
+        console.log('🛑 Blocking Firebase auto-service-worker-registration...');
+
+        // Method 1: Patch the messaging prototype BEFORE Firebase loads
+        if (typeof firebase !== 'undefined' && firebase.messaging) {
+            // Get the messaging prototype
+            const messagingPrototype = Object.getPrototypeOf(firebase.messaging());
+
+            // Save the original method
+            const originalRegisterDefaultSw = messagingPrototype._registerDefaultSw;
+
+            // Override it to do nothing
+            messagingPrototype._registerDefaultSw = function () {
+                console.log('🛑 BLOCKED: Firebase attempted to auto-register default service worker');
+                console.log('✅ Using our manually registered service worker instead');
+                return Promise.resolve(); // Return resolved promise to prevent errors
+            };
+
+            console.log('✅ Firebase auto-registration blocked successfully');
+        }
+
+        // Method 2: Also patch navigator.serviceWorker.register to intercept Firebase's calls
+        const originalRegister = navigator.serviceWorker.register;
+        navigator.serviceWorker.register = function (scriptURL, options) {
+            console.log('Service Worker registration requested:', scriptURL);
+
+            // Intercept Firebase's default registration
+            if (scriptURL === 'http://127.0.0.1:5501/firebase-messaging-sw.js' ||
+                scriptURL === '/firebase-messaging-sw.js') {
+                console.log('🛑 INTERCEPTED: Firebase default service worker registration');
+                console.log('🔀 Redirecting to: /class%20webpage/web/firebase-messaging-sw.js');
+
+                // Redirect to our correct path
+                return originalRegister.call(
+                    this,
+                    '/bsceeetitans/firebase-messaging-sw.js',
+                    { scope: '/bsceeetitans/' }
+                );
+            }
+
+            // Allow other registrations
+            return originalRegister.call(this, scriptURL, options);
+        };
         // ==================== FIREBASE MESSAGING SETUP ====================
 
         // Initialize Firebase Messaging
         let messaging = null;
 
         function initializeMessaging() {
-            console.log('Initializing Firebase Messaging...');
+            console.log('Initializing Firebase Messaging for GitHub Pages...');
 
             try {
                 // Check if messaging is supported
@@ -915,15 +969,89 @@
                 // Get Firebase Messaging instance
                 messaging = firebase.messaging();
 
-                console.log('Firebase Messaging initialized successfully');
-
-                // Use Firebase's automatic service worker registration
-                // It will look for firebase-messaging-sw.js in the same directory as your page
-                requestNotificationPermission();
+                // GitHub Pages specific registration
+                registerServiceWorkerForGitHub()
+                    .then(() => {
+                        console.log('✅ Firebase Messaging ready');
+                        requestNotificationPermission();
+                        setupMessageListener();
+                    })
+                    .catch(error => {
+                        console.error('❌ Failed to initialize:', error);
+                    });
 
             } catch (error) {
-                console.error('Error initializing Firebase Messaging:', error);
+                console.error('❌ Error initializing Firebase Messaging:', error);
             }
+        }
+
+        async function registerServiceWorkerForGitHub() {
+            console.log('Registering Service Worker for GitHub Pages...');
+
+            const basePath = getBasePath();
+            console.log('Base path detected:', basePath);
+
+            // Try multiple paths for GitHub Pages
+            const swPaths = [
+
+                '/bsceeetitans/firebase-messaging-sw.js'        // Root (for fallback)
+            ];
+
+            let registration = null;
+
+            for (const swPath of swPaths) {
+                try {
+                    console.log('Trying path:', swPath);
+                    registration = await navigator.serviceWorker.register(swPath, {
+                        scope: './'  // Current directory scope for GitHub Pages
+                    });
+
+                    console.log('✅ Service Worker registered with path:', swPath);
+                    console.log('Scope:', registration.scope);
+
+                    // For Firebase v10+, it should auto-detect the service worker
+                    // But we can explicitly tell it
+                    if (typeof messaging.useServiceWorker === 'function') {
+                        messaging.useServiceWorker(registration);
+                        console.log('✅ Service Worker attached to Firebase');
+                    }
+
+                    return registration; // Return successfully
+
+                } catch (error) {
+                    console.log(`Path ${swPath} failed:`, error.message);
+                    // Continue to next path
+                }
+            }
+
+            throw new Error('All Service Worker registration attempts failed');
+        }
+
+        function getBasePath() {
+            // Get current path and calculate base path for GitHub Pages
+            const currentPath = window.location.pathname;
+
+            // If we're at the root of GitHub Pages repo
+            if (currentPath === '/' || currentPath.endsWith('/index.html')) {
+                return './';
+            }
+
+            // If we're in a subdirectory (GitHub Pages repository)
+            const pathParts = currentPath.split('/');
+            // Remove empty parts and filename
+            const filtered = pathParts.filter(part => part && !part.includes('.html'));
+
+            if (filtered.length === 0) {
+                return './';
+            }
+
+            // Build base path
+            let basePath = '';
+            for (let i = 0; i < filtered.length - 1; i++) {
+                basePath += '../';
+            }
+
+            return basePath || './';
         }
         // Request notification permission
         // Request notification permission
@@ -1413,16 +1541,40 @@
             console.log('🚀 DOM fully loaded - Initializing everything...');
 
             // 1. PWA Service Worker
-            // Register main service worker for PWA
-            // Register main service worker for PWA
+            // Replace the PWA service worker registration with this:
             if ('serviceWorker' in navigator) {
-                // Register main app service worker with correct scope
-                navigator.serviceWorker.register('./sw.js')
+                const basePath = getBasePath();
+                const swPath = basePath + 'sw.js';
+
+                console.log('📱 Registering PWA Service Worker for GitHub Pages:', swPath);
+
+                navigator.serviceWorker.register(swPath, {
+                    scope: basePath
+                })
                     .then(registration => {
-                        console.log('Main Service Worker registered:', registration);
+                        console.log('✅ PWA Service Worker registered for GitHub Pages:', registration.scope);
                     })
                     .catch(error => {
-                        console.log('Main Service Worker registration failed:', error);
+                        console.log('❌ PWA Service Worker failed, trying alternatives...');
+
+                        // Try alternatives
+                        const altPaths = ['./sw.js', 'sw.js', '/sw.js'];
+
+                        // Use a function to try paths sequentially
+                        const tryRegister = (index) => {
+                            if (index >= altPaths.length) return;
+
+                            navigator.serviceWorker.register(altPaths[index])
+                                .then(reg => {
+                                    console.log('✅ PWA Service Worker registered with:', altPaths[index]);
+                                })
+                                .catch(e => {
+                                    console.log(`Path ${altPaths[index]} failed:`, e.message);
+                                    tryRegister(index + 1); // Try next path
+                                });
+                        };
+
+                        tryRegister(0); // Start with first path
                     });
             }
 
