@@ -7,6 +7,7 @@ const CACHE_NAME = 'bsceee-v2-' + Date.now();
 const FILES_TO_CACHE = [
     './',
     './index.html',
+    './timetable.html',
     './announcements.html',
     './style.css',
     './manifest.json',
@@ -161,4 +162,5 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('notificationclose', (event) => {
     console.log('[Service Worker] Notification closed:', event.notification);
 });
+
 
