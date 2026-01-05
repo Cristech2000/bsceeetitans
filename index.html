@@ -158,9 +158,7 @@ index.html
 
 
 
-        /* ==================== CHRISTMAS THEME ==================== */
-
-        /* Christmas Banner */
+        /*  
         .christmas-banner {
             background: linear-gradient(135deg, #c00 0%, #008000 100%);
             color: white;
@@ -222,7 +220,7 @@ index.html
             }
         }
 
-        /* Exam Motivation Section */
+        
         .exam-motivation {
             background: linear-gradient(135deg, #004080 0%, #0066cc 100%);
             color: white;
@@ -270,7 +268,7 @@ index.html
             right: 20px;
         }
 
-        /* Christmas Lights */
+       
         .christmas-lights {
             height: 10px;
             background: repeating-linear-gradient(90deg,
@@ -313,7 +311,7 @@ index.html
             }
         }
 
-        /* Christmas Hero Section */
+       
         .hero.christmas-mode {
             position: relative;
             overflow: hidden;
@@ -339,7 +337,7 @@ index.html
             z-index: 2;
         }
 
-        /* Snowflakes Container */
+        
         .snowflakes-container {
             position: relative;
             height: 80px;
@@ -383,7 +381,7 @@ index.html
         }
 
 
-        /* Christmas Footer */
+       
         .site-footer {
             position: relative;
         }
@@ -412,7 +410,7 @@ index.html
             }
         }
 
-        /* Fade-in Animation */
+       
         .fade-in {
             animation: fadeInUp 0.8s ease-out;
         }
@@ -427,7 +425,7 @@ index.html
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
+        } */
 
         /* ==================== INSTALL BUTTON STYLES ==================== */
         #installButton {
@@ -655,7 +653,7 @@ index.html
 
     <!-- Main Content -->
     <main class="content">
-        <!-- Christmas Theme Sections -->
+        <!-- Christmas Theme Sections 
         <div class="snowflakes-container" id="snowflakesContainer"></div>
 
         <section class="christmas-banner fade-in">
@@ -679,7 +677,7 @@ index.html
             <p style="margin-top: 25px; font-style: italic; font-size: 1.1em;">
                 - Your Class Representative- @cristech 🎄🎉🎁
             </p>
-        </section>
+        </section> -->
         <div class="christmas-lights"></div>
         <!-- Section 1: Hero -->
         <section class="hero" id="section-hero">
@@ -870,11 +868,11 @@ index.html
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom">
+        <!-- <div class="footer-bottom">
             <p style="color: #ffd700; font-weight: bold;">🎄 Wishing you a blessed Christmas and a well-deserved holiday
                 break! 🎉</p>
             <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
-        </div>
+        </div> -->
     </footer>
 
     <script>
@@ -1960,145 +1958,145 @@ index.html
 
 
 
-        // ==================== CHRISTMAS FUNCTIONS ====================
-
-        // Create animated snowflakes
-        function createSnowflakes() {
-            const container = document.getElementById('snowflakesContainer');
-            if (!container) {
-                console.log('Snowflakes container not found');
-                return;
-            }
-
-            // Clear existing snowflakes
-            container.innerHTML = '';
-
-            const now = new Date();
-            const month = now.getMonth();
-
-            // Only show snowflakes in December (month 11)
-            if (month !== 11) {
-                console.log('Not December - no snowflakes');
-                return;
-            }
-
-            const flakes = ['❄', '❅', '❆'];
-
-            // Create 20 snowflakes
-            for (let i = 0; i < 20; i++) {
-                const flake = document.createElement('div');
-                flake.className = 'snowflake';
-                flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
-
-                // Random position
-                flake.style.left = Math.random() * 100 + '%';
-
-                // Random size (1.5-3em)
-                const size = Math.random() * 1.5 + 1.5;
-                flake.style.fontSize = size + 'em';
-
-                // Random animation
-                const duration = Math.random() * 3 + 2;
-                const delay = Math.random() * 3;
-
-                flake.style.animationDuration = duration + 's';
-                flake.style.animationDelay = delay + 's';
-
-                // Random opacity
-                flake.style.opacity = Math.random() * 0.4 + 0.6;
-
-                container.appendChild(flake);
-            }
-
-            console.log('Created snowflakes');
-        }
-
-        // Christmas countdown banner
-        function addChristmasCountdown() {
-            const now = new Date();
-            const month = now.getMonth();
-            const date = now.getDate();
-
-            // Only show in December
-            if (month !== 11) return;
-
-            // Don't show after December 26
-            if (date > 26) return;
-
-            const christmas = new Date(now.getFullYear(), 11, 25);
-            const diff = christmas - now;
-            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-            // Create countdown banner
-            const countdown = document.createElement('div');
-            countdown.className = 'christmas-banner fade-in';
-
-            let message = '';
-            if (days === 0) {
-                message = '🎅 MERRY CHRISTMAS! Wishing you joy and Success🎄';
-            } else if (days === 1) {
-                message = '🎄 Christmas Eve! One more day!🎅';
-            } else if (days <= 5) {
-                message = `🎄 Only ${days} days until Christmas!🎅`;
-            } else {
-                message = `🎄 ${days} days until Christmas! 🎅`;
-            }
-
-            countdown.innerHTML = `
-        <h3>${message}</h3>
-        <p>Celebrate your exam success and enjoy the holiday season!🎓✨</p>
-    `;
-
-            // Insert after snowflakes container
-            const snowflakesContainer = document.getElementById('snowflakesContainer');
-            if (snowflakesContainer) {
-                snowflakesContainer.insertAdjacentElement('afterend', countdown);
-            }
-        }
-
-        // Initialize Christmas theme
-        function initChristmasTheme() {
-            console.log('🎄 Initializing Christmas theme...');
-
-            // Add Christmas mode to hero section
-            const heroSection = document.getElementById('section-hero');
-            if (heroSection) {
-                heroSection.classList.add('christmas-mode');
-            }
-
-            // Create snowflakes
-            createSnowflakes();
-
-            // Add countdown banner
-            addChristmasCountdown();
-
-            // Add Christmas lights between sections
-            addChristmasLights();
-
-            console.log('✅ Christmas theme initialized');
-        }
-
-        // Add Christmas lights between major sections
-        function addChristmasLights() {
-            const sections = [
-                'section-hero',
-                'section-about',
-                'section-features',
-                'section-news',
-                'section-funfacts',
-                'section-spotlight',
-                'section-quiz'
-            ];
-
-            sections.forEach(sectionId => {
-                const section = document.getElementById(sectionId);
-                if (section && section.nextElementSibling) {
-                    const lights = document.createElement('div');
-                    lights.className = 'christmas-lights';
-                    section.insertAdjacentElement('afterend', lights);
-                }
-            });
-        }
+        /* // ==================== CHRISTMAS FUNCTIONS ====================
+  
+          // Create animated snowflakes
+          function createSnowflakes() {
+              const container = document.getElementById('snowflakesContainer');
+              if (!container) {
+                  console.log('Snowflakes container not found');
+                  return;
+              }
+  
+              // Clear existing snowflakes
+              container.innerHTML = '';
+  
+              const now = new Date();
+              const month = now.getMonth();
+  
+              // Only show snowflakes in December (month 11)
+              if (month !== 11) {
+                  console.log('Not December - no snowflakes');
+                  return;
+              }
+  
+              const flakes = ['❄', '❅', '❆'];
+  
+              // Create 20 snowflakes
+              for (let i = 0; i < 20; i++) {
+                  const flake = document.createElement('div');
+                  flake.className = 'snowflake';
+                  flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+  
+                  // Random position
+                  flake.style.left = Math.random() * 100 + '%';
+  
+                  // Random size (1.5-3em)
+                  const size = Math.random() * 1.5 + 1.5;
+                  flake.style.fontSize = size + 'em';
+  
+                  // Random animation
+                  const duration = Math.random() * 3 + 2;
+                  const delay = Math.random() * 3;
+  
+                  flake.style.animationDuration = duration + 's';
+                  flake.style.animationDelay = delay + 's';
+  
+                  // Random opacity
+                  flake.style.opacity = Math.random() * 0.4 + 0.6;
+  
+                  container.appendChild(flake);
+              }
+  
+              console.log('Created snowflakes');
+          }
+  
+          // Christmas countdown banner
+          function addChristmasCountdown() {
+              const now = new Date();
+              const month = now.getMonth();
+              const date = now.getDate();
+  
+              // Only show in December
+              if (month !== 11) return;
+  
+              // Don't show after December 26
+              if (date > 26) return;
+  
+              const christmas = new Date(now.getFullYear(), 11, 25);
+              const diff = christmas - now;
+              const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  
+              // Create countdown banner
+              const countdown = document.createElement('div');
+              countdown.className = 'christmas-banner fade-in';
+  
+              let message = '';
+              if (days === 0) {
+                  message = '🎅 MERRY CHRISTMAS! Wishing you joy and Success🎄';
+              } else if (days === 1) {
+                  message = '🎄 Christmas Eve! One more day!🎅';
+              } else if (days <= 5) {
+                  message = `🎄 Only ${days} days until Christmas!🎅`;
+              } else {
+                  message = `🎄 ${days} days until Christmas! 🎅`;
+              }
+  
+              countdown.innerHTML = `
+          <h3>${message}</h3>
+          <p>Celebrate your exam success and enjoy the holiday season!🎓✨</p>
+      `;
+  
+              // Insert after snowflakes container
+              const snowflakesContainer = document.getElementById('snowflakesContainer');
+              if (snowflakesContainer) {
+                  snowflakesContainer.insertAdjacentElement('afterend', countdown);
+              }
+          }
+  
+          // Initialize Christmas theme
+          function initChristmasTheme() {
+              console.log('🎄 Initializing Christmas theme...');
+  
+              // Add Christmas mode to hero section
+              const heroSection = document.getElementById('section-hero');
+              if (heroSection) {
+                  heroSection.classList.add('christmas-mode');
+              }
+  
+              // Create snowflakes
+              createSnowflakes();
+  
+              // Add countdown banner
+              addChristmasCountdown();
+  
+              // Add Christmas lights between sections
+              addChristmasLights();
+  
+              console.log('✅ Christmas theme initialized');
+          }
+  
+          // Add Christmas lights between major sections
+          function addChristmasLights() {
+              const sections = [
+                  'section-hero',
+                  'section-about',
+                  'section-features',
+                  'section-news',
+                  'section-funfacts',
+                  'section-spotlight',
+                  'section-quiz'
+              ];
+  
+              sections.forEach(sectionId => {
+                  const section = document.getElementById(sectionId);
+                  if (section && section.nextElementSibling) {
+                      const lights = document.createElement('div');
+                      lights.className = 'christmas-lights';
+                      section.insertAdjacentElement('afterend', lights);
+                  }
+              });
+          } */
 
 
 
