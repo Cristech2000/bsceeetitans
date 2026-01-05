@@ -1,6 +1,6 @@
 // sw.js - Firebase Cloud Messaging Service Worker
 
-const CACHE_NAME = 'bsceee-v1';
+const CACHE_NAME = 'bsceee-v2-' + Date.now();
 
 // Files to cache for offline use
 // Files to cache for offline use
@@ -161,3 +161,4 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('notificationclose', (event) => {
     console.log('[Service Worker] Notification closed:', event.notification);
 });
+
