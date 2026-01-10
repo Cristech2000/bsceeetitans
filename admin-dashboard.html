@@ -1534,6 +1534,9 @@
                     <div class="tab active" onclick="showComplaintsSubTab('missingMarks')">Missing Marks Complaints
                     </div>
                     <div class="tab" onclick="showComplaintsSubTab('anonymousIssues')">Anonymous Class Issues</div>
+                    <div class="tab" onclick="showComplaintsSubTab('courseRegistrationIssues')">courseRegistrationIssues
+                    </div>
+
                 </div>
 
                 <!-- Missing Marks Complaints -->
@@ -1606,6 +1609,110 @@
                         </button>
                     </div>
                 </div>
+
+
+
+                <!-- In the complaints section, change the courseRegistrationIssuesTab ID -->
+                <div id="courseRegistrationIssuesTab" class="tab-content" style="display: none;">
+                    <div class="tabs">
+                        <div class="tab active" onclick="handleCourseIssuesTab('pending')">
+                            Pending Issues <span id="pendingIssuesCount" class="badge">0</span>
+                        </div>
+                        <div class="tab" onclick="handleCourseIssuesTab('resolved')">
+                            Resolved Issues
+                        </div>
+                        <div class="tab" onclick="handleCourseIssuesTab('all')">
+                            All Issues
+                        </div>
+                    </div>
+
+                    <!-- Pending Issues Tab -->
+                    <div id="pendingCourseIssuesTab" class="tab-content active">
+                        <!-- Change the IDs of all tables and bodies to be unique -->
+                        <div class="table-container">
+                            <table id="coursePendingIssuesTable" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Registration No</th>
+                                        <th>Issue Type</th>
+                                        <th>Year</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursePendingIssuesBody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 30px;">
+                                            Loading pending issues...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Resolved Issues Tab -->
+                    <div id="resolvedCourseIssuesTab" class="tab-content" style="display: none;">
+                        <div class="table-container">
+                            <table id="courseResolvedIssuesTable" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Registration No</th>
+                                        <th>Issue Type</th>
+                                        <th>Resolved By</th>
+                                        <th>Resolved On</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="courseResolvedIssuesBody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 30px;">
+                                            Loading resolved issues...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- All Issues Tab -->
+                    <div id="allCourseIssuesTab" class="tab-content" style="display: none;">
+                        <div class="table-container">
+                            <table id="courseAllIssuesTable" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Registration No</th>
+                                        <th>Issue Type</th>
+                                        <th>Year</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="courseAllIssuesBody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 30px;">
+                                            Loading all issues...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
             </div>
             <!-- Content Management Section -->
             <div id="contentSection" class="content-section" style="display: none;">
@@ -5650,6 +5757,502 @@
             const logId = 'log_' + Date.now();
             db.ref('activityLogs/' + logId).set(logData);
         }
+
+
+
+
+
+
+
+
+
+        // ===== COURSE REGISTRATION ISSUES - COMPLETE WORKING SOLUTION =====
+
+        // Global variables
+        let allCourseIssues = [];
+        let currentCourseIssuesTab = 'pending';
+
+        // Tab handler for course issues
+        function handleCourseIssuesTab(tabName) {
+            console.log('Switching to course issues tab:', tabName);
+            currentCourseIssuesTab = tabName;
+
+            // Update tab buttons
+            const tabs = document.querySelectorAll('#courseRegistrationIssuesTab .tabs .tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Find and activate the clicked tab
+            const clickedTab = event.target.closest('.tab');
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+
+            // Hide all tab contents
+            ['pending', 'resolved', 'all'].forEach(tab => {
+                const tabContent = document.getElementById(tab + 'CourseIssuesTab');
+                if (tabContent) {
+                    tabContent.style.display = 'none';
+                }
+            });
+
+            // Show selected tab
+            const selectedTab = document.getElementById(tabName + 'CourseIssuesTab');
+            if (selectedTab) {
+                selectedTab.style.display = 'block';
+            }
+
+            // If no data loaded yet, load it
+            if (allCourseIssues.length === 0) {
+                loadCourseRegistrationIssues();
+            }
+        }
+
+        // Load all course registration issues
+        function loadCourseRegistrationIssues() {
+            console.log('Loading course registration issues...');
+
+            const pendingBody = document.getElementById('coursePendingIssuesBody');
+            const resolvedBody = document.getElementById('courseResolvedIssuesBody');
+            const allBody = document.getElementById('courseAllIssuesBody');
+
+            // Show loading state
+            if (pendingBody) pendingBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+            if (resolvedBody) resolvedBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+            if (allBody) allBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+            db.ref('course_registration_issues').once('value').then(snapshot => {
+                const data = snapshot.val();
+                allCourseIssues = [];
+
+                if (!data) {
+                    const noDataMsg = '<tr><td colspan="7" style="text-align: center; padding: 30px;">No course registration issues found.</td></tr>';
+                    if (pendingBody) pendingBody.innerHTML = noDataMsg;
+                    if (resolvedBody) resolvedBody.innerHTML = noDataMsg;
+                    if (allBody) allBody.innerHTML = noDataMsg;
+                    updatePendingCount(0);
+                    return;
+                }
+
+                // Collect all issues
+                for (const year in data) {
+                    const yearIssues = data[year];
+                    for (const issueId in yearIssues) {
+                        const issue = yearIssues[issueId];
+                        allCourseIssues.push({
+                            ...issue,
+                            id: issueId,
+                            year: year,
+                            timestamp: parseInt(issueId)
+                        });
+                    }
+                }
+
+                // Sort by date (newest first)
+                allCourseIssues.sort((a, b) => b.timestamp - a.timestamp);
+
+                // Update pending count
+                const pendingCount = allCourseIssues.filter(issue => !issue.resolved).length;
+                updatePendingCount(pendingCount);
+
+                // Display issues
+                displayCourseIssues();
+
+                // Show correct tab
+                setTimeout(() => {
+                    const currentTab = document.querySelector('#courseRegistrationIssuesTab .tabs .tab.active');
+                    if (!currentTab) {
+                        handleCourseIssuesTab('pending');
+                    }
+                }, 100);
+
+            }).catch(error => {
+                console.error('Error loading course issues:', error);
+                const errorMsg = '<tr><td colspan="7" style="text-align: center; color: red; padding: 30px;">Error loading issues: ' + error.message + '</td></tr>';
+                if (pendingBody) pendingBody.innerHTML = errorMsg;
+                if (resolvedBody) resolvedBody.innerHTML = errorMsg;
+                if (allBody) allBody.innerHTML = errorMsg;
+            });
+        }
+
+        // Display issues in tables
+        function displayCourseIssues() {
+            const pendingIssues = allCourseIssues.filter(issue => !issue.resolved);
+            const resolvedIssues = allCourseIssues.filter(issue => issue.resolved);
+
+            // Display pending issues
+            const pendingBody = document.getElementById('coursePendingIssuesBody');
+            if (pendingBody) {
+                if (pendingIssues.length === 0) {
+                    pendingBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">No pending issues found.</td></tr>';
+                } else {
+                    let html = '';
+                    pendingIssues.forEach(issue => {
+                        const date = new Date(issue.submittedAt);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        const hasScreenshot = issue.screenshot ?
+                            ' <i class="fas fa-camera" style="color: #17a2b8;" title="Has screenshot"></i>' : '';
+
+                        html += `
+                <tr>
+                    <td>${formattedDate}</td>
+                    <td><strong>${issue.name}</strong></td>
+                    <td><code>${issue.regNumber}</code>${hasScreenshot}</td>
+                    <td>${issue.issueType.replace(/_/g, ' ')}</td>
+                    <td>${issue.year}</td>
+                    <td><span style="background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-size: 0.9em;">Pending</span></td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="table-btn btn-view" onclick="showIssueDetails('${issue.year}', '${issue.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="table-btn btn-edit" onclick="markIssueResolved('${issue.year}', '${issue.id}')" title="Mark Resolved">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="table-btn btn-delete" onclick="deleteCourseIssue('${issue.year}', '${issue.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+                    });
+                    pendingBody.innerHTML = html;
+                }
+            }
+
+            // Display resolved issues
+            const resolvedBody = document.getElementById('courseResolvedIssuesBody');
+            if (resolvedBody) {
+                if (resolvedIssues.length === 0) {
+                    resolvedBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">No resolved issues found.</td></tr>';
+                } else {
+                    let html = '';
+                    resolvedIssues.forEach(issue => {
+                        const date = new Date(issue.submittedAt);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const resolvedDate = issue.resolvedAt ? new Date(issue.resolvedAt).toLocaleString() : 'Unknown';
+
+                        html += `
+                <tr>
+                    <td>${formattedDate}</td>
+                    <td><strong>${issue.name}</strong></td>
+                    <td><code>${issue.regNumber}</code></td>
+                    <td>${issue.issueType.replace(/_/g, ' ')}</td>
+                    <td>${issue.resolvedBy || 'Admin'}</td>
+                    <td>${resolvedDate}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="table-btn btn-view" onclick="showIssueDetails('${issue.year}', '${issue.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="table-btn btn-delete" onclick="deleteCourseIssue('${issue.year}', '${issue.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+                    });
+                    resolvedBody.innerHTML = html;
+                }
+            }
+
+            // Display all issues
+            const allBody = document.getElementById('courseAllIssuesBody');
+            if (allBody) {
+                if (allCourseIssues.length === 0) {
+                    allBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">No issues found.</td></tr>';
+                } else {
+                    let html = '';
+                    allCourseIssues.forEach(issue => {
+                        const date = new Date(issue.submittedAt);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        const statusClass = issue.resolved ? 'status-active' : 'status-expired';
+                        const statusText = issue.resolved ? 'Resolved' : 'Pending';
+
+                        html += `
+                <tr>
+                    <td>${formattedDate}</td>
+                    <td><strong>${issue.name}</strong></td>
+                    <td><code>${issue.regNumber}</code></td>
+                    <td>${issue.issueType.replace(/_/g, ' ')}</td>
+                    <td>${issue.year}</td>
+                    <td><span style="background: ${issue.resolved ? '#d4edda' : '#f8d7da'}; color: ${issue.resolved ? '#155724' : '#721c24'}; padding: 3px 8px; border-radius: 4px; font-size: 0.9em;">${statusText}</span></td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="table-btn btn-view" onclick="showIssueDetails('${issue.year}', '${issue.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="table-btn btn-delete" onclick="deleteCourseIssue('${issue.year}', '${issue.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+                    });
+                    allBody.innerHTML = html;
+                }
+            }
+        }
+
+        // Show issue details in modal
+        function showIssueDetails(year, issueId) {
+            console.log('Showing details:', year, issueId);
+
+            const issue = allCourseIssues.find(i => i.year === year && i.id === issueId);
+            if (!issue) {
+                alert('Issue not found');
+                return;
+            }
+
+            const date = new Date(issue.submittedAt);
+            const formattedDate = date.toLocaleString();
+            const resolvedDate = issue.resolvedAt ? new Date(issue.resolvedAt).toLocaleString() : 'Not resolved';
+
+            // Screenshot HTML
+            let screenshotHTML = '';
+            if (issue.screenshot) {
+                screenshotHTML = `
+            <div style="margin: 15px 0;">
+                <strong>Screenshot:</strong><br>
+                <div style="position: relative; display: inline-block;">
+                    <img src="${issue.screenshot}" alt="Screenshot" 
+                         style="max-width: 300px; max-height: 200px; border: 1px solid #ddd; border-radius: 5px; margin-top: 10px; cursor: pointer;"
+                         onclick="window.open('${issue.screenshot}', '_blank')">
+                    <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 12px;">
+                        <i class="fas fa-expand"></i> Click to view
+                    </div>
+                </div>
+            </div>
+        `;
+            }
+
+            // Create modal HTML
+            const modalHTML = `
+        <div id="courseIssueModal" style="display: block; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
+            <div style="background: white; padding: 30px; border-radius: 10px; max-width: 700px; margin: 50px auto; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto;">
+                <span onclick="closeIssueModal()" style="position: absolute; top: 15px; right: 25px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <h3 style="color: #004080; margin-bottom: 20px;">Course Issue Details</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <strong>Student Name:</strong><br>
+                        ${issue.name}
+                    </div>
+                    <div>
+                        <strong>Registration No:</strong><br>
+                        <code>${issue.regNumber}</code>
+                    </div>
+                    <div>
+                        <strong>Year:</strong><br>
+                        ${issue.year}
+                    </div>
+                    <div>
+                        <strong>Issue Type:</strong><br>
+                        ${issue.issueType.replace(/_/g, ' ')}
+                    </div>
+                    <div>
+                        <strong>Submitted:</strong><br>
+                        ${formattedDate}
+                    </div>
+                    <div>
+                        <strong>Status:</strong><br>
+                        <span style="background: ${issue.resolved ? '#d4edda' : '#f8d7da'}; color: ${issue.resolved ? '#155724' : '#721c24'}; padding: 3px 8px; border-radius: 4px; font-weight: 600;">
+                            ${issue.resolved ? 'Resolved' : 'Pending'}
+                        </span>
+                    </div>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <strong>Issue Description:</strong><br>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 5px; white-space: pre-wrap; max-height: 200px; overflow-y: auto;">
+                        ${issue.explanation || 'No description provided'}
+                    </div>
+                </div>
+                
+                ${screenshotHTML}
+                
+                <div style="margin: 15px 0;">
+                    <strong>Contact Information:</strong><br>
+                    <div style="color: #666; font-size: 0.9em;">
+                        ${issue.contactEmail ? `Email: ${issue.contactEmail}<br>` : ''}
+                        ${issue.contactPhone ? `Phone: ${issue.contactPhone}` : ''}
+                    </div>
+                </div>
+                
+                ${issue.resolved ? `
+                    <div style="margin: 20px 0; padding: 15px; background: #d4edda; border-radius: 6px; border-left: 4px solid #28a745;">
+                        <strong>Resolution Details:</strong><br>
+                        <div>Resolved by: ${issue.resolvedBy || 'Admin'}</div>
+                        <div>Resolved on: ${resolvedDate}</div>
+                        ${issue.resolutionNotes ? `<div>Notes: ${issue.resolutionNotes}</div>` : ''}
+                    </div>
+                ` : ''}
+                
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+                    ${!issue.resolved ? `
+                        <button onclick="markIssueResolved('${year}', '${issue.id}')" 
+                                style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                            <i class="fas fa-check"></i> Mark as Resolved
+                        </button>
+                    ` : ''}
+                    <button onclick="deleteCourseIssue('${year}', '${issue.id}')" 
+                            style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                        <i class="fas fa-trash"></i> Delete Issue
+                    </button>
+                    <button onclick="closeIssueModal()" 
+                            style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+            // Remove existing modal if any
+            const existingModal = document.getElementById('courseIssueModal');
+            if (existingModal) existingModal.remove();
+
+            // Add new modal
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        // Close modal
+        function closeIssueModal() {
+            const modal = document.getElementById('courseIssueModal');
+            if (modal) modal.remove();
+        }
+
+        // Mark issue as resolved
+        function markIssueResolved(year, issueId) {
+            const resolutionNotes = prompt('Enter resolution notes (optional):');
+            if (resolutionNotes === null) return; // User cancelled
+
+            const adminName = document.getElementById('adminName')?.textContent?.replace('Welcome, ', '') || 'Admin';
+
+            const updates = {
+                resolved: true,
+                resolvedBy: adminName,
+                resolvedAt: new Date().toISOString(),
+                resolutionNotes: resolutionNotes || null
+            };
+
+            db.ref(`course_registration_issues/${year}/${issueId}`).update(updates)
+                .then(() => {
+                    alert('✅ Issue marked as resolved!');
+                    closeIssueModal();
+                    loadCourseRegistrationIssues();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Error: ' + error.message);
+                });
+        }
+
+        // Delete issue
+        function deleteCourseIssue(year, issueId) {
+            if (confirm('Are you sure you want to delete this course registration issue?\nThis action cannot be undone.')) {
+                db.ref(`course_registration_issues/${year}/${issueId}`).remove()
+                    .then(() => {
+                        alert('✅ Issue deleted successfully!');
+                        closeIssueModal();
+                        loadCourseRegistrationIssues();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('❌ Error deleting issue: ' + error.message);
+                    });
+            }
+        }
+
+        // Update pending count
+        function updatePendingCount(count) {
+            const badge = document.getElementById('pendingIssuesCount');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        // Export issues
+        function exportCourseIssues() {
+            if (allCourseIssues.length === 0) {
+                alert('No course issues to export.');
+                return;
+            }
+
+            // Prepare data
+            const exportData = allCourseIssues.map(issue => ({
+                'Date': new Date(issue.submittedAt).toLocaleString(),
+                'Name': issue.name,
+                'Registration Number': issue.regNumber,
+                'Year': issue.year,
+                'Issue Type': issue.issueType.replace(/_/g, ' '),
+                'Description': issue.explanation,
+                'Contact Email': issue.contactEmail || '',
+                'Contact Phone': issue.contactPhone || '',
+                'Status': issue.resolved ? 'Resolved' : 'Pending',
+                'Resolved By': issue.resolvedBy || '',
+                'Resolved Date': issue.resolvedAt ? new Date(issue.resolvedAt).toLocaleString() : '',
+                'Resolution Notes': issue.resolutionNotes || ''
+            }));
+
+            // Create Excel workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(exportData);
+
+            // Set column widths
+            const wscols = [
+                { wch: 20 }, { wch: 25 }, { wch: 20 }, { wch: 10 },
+                { wch: 20 }, { wch: 50 }, { wch: 30 }, { wch: 15 },
+                { wch: 15 }, { wch: 20 }, { wch: 20 }, { wch: 50 }
+            ];
+            ws['!cols'] = wscols;
+
+            // Add worksheet
+            XLSX.utils.book_append_sheet(wb, ws, 'Course Issues');
+
+            // Generate filename
+            const timestamp = new Date().toISOString().split('T')[0];
+            const filename = `Course_Issues_${timestamp}.xlsx`;
+
+            // Export
+            XLSX.writeFile(wb, filename);
+
+            alert(`✅ Exported ${exportData.length} issues to ${filename}`);
+        }
+
+        // Refresh issues
+        function refreshCourseIssues() {
+            loadCourseRegistrationIssues();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Course registration module loaded');
+
+            // Make sure functions are available globally
+            window.handleCourseIssuesTab = handleCourseIssuesTab;
+            window.showIssueDetails = showIssueDetails;
+            window.closeIssueModal = closeIssueModal;
+            window.markIssueResolved = markIssueResolved;
+            window.deleteCourseIssue = deleteCourseIssue;
+            window.exportCourseIssues = exportCourseIssues;
+            window.refreshCourseIssues = refreshCourseIssues;
+
+            // Auto-load when complaints section is shown
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('[onclick*="courseRegistrationIssues"]')) {
+                    setTimeout(loadCourseRegistrationIssues, 500);
+                }
+            });
+        });
+
 
 
     </script>
