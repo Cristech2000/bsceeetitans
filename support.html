@@ -92,6 +92,102 @@
       margin: 40px;
       border-radius: 10px;
     }
+
+
+
+
+    /* Add these styles to your existing CSS */
+    .support-form .form-group {
+      margin-bottom: 20px;
+    }
+
+    .support-form .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .support-form .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .support-form .form-group input[type="text"],
+    .support-form .form-group input[type="email"],
+    .support-form .form-group input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .support-form .form-group input[type="file"] {
+      border: 2px dashed #ccc;
+      padding: 15px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
+
+    .support-form .form-group input[type="file"]:hover {
+      border-color: #004080;
+      background-color: #f0f8ff;
+    }
+
+    .support-form button[type="submit"] {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .support-form button[type="submit"]:hover {
+      background-color: #218838;
+    }
+
+    .support-form button[type="submit"] i {
+      margin-right: 8px;
+    }
+
+    /* Progress bar for file upload */
+    .upload-progress {
+      width: 100%;
+      height: 20px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .upload-progress-bar {
+      height: 100%;
+      background-color: #28a745;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .upload-preview {
+      margin-top: 10px;
+      max-width: 200px;
+      display: none;
+    }
+
+    .upload-preview img {
+      max-width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 
@@ -292,6 +388,57 @@
                          font-size: 16px; resize: vertical;" required></textarea>
         <button type="submit">Submit Anonymously</button>
       </form>
+      <!-- Add this after the anonymous class issues form in each year section -->
+      <!-- For Year 2 section (id="year2") -->
+      <form class="support-form" id="form-course-reg-year2" style="margin-top: 40px;">
+        <h2>Course Registration Issue (2nd Year)</h2>
+
+        <input type="text" name="studentName" placeholder="Your Full Name" required>
+        <input type="text" name="regNumber" placeholder="Your Registration Number" required>
+
+        <div class="form-group">
+          <label>Issue Type:</label>
+          <select name="issueType" required>
+            <option value="">-- Select Issue Type --</option>
+            <option value="registration_error">Registration Error</option>
+            <option value="unit_not_found">Unit Not Found</option>
+            <option value="prerequisite_issue">Prerequisite Issue</option>
+            <option value="time_conflict">Time Conflict</option>
+            <option value="capacity_full">Unit Capacity Full</option>
+            <option value="system_error">System Error</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Detailed Explanation:</label>
+          <textarea name="explanation" placeholder="Please describe your issue in detail..." style="width: 100%; height: 120px; padding: 10px; margin-top: 10px; 
+                         border: 1px solid #ccc; border-radius: 5px; font-family: inherit; 
+                         font-size: 16px; resize: vertical;" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Screenshot (Optional):</label>
+          <input type="file" name="screenshot" accept="image/*" style="width: 100%; padding: 8px; margin-top: 10px;">
+          <small style="display: block; margin-top: 5px; color: #666;">
+            Upload a screenshot of the error (JPG, PNG, GIF - Max 5MB)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Contact Email (Optional):</label>
+          <input type="email" name="contactEmail" placeholder="Your email for updates">
+        </div>
+
+        <div class="form-group">
+          <label>Contact Phone (Optional):</label>
+          <input type="tel" name="contactPhone" placeholder="Your phone number">
+        </div>
+
+        <button type="submit" style="background-color: #28a745;">
+          <i class="fas fa-paper-plane"></i> Submit Issue
+        </button>
+      </form>
     </section>
     </section>
 
@@ -388,6 +535,8 @@
         </select>
         <button type="submit">Submit Complaint</button>
       </form>
+
+
     </section>
 
     <section id="year4" class="tab-content">
@@ -624,11 +773,55 @@
       document.getElementById(id).classList.add('active');
       event.target.classList.add('active');
     }
+    // Add this to your existing JavaScript
+    document.addEventListener('DOMContentLoaded', function () {
+      // File upload preview
+      const fileInputs = document.querySelectorAll('input[type="file"]');
+      fileInputs.forEach(input => {
+        input.addEventListener('change', function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          // Validate file size (5MB limit)
+          if (file.size > 5 * 1024 * 1024) {
+            alert('File size too large. Maximum size is 5MB.');
+            e.target.value = '';
+            return;
+          }
+
+          // Validate file type
+          const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+          if (!validTypes.includes(file.type)) {
+            alert('Please upload only JPG, PNG, or GIF images.');
+            e.target.value = '';
+            return;
+          }
+
+          // Create preview
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const container = input.closest('.form-group');
+            let preview = container.querySelector('.upload-preview');
+
+            if (!preview) {
+              preview = document.createElement('div');
+              preview.className = 'upload-preview';
+              container.appendChild(preview);
+            }
+
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    });
   </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
 
     const app = initializeApp({
       apiKey: "AIzaSyD3oMlsv9C3Qepvkw_Y1JVfhVJiMwZLox4",
@@ -718,7 +911,94 @@
       alert("Anonymous issue submitted successfully!");
       anonymousForm.reset();
     });
+
+
+
+    // Course Registration Issues Submission (SIMPLE VERSION)
+    const courseRegForm = document.getElementById('form-course-reg-year2');
+    courseRegForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Basic validation
+      const name = courseRegForm.studentName.value.trim();
+      const regNo = courseRegForm.regNumber.value.trim().toUpperCase();
+      const issueType = courseRegForm.issueType.value;
+      const explanation = courseRegForm.explanation.value.trim();
+      const contactEmail = courseRegForm.contactEmail.value.trim();
+      const contactPhone = courseRegForm.contactPhone.value.trim();
+
+      if (!name || !regNo || !issueType || !explanation) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = courseRegForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+      submitBtn.disabled = true;
+
+      try {
+        // Handle file upload if present - SIMPLIFY THIS
+        let screenshotData = null;
+        const screenshotFile = courseRegForm.screenshot.files[0];
+
+        if (screenshotFile) {
+          // SIMPLE Base64 conversion
+          if (screenshotFile.size > 2 * 1024 * 1024) { // 2MB limit
+            alert('Image too large! Max 2MB.');
+            throw new Error('File too large');
+          }
+
+          // Create promise for file reading
+          screenshotData = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => resolve(null); // Don't fail if image error
+            reader.readAsDataURL(screenshotFile);
+          });
+        }
+
+        const timestamp = Date.now();
+        const issueData = {
+          name,
+          regNumber: regNo,
+          issueType,
+          explanation,
+          contactEmail: contactEmail || null,
+          contactPhone: contactPhone || null,
+          screenshot: screenshotData, // Base64 or null
+          screenshotName: screenshotFile ? screenshotFile.name : null,
+          submittedAt: new Date().toISOString(),
+          status: 'pending',
+          year: 'year2',
+          resolved: false
+        };
+
+        // Save to Firebase
+        await set(ref(db, `course_registration_issues/year2/${timestamp}`), issueData);
+
+        alert("✅ Course registration issue submitted successfully!");
+        courseRegForm.reset();
+
+        // Clear preview images
+        document.querySelectorAll('.upload-preview').forEach(preview => {
+          preview.style.display = 'none';
+          preview.innerHTML = '';
+        });
+
+      } catch (error) {
+        console.error("Error:", error);
+        alert("❌ Error: " + (error.message || "Please try again"));
+      } finally {
+        // Restore button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
   </script>
+
+
 </body>
 
 </html>
