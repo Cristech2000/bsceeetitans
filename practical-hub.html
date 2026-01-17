@@ -859,6 +859,48 @@
             font-size: 1.2em;
             color: var(--text-primary);
         }
+                /* Hero Section */
+        .head {
+            width: 100%;
+            height: 160vh;
+            background-image: url(GALLERY/back.jpg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+
+            background-size: cover;
+            /* or cover, but see below */
+            background-position: center;
+            background-repeat: no-repeat;
+            height: auto;
+            /* or set min-height */
+        }
+
+        .head::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+
+        }
+
+        .head-text {
+            position: relative;
+            color: white;
+            z-index: 1;
+        }
+
+        .head-text h1 {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .head-text p {
+            font-size: 22px;
+        }
     </style>
 </head>
 
@@ -911,7 +953,13 @@
     <!-- Main Content -->
     <main class="content">
 
-
+  <!-- Hero Section -->
+        <section class="head">
+            <div class="head-text">
+                <h1>Practical Electronics Hub</h1>
+                <p>Affordable, Tested Electronics Kits for EEE Practicals — Build Projects Faster and Smarter!</p>
+            </div>
+        </section>
         <!-- Filter Section -->
         <section class="filter-section">
             <h3><i class="fas fa-filter"></i> Filter Products</h3>
@@ -1989,5 +2037,6 @@
         // debugProductData();
     </script>
 </body>
+
 
 </html>
