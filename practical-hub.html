@@ -901,6 +901,31 @@
         .head-text p {
             font-size: 22px;
         }
+
+
+
+                /* Add to your permanent CSS */
+        .filter-section {
+            position: relative;
+            z-index: 100;
+        }
+
+        .filter-grid select,
+        .filter-grid input {
+            position: relative;
+            z-index: 101;
+        }
+
+        /* Ensure dropdown options appear above everything */
+        select option {
+            position: relative;
+            z-index: 10000 !important;
+        }
+
+        /* Override any parent overflow issues */
+        .filter-grid {
+            overflow: visible !important;
+        }
     </style>
 </head>
 
@@ -2079,4 +2104,5 @@
 
 
 </html>
+
 
