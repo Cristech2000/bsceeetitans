@@ -907,49 +907,51 @@ index.html
 
 
 
-        // ==================== BLOCK FIREBASE AUTO-REGISTRATION ====================
-        console.log('🛑 Blocking Firebase auto-service-worker-registration...');
+               // ==================== CLEAN SERVICE WORKER REGISTRATION ====================
+        console.log('📱 Setting up PWA Service Worker...');
 
-        // Method 1: Patch the messaging prototype BEFORE Firebase loads
-        if (typeof firebase !== 'undefined' && firebase.messaging) {
-            // Get the messaging prototype
-            const messagingPrototype = Object.getPrototypeOf(firebase.messaging());
+        // ONLY register the PWA service worker, ignore Firebase
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                console.log('Registering PWA Service Worker...');
 
-            // Save the original method
-            const originalRegisterDefaultSw = messagingPrototype._registerDefaultSw;
+                // Register ONLY the PWA service worker
+                navigator.serviceWorker.register('/bsceeetitans/sw.js', {
+                    scope: '/bsceeetitans/'
+                })
+                    .then(registration => {
+                        console.log('✅ PWA Service Worker registered:', registration.scope);
 
-            // Override it to do nothing
-            messagingPrototype._registerDefaultSw = function () {
-                console.log('🛑 BLOCKED: Firebase attempted to auto-register default service worker');
-                console.log('✅ Using our manually registered service worker instead');
-                return Promise.resolve(); // Return resolved promise to prevent errors
-            };
+                        // Check if controlling the page
+                        if (navigator.serviceWorker.controller) {
+                            console.log('✅ Service Worker is controlling the page');
+                            console.log('🎉 PWA should now be installable!');
+                        }
 
-            console.log('✅ Firebase auto-registration blocked successfully');
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            console.log('🔄 Service Worker update found');
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ PWA Service Worker failed:', error);
+                    });
+            });
         }
 
-        // Method 2: Also patch navigator.serviceWorker.register to intercept Firebase's calls
-        const originalRegister = navigator.serviceWorker.register;
-        navigator.serviceWorker.register = function (scriptURL, options) {
-            console.log('Service Worker registration requested:', scriptURL);
-
-            // Intercept Firebase's default registration
-            if (scriptURL === 'http://127.0.0.1:5501/firebase-messaging-sw.js' ||
-                scriptURL === '/firebase-messaging-sw.js') {
-                console.log('🛑 INTERCEPTED: Firebase default service worker registration');
-                console.log('🔀 Redirecting to: /class%20webpage/web/firebase-messaging-sw.js');
-
-                // Redirect to our correct path
-                return originalRegister.call(
-                    this,
-                    '/bsceeetitans/firebase-messaging-sw.js',
-                    { scope: '/bsceeetitans/' }
-                );
+        // Optional: Disable Firebase messaging auto-registration WITHOUT breaking PWA
+        if (typeof firebase !== 'undefined' && firebase.messaging) {
+            // Just disable Firebase's auto-registration quietly
+            try {
+                const messagingPrototype = Object.getPrototypeOf(firebase.messaging());
+                messagingPrototype._registerDefaultSw = function () {
+                    console.log('Firebase messaging auto-registration disabled');
+                    return Promise.resolve();
+                };
+            } catch (e) {
+                // Ignore errors
             }
-
-            // Allow other registrations
-            return originalRegister.call(this, scriptURL, options);
-        };
+        }
         // ==================== FIREBASE MESSAGING SETUP ====================
 
         // Initialize Firebase Messaging
@@ -2111,4 +2113,5 @@ index.html
 </body>
 
 </html>
+
 
