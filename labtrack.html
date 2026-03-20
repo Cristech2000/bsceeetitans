@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabTrack · Student Portal</title>
+    <!-- Bootstrap 5 + icons + modals -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1e4f8a;
+            --dark-blue: #0b1c2f;
+            --accent-orange: #ff6b35;
+            --light-gray: #f4f7fc;
+        }
+
+        body {
+            background: var(--light-gray);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--dark-blue) !important;
+            box-shadow: 0 4px 12px rgba(0, 20, 40, 0.15);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: #9fc8ff !important;
+        }
+
+        .student-badge {
+            background-color: var(--accent-orange);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            border-radius: 20px;
+            margin: 0 4px;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #2a4b7a;
+            color: white !important;
+        }
+
+        .page-title {
+            font-weight: 600;
+            color: var(--dark-blue);
+            border-left: 6px solid var(--accent-orange);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .learn-card {
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid rgba(0, 50, 100, 0.05);
+            height: 100%;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .learn-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 50, 100, 0.15);
+            border-color: var(--primary-blue);
+        }
+
+        .learn-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .learn-card .card-body {
+            padding: 1.2rem;
+        }
+
+        .equipment-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            transition: 0.2s;
+        }
+
+        .equipment-card.borrowable {
+            border-left-color: #28a745;
+        }
+
+        .equipment-card.reserved {
+            border-left-color: #dc3545;
+        }
+
+        .timetable-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .badge-prac {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .content-page {
+            display: none;
+        }
+
+        .content-page.active-page {
+            display: block;
+        }
+
+        .modal-xl {
+            max-width: 90%;
+        }
+
+        .experiment-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .procedure-step {
+            background: #f8f9fa;
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="bi bi-cpu me-2"></i>LabTrack | Student Portal</a>
+            <span class="student-badge"><i class="bi bi-person"></i> Open Access</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav ms-auto" id="navTabs">
+                    <li class="nav-item"><a class="nav-link active" onclick="showPage('home')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="showPage('borrow')">Borrow</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="showPage('learn')">Experiments</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="showPage('equipment')">Equipment</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="showPage('timetable')">Timetable</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status bg-success text-white">
+        <i class="bi bi-wifi"></i> Connected
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mt-2 mb-5">
+
+        <!-- Home Page -->
+        <div id="page-home" class="content-page active-page">
+            <h2 class="page-title"><i class="bi bi-speedometer2 me-2"></i>Lab Dashboard</h2>
+            <div class="row g-4" id="dashboardStats"></div>
+
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card p-4">
+                        <h5><i class="bi bi-calendar-event"></i> Today's Practicals</h5>
+                        <div id="todayPracticals" class="mt-3"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4">
+                        <h5><i class="bi bi-info-circle"></i> Quick Actions</h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="showPage('borrow')">
+                                <i class="bi bi-box-arrow-right"></i> Borrow Equipment
+                            </button>
+                            <button class="btn btn-outline-success" onclick="showPage('timetable')">
+                                <i class="bi bi-calendar-week"></i> View Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Borrow Page -->
+        <div id="page-borrow" class="content-page">
+            <h2 class="page-title"><i class="bi bi-box-arrow-right me-2"></i>Borrow Equipment</h2>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card p-4">
+                        <form id="borrowForm">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Full Name</label>
+                                <input type="text" class="form-control rounded-pill" id="studentName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Registration Number</label>
+                                <input type="text" class="form-control rounded-pill" id="studentReg" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Select Item</label>
+                                <select class="form-select rounded-pill" id="equipmentSelect" required>
+                                    <option value="">Loading...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Quantity</label>
+                                <input type="number" min="1" max="5" class="form-control rounded-pill" id="borrowQty"
+                                    value="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary rounded-pill px-5">
+                                <i class="bi bi-send"></i> Submit Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card p-4 bg-light">
+                        <h5>Borrowing Rules</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">✓ Max 5 items per student</li>
+                            <li class="mb-2">✓ Return within 7 days</li>
+                            <li class="mb-2">✓ Reserved items cannot be borrowed</li>
+                            <li class="mb-2">✓ Lab tech approval required</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learn/Experiments Page -->
+        <div id="page-learn" class="content-page">
+            <h2 class="page-title"><i class="bi bi-mortarboard me-2"></i>Engineering Experiments</h2>
+            <div class="row g-4" id="experimentCards"></div>
+        </div>
+
+        <!-- Equipment Page -->
+        <div id="page-equipment" class="content-page">
+            <h2 class="page-title"><i class="bi bi-tools me-2"></i>Lab Equipment</h2>
+
+            <!-- Filter Tabs -->
+            <ul class="nav nav-pills mb-3" id="equipmentTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-category="all" href="#">All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-category="component" href="#">Components</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-category="tool" href="#">Tools</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-category="machine" href="#">Machines</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-category="apparatus" href="#">Apparatus</a>
+                </li>
+            </ul>
+
+            <div class="row" id="equipmentList"></div>
+        </div>
+
+        <!-- Timetable Page -->
+        <div id="page-timetable" class="content-page">
+            <h2 class="page-title"><i class="bi bi-calendar-week me-2"></i>Lab Schedule</h2>
+
+            <!-- Week Selector -->
+            <div class="card p-3 mb-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <select class="form-select" id="weekSelector">
+                            <option value="this">This Week</option>
+                            <option value="next">Next Week</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="timetableView"></div>
+        </div>
+    </div>
+
+    <!-- Experiment Details Modal -->
+    <div class="modal fade" id="experimentModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Experiment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="experimentImage" class="experiment-image" src="" alt="Experiment">
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Description</h6>
+                            <p id="experimentDesc"></p>
+
+                            <h6>Objectives</h6>
+                            <ul id="experimentObjectives"></ul>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Procedure</h6>
+                            <div id="experimentProcedure"></div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Required Equipment</h6>
+                            <ul id="experimentEquipment"></ul>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Circuit Diagram</h6>
+                            <img id="circuitDiagram" class="experiment-image" src="" alt="Circuit Diagram">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9WF3Hphb4rI7OII-rSEuxfgAUOVpiEdU",
+            authDomain: "labtrack-e8e8e.firebaseapp.com",
+            databaseURL: "https://labtrack-e8e8e-default-rtdb.firebaseio.com",
+            projectId: "labtrack-e8e8e",
+            storageBucket: "labtrack-e8e8e.firebasestorage.app",
+            messagingSenderId: "892945242910",
+            appId: "1:892945242910:web:c80d95bd265b365c13c70f"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const storage = firebase.storage();
+
+        // References
+        const experimentsRef = database.ref('experiments');
+        const equipmentRef = database.ref('equipment');
+        const timetableRef = database.ref('timetable');
+        const transactionsRef = database.ref('transactions');
+
+        // State
+        let experiments = [];
+        let equipment = [];
+        let timetable = [];
+
+        // Load Data
+        function loadData() {
+            experimentsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                experiments = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                renderExperiments();
+                updateDashboard();
+            });
+
+            equipmentRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                equipment = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                renderEquipment('all');
+                populateEquipmentDropdown();
+                updateDashboard();
+            });
+
+            timetableRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                timetable = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                renderTimetable();
+                updateDashboard();
+            });
+        }
+
+        // Render Experiments
+        function renderExperiments() {
+            const container = document.getElementById('experimentCards');
+            if (!container) return;
+
+            if (experiments.length === 0) {
+                container.innerHTML = '<div class="col-12"><p class="text-center">No experiments available</p></div>';
+                return;
+            }
+
+            container.innerHTML = experiments.map(exp => `
+                <div class="col-md-4">
+                    <div class="learn-card" onclick="showExperimentDetails('${exp.id}')">
+                        <img src="${exp.imageUrl || 'https://via.placeholder.com/400x200?text=Experiment'}" alt="${exp.title}">
+                        <div class="card-body">
+                            <h5>${exp.title}</h5>
+                            <p class="text-secondary">${exp.shortDesc || ''}</p>
+                            <span class="badge-prac">${exp.duration || '1 hour'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show Experiment Details
+        window.showExperimentDetails = function (expId) {
+            const exp = experiments.find(e => e.id === expId);
+            if (!exp) return;
+
+            document.getElementById('modalTitle').textContent = exp.title || 'Experiment Details';
+            document.getElementById('experimentImage').src = exp.imageUrl || 'https://via.placeholder.com/600x400';
+            document.getElementById('experimentDesc').textContent = exp.description || 'No description available';
+
+            // Objectives
+            const objectivesList = document.getElementById('experimentObjectives');
+            objectivesList.innerHTML = (exp.objectives || ['Learn basic concepts']).map(obj => `<li>${obj}</li>`).join('');
+
+            // Procedure
+            const procedureDiv = document.getElementById('experimentProcedure');
+            procedureDiv.innerHTML = (exp.procedure || ['Step 1: Setup the circuit']).map((step, i) =>
+                `<div class="procedure-step">${i + 1}. ${step}</div>`
+            ).join('');
+
+            // Equipment
+            const equipList = document.getElementById('experimentEquipment');
+            equipList.innerHTML = (exp.requiredEquipment || ['Resistor', 'Capacitor']).map(eq => `<li>${eq}</li>`).join('');
+
+            // Circuit Diagram
+            document.getElementById('circuitDiagram').src = exp.circuitDiagramUrl || 'https://via.placeholder.com/800x400?text=Circuit+Diagram';
+
+            new bootstrap.Modal(document.getElementById('experimentModal')).show();
+        };
+
+        // Render Equipment with category filter
+        function renderEquipment(category) {
+            const container = document.getElementById('equipmentList');
+            if (!container) return;
+
+            const filtered = category === 'all' ? equipment : equipment.filter(e => e.category === category);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="col-12"><p class="text-center">No equipment found</p></div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => `
+                <div class="col-md-4">
+                    <div class="equipment-card ${item.borrowable ? 'borrowable' : 'reserved'}">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5>${item.name}</h5>
+                                <span class="badge bg-secondary">${item.category}</span>
+                            </div>
+                            <i class="bi ${item.borrowable ? 'bi-unlock text-success' : 'bi-lock text-danger'} fs-4"></i>
+                        </div>
+                        <p class="mt-2">${item.description || ''}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="${item.borrowable ? 'text-success' : 'text-danger'}">
+                                ${item.borrowable ? '✓ Borrowable' : '✗ Reserved'}
+                            </span>
+                            <span class="badge bg-primary">${item.available || 0} available</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Populate equipment dropdown for borrow form
+        function populateEquipmentDropdown() {
+            const select = document.getElementById('equipmentSelect');
+            if (!select) return;
+
+            const borrowable = equipment.filter(e => e.borrowable && e.available > 0);
+
+            if (borrowable.length === 0) {
+                select.innerHTML = '<option value="">No items available</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">Select item...</option>' +
+                borrowable.map(e => `<option value="${e.id}">${e.name} (${e.available} available)</option>`).join('');
+        }
+
+        // Render Timetable
+        function renderTimetable() {
+            const container = document.getElementById('timetableView');
+            if (!container) return;
+
+            const week = document.getElementById('weekSelector')?.value || 'this';
+
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            let html = '<div class="row">';
+
+            days.forEach(day => {
+                const dayPracticals = timetable.filter(t => t.day === day && t.week === week);
+                html += `
+                    <div class="col">
+                        <div class="card p-2">
+                            <h6 class="text-center">${day}</h6>
+                            ${dayPracticals.length ? dayPracticals.map(p => `
+                                <div class="timetable-card">
+                                    <strong>${p.title}</strong><br>
+                                    <small>${p.time || 'TBA'} | ${p.venue || 'Lab'}</small><br>
+                                    <span class="badge bg-info">${p.class || 'All'}</span>
+                                </div>
+                            `).join('') : '<p class="text-center text-muted small">No sessions</p>'}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const dashboardStats = document.getElementById('dashboardStats');
+            if (!dashboardStats) return;
+
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            const todayPracticals = timetable.filter(t => t.day === today);
+
+            dashboardStats.innerHTML = `
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h6>Available Equipment</h6>
+                        <h3>${equipment.filter(e => e.borrowable).length}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h6>Experiments</h6>
+                        <h3>${experiments.length}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h6>Today's Practicals</h6>
+                        <h3>${todayPracticals.length}</h3>
+                    </div>
+                </div>
+            `;
+
+            const todayPracticalsDiv = document.getElementById('todayPracticals');
+            if (todayPracticalsDiv) {
+                todayPracticalsDiv.innerHTML = todayPracticals.length ?
+                    todayPracticals.map(p => `
+                        <div class="alert alert-info">
+                            <strong>${p.title}</strong> - ${p.time || 'TBA'} @ ${p.venue || 'Lab'}
+                        </div>
+                    `).join('') : '<p>No practicals scheduled today</p>';
+            }
+        }
+
+        // Handle Borrow Form
+        const borrowForm = document.getElementById('borrowForm');
+        if (borrowForm) {
+            borrowForm.onsubmit = async (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('studentName').value;
+                const reg = document.getElementById('studentReg').value;
+                const equipId = document.getElementById('equipmentSelect').value;
+                const qty = parseInt(document.getElementById('borrowQty').value);
+
+                if (!name || !reg || !equipId || qty < 1) {
+                    alert('Please fill all fields');
+                    return;
+                }
+
+                const equip = equipment.find(e => e.id === equipId);
+                if (!equip || equip.available < qty) {
+                    alert('Not enough items available');
+                    return;
+                }
+
+                try {
+                    await transactionsRef.push({
+                        name,
+                        reg,
+                        equipmentId: equipId,
+                        equipmentName: equip.name,
+                        qty,
+                        date: new Date().toLocaleString(),
+                        timestamp: Date.now(),
+                        status: 'pending',
+                        type: 'borrow'
+                    });
+
+                    alert('Request submitted! Lab tech will review it.');
+                    borrowForm.reset();
+                } catch (error) {
+                    console.error(error);
+                    alert('Error submitting request');
+                }
+            };
+        }
+
+        // Navigation
+        window.showPage = function (page) {
+            // Update page visibility
+            document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active-page'));
+            const targetPage = document.getElementById('page-' + page);
+            if (targetPage) {
+                targetPage.classList.add('active-page');
+            }
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(
+                link => link.textContent.toLowerCase().includes(page) ||
+                    (page === 'home' && link.textContent.includes('Home'))
+            );
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Refresh data for the page
+            if (page === 'equipment') {
+                renderEquipment('all');
+            } else if (page === 'learn') {
+                renderExperiments();
+            } else if (page === 'timetable') {
+                renderTimetable();
+            }
+        };
+
+        // Equipment category filter
+        document.querySelectorAll('[data-category]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('[data-category]').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                renderEquipment(link.dataset.category);
+            });
+        });
+
+        // Week selector
+        const weekSelector = document.getElementById('weekSelector');
+        if (weekSelector) {
+            weekSelector.addEventListener('change', renderTimetable);
+        }
+
+        // Connection monitoring
+        if (database) {
+            database.ref('.info/connected').on('value', (snap) => {
+                const statusDiv = document.getElementById('connectionStatus');
+                if (statusDiv) {
+                    if (snap.val()) {
+                        statusDiv.className = 'connection-status bg-success text-white';
+                        statusDiv.innerHTML = '<i class="bi bi-wifi"></i> Connected';
+                    } else {
+                        statusDiv.className = 'connection-status bg-danger text-white';
+                        statusDiv.innerHTML = '<i class="bi bi-wifi-off"></i> Offline';
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+
+</html>

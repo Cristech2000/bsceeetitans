@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabTrack · Lab Tech Admin</title>
+    <!-- Bootstrap 5 + icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- SheetJS for Excel handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1e4f8a;
+            --dark-blue: #0b1c2f;
+            --accent-orange: #ff6b35;
+            --success-green: #28a745;
+            --danger-red: #dc3545;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--dark-blue) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-badge {
+            background-color: var(--accent-orange);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .page-title {
+            font-weight: 600;
+            color: var(--dark-blue);
+            border-left: 6px solid var(--accent-orange);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ffc107;
+            transition: 0.2s;
+        }
+
+        .request-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card.approved {
+            border-left-color: var(--success-green);
+        }
+
+        .request-card.returned {
+            border-left-color: #6c757d;
+            opacity: 0.8;
+        }
+
+        .btn-approve {
+            background-color: var(--success-green);
+            color: white;
+            border-radius: 40px;
+            padding: 0.3rem 1.5rem;
+            border: none;
+        }
+
+        .btn-return {
+            background-color: var(--primary-blue);
+            color: white;
+            border-radius: 40px;
+            padding: 0.3rem 1.5rem;
+            border: none;
+        }
+
+
+        .nav-link {
+            background-color: #1e4f8a;
+            font-weight: 500;
+            border-radius: 20px;
+            margin: 0 4px;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #2a4b7a;
+            color: white !important;
+        }
+
+
+        .student-list-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attendance-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .group-badge {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.visible {
+            display: block;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: var(--primary-blue);
+            color: white !important;
+        }
+
+        .excel-upload {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .excel-upload:hover {
+            border-color: var(--primary-blue);
+            background: #f8f9fa;
+        }
+
+        .excel-preview {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .excel-preview table {
+            font-size: 0.9rem;
+        }
+
+        .excel-preview th {
+            background: var(--primary-blue);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .group-card {
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: white;
+        }
+
+        .group-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px 8px 0 0;
+            margin: -1rem -1rem 1rem -1rem;
+        }
+
+        .practical-tab {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .practical-tab:hover {
+            background-color: #e9ecef;
+        }
+
+        .practical-tab.active {
+            background-color: var(--primary-blue);
+            color: white !important;
+        }
+
+        .clear-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+        }
+
+        .clear-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .attendance-group {
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            background: white;
+        }
+
+        .attendance-group-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .select-all-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 0.2rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .select-all-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .download-btn {
+            background-color: var(--success-green);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="container">
+        <div class="login-container">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock fs-1 text-danger"></i>
+                <h3 class="mt-2">Lab Tech Login</h3>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control rounded-pill" id="adminPassword"
+                    placeholder="Enter admin password">
+            </div>
+            <button class="btn btn-danger w-100 rounded-pill" onclick="checkLogin()">
+                <i class="bi bi-box-arrow-in-right"></i> Access Admin Panel
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div id="adminContent" class="admin-content">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#"><i class="bi bi-cpu me-2"></i>LabTrack | Lab Tech Admin</a>
+                <span class="admin-badge"><i class="bi bi-shield"></i> Admin</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><button class="nav-link active"
+                                onclick="showSection('dashboard')">Dashboard</button></li>
+                        <li class="nav-item"><button class="nav-link"
+                                onclick="showSection('experiments')">Experiments</button></li>
+                        <li class="nav-item"><button class="nav-link"
+                                onclick="showSection('equipment')">Equipment</button></li>
+                        <li class="nav-item"><button class="nav-link" onclick="showSection('borrowRequests')">Borrow
+                                Requests</button></li>
+                        <li class="nav-item"><button class="nav-link"
+                                onclick="showSection('practicals')">Practicals</button></li>
+                        <li class="nav-item"><button class="nav-link"
+                                onclick="showSection('timetable')">Timetable</button></li>
+                        <li class="nav-item"><button class="nav-link"
+                                onclick="showSection('attendance')">Attendance</button></li>
+                        <li class="nav-item"><button class="nav-link" onclick="logout()">Logout</button></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mt-3">
+
+            <!-- Dashboard Section -->
+            <div id="section-dashboard" class="admin-section">
+                <h2 class="page-title"><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+                <div class="row g-4" id="adminStats"></div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="section-card">
+                            <h5>Recent Borrow Requests</h5>
+                            <div id="recentRequests"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="section-card">
+                            <h5>Today's Practicals</h5>
+                            <div id="todayPracticals"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experiments Management -->
+            <div id="section-experiments" class="admin-section" style="display:none;">
+                <h2 class="page-title"><i class="bi bi-mortarboard"></i> Manage Experiments</h2>
+
+                <div class="section-card">
+                    <h5>Add New Experiment</h5>
+                    <form id="experimentForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label>Title</label>
+                                    <input type="text" class="form-control" id="expTitle" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Short Description</label>
+                                    <input type="text" class="form-control" id="expShortDesc">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Duration (hours)</label>
+                                    <input type="text" class="form-control" id="expDuration" value="2">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Image URL</label>
+                                    <input type="text" class="form-control" id="expImageUrl">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Circuit Diagram URL</label>
+                                    <input type="text" class="form-control" id="expCircuitUrl">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label>Full Description</label>
+                                    <textarea class="form-control" id="expDesc" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Objectives (one per line)</label>
+                                    <textarea class="form-control" id="expObjectives" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Procedure (one per line)</label>
+                                    <textarea class="form-control" id="expProcedure" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Required Equipment (one per line)</label>
+                                    <textarea class="form-control" id="expEquipment" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Experiment</button>
+                    </form>
+                </div>
+
+                <div class="section-card">
+                    <h5>Existing Experiments</h5>
+                    <div id="experimentsList"></div>
+                </div>
+            </div>
+
+            <!-- Equipment Management -->
+            <div id="section-equipment" class="admin-section" style="display:none;">
+                <h2 class="page-title"><i class="bi bi-tools"></i> Manage Equipment</h2>
+
+                <div class="section-card">
+                    <h5>Add New Item</h5>
+                    <form id="equipmentForm">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="eqName" placeholder="Item name" required>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control" id="eqCategory">
+                                    <option value="component">Component</option>
+                                    <option value="tool">Tool</option>
+                                    <option value="machine">Machine</option>
+                                    <option value="apparatus">Apparatus</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control" id="eqQty" placeholder="Quantity" value="1">
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="eqBorrowable" checked>
+                                    <label class="form-check-label">Borrowable</label>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <input type="text" class="form-control" id="eqDesc" placeholder="Description">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section-card">
+                    <h5>Equipment Inventory</h5>
+                    <div id="equipmentInventory"></div>
+                </div>
+            </div>
+
+            <!-- Borrow Requests Management -->
+            <div id="section-borrowRequests" class="admin-section" style="display:none;">
+                <h2 class="page-title"><i class="bi bi-inbox"></i> Borrow Requests</h2>
+
+                <ul class="nav nav-tabs mb-3" id="borrowTabs">
+                    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#pending">Pending</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#borrowed">Borrowed</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#returned">Returned</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="pending">
+                        <div id="pendingRequests"></div>
+                    </div>
+                    <div class="tab-pane" id="borrowed">
+                        <div id="borrowedItems"></div>
+                    </div>
+                    <div class="tab-pane" id="returned">
+                        <div id="returnedItems"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practicals Management -->
+            <div id="section-practicals" class="admin-section" style="display:none;">
+                <h2 class="page-title"><i class="bi bi-journal-bookmark-fill"></i> Practicals & Groups</h2>
+
+                <!-- Tabs for different practicals -->
+                <ul class="nav nav-tabs mb-4" id="practicalTabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-practical="current" href="#"
+                            onclick="loadPractical('current')">Current Practical</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-practical="previous" href="#"
+                            onclick="loadPractical('previous')">Previous Practicals</a>
+                    </li>
+                </ul>
+
+                <!-- Current Practical Section (for creating new groups) -->
+                <div id="currentPracticalSection">
+                    <div class="section-card">
+                        <h5>Create New Practical Groups</h5>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Practical Title</label>
+                                <input type="text" id="practicalTitle" class="form-control"
+                                    placeholder="e.g., Ohm's Law Experiment" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Class/Course</label>
+                                <input type="text" id="practicalClass" class="form-control" placeholder="e.g., ECE-A"
+                                    required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Date</label>
+                                <input type="date" id="practicalDate" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="excel-upload" onclick="document.getElementById('excelFile').click()">
+                            <i class="bi bi-file-earmark-excel fs-1"></i>
+                            <p>Click to upload student list (Excel)</p>
+                            <small class="text-muted">Expected columns: Name, Reg No (optional)</small>
+                            <input type="file" id="excelFile" accept=".xlsx,.xls" style="display:none;">
+                        </div>
+
+                        <!-- Excel Preview -->
+                        <div id="excelPreview" class="excel-preview" style="display:none;"></div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-3">
+                                <label>Group Size</label>
+                                <input type="number" id="groupSize" class="form-control" value="4" min="1" max="10">
+                            </div>
+                            <div class="col-md-3">
+                                <label>&nbsp;</label>
+                                <button class="btn btn-primary form-control" onclick="createGroups()">
+                                    <i class="bi bi-people"></i> Create Groups
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <label>&nbsp;</label>
+                                <button class="btn btn-secondary form-control" onclick="clearForm()">
+                                    <i class="bi bi-eraser"></i> Clear Form
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Newly Created Groups (will be cleared after saving) -->
+                    <div class="section-card" id="newGroupsSection" style="display:none;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">New Groups Created</h5>
+                            <div>
+                                <button class="download-btn" onclick="downloadGroups(currentGroups)">
+                                    <i class="bi bi-download"></i> Download Excel
+                                </button>
+                                <button class="btn btn-success" onclick="savePracticalGroups()">
+                                    <i class="bi bi-save"></i> Save & Start New
+                                </button>
+                            </div>
+                        </div>
+                        <div id="newGroupsContainer"></div>
+                    </div>
+                </div>
+
+                <!-- Previous Practicals Section (for viewing saved groups) -->
+                <div id="previousPracticalSection" style="display:none;">
+                    <div class="section-card">
+                        <h5>Saved Practicals</h5>
+                        <div id="savedPracticalsList"></div>
+                    </div>
+
+                    <div class="section-card" id="savedGroupsSection" style="display:none;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 id="selectedPracticalTitle"></h5>
+                            <button class="download-btn" onclick="downloadSavedGroups()">
+                                <i class="bi bi-download"></i> Download Excel
+                            </button>
+                        </div>
+                        <div id="savedGroupsContainer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timetable Management -->
+            <div id="section-timetable" class="admin-section" style="display:none;">
+                <h2 class="page-title"><i class="bi bi-calendar-week"></i> Lab Timetable</h2>
+
+                <div class="section-card">
+                    <h5>Add Schedule</h5>
+                    <form id="timetableForm">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <select class="form-control" id="ttDay" required>
+                                    <option value="">Day</option>
+                                    <option value="Monday">Monday</option>
+                                    <option value="Tuesday">Tuesday</option>
+                                    <option value="Wednesday">Wednesday</option>
+                                    <option value="Thursday">Thursday</option>
+                                    <option value="Friday">Friday</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" id="ttTime" placeholder="Time" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="ttTitle" placeholder="Practical title"
+                                    required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" id="ttClass" placeholder="Class" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section-card">
+                    <h5>Weekly Schedule</h5>
+                    <div id="weeklySchedule"></div>
+                </div>
+            </div>
+
+            <!-- Enhanced Attendance Section -->
+            <div id="section-attendance" class="admin-section" style="display:none;">
+                <h2 class="page-title"><i class="bi bi-check2-square"></i> Mark Attendance</h2>
+
+                <div class="section-card">
+                    <h5>Select Practical for Attendance</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select class="form-control" id="attendancePracticalSelect"
+                                onchange="loadPracticalForAttendance()">
+                                <option value="">Choose a practical...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="attendanceSection" style="display:none;">
+                    <div class="section-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 id="attendancePracticalTitle"></h5>
+                            <div>
+                                <button class="btn btn-success" onclick="saveAttendance()">
+                                    <i class="bi bi-check-all"></i> Save Attendance
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Attendance Form -->
+                        <form id="attendanceForm">
+                            <div id="attendanceGroupsContainer"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Attendance Records -->
+                <div class="section-card">
+                    <h5>Previous Attendance Records</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <select class="form-control" id="recordPracticalSelect" onchange="loadAttendanceRecords()">
+                                <option value="">Select Practical</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="attendanceRecords"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9WF3Hphb4rI7OII-rSEuxfgAUOVpiEdU",
+            authDomain: "labtrack-e8e8e.firebaseapp.com",
+            databaseURL: "https://labtrack-e8e8e-default-rtdb.firebaseio.com",
+            projectId: "labtrack-e8e8e",
+            storageBucket: "labtrack-e8e8e.firebasestorage.app",
+            messagingSenderId: "892945242910",
+            appId: "1:892945242910:web:c80d95bd265b365c13c70f"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // References
+        const experimentsRef = database.ref('experiments');
+        const equipmentRef = database.ref('equipment');
+        const transactionsRef = database.ref('transactions');
+        const timetableRef = database.ref('timetable');
+        const studentsRef = database.ref('students');
+        const attendanceRef = database.ref('attendance');
+        const practicalsRef = database.ref('practicals');
+
+        // State
+        let experiments = [];
+        let equipment = [];
+        let transactions = [];
+        let timetable = [];
+        let students = [];
+        let attendance = [];
+        let practicals = [];
+        let uploadedStudentData = [];
+        let currentGroups = [];
+        let currentAttendancePractical = null;
+
+        // ==================== LOGIN ====================
+        window.checkLogin = function () {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'admin123') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminContent').classList.add('visible');
+                loadAllData();
+            } else {
+                alert('Incorrect password');
+            }
+        };
+
+        window.logout = function () {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminContent').classList.remove('visible');
+        };
+
+        // ==================== LOAD DATA ====================
+        function loadAllData() {
+            experimentsRef.on('value', (snapshot) => {
+                experiments = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+                renderExperimentsList();
+                updateDashboard();
+            });
+
+            equipmentRef.on('value', (snapshot) => {
+                equipment = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+                renderEquipmentInventory();
+                updateDashboard();
+            });
+
+            transactionsRef.on('value', (snapshot) => {
+                transactions = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+                renderBorrowRequests();
+                updateDashboard();
+            });
+
+            timetableRef.on('value', (snapshot) => {
+                timetable = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+                renderWeeklySchedule();
+                updateDashboard();
+            });
+
+            studentsRef.on('value', (snapshot) => {
+                students = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+            });
+
+            // Load saved practicals
+            practicalsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    practicals = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                } else {
+                    practicals = [];
+                }
+                renderSavedPracticals();
+                updateAttendanceDropdowns();
+            });
+
+            attendanceRef.on('value', (snapshot) => {
+                attendance = snapshot.val() ? Object.keys(snapshot.val()).map(key => ({ id: key, ...snapshot.val()[key] })) : [];
+            });
+        }
+
+        // ==================== DASHBOARD ====================
+        function updateDashboard() {
+            const pendingRequests = transactions.filter(t => t.status === 'pending').length;
+            const borrowed = transactions.filter(t => t.status === 'approved' && !t.returned).length;
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            const todayPracticals = timetable.filter(t => t.day === today).length;
+
+            document.getElementById('adminStats').innerHTML = `
+                <div class="col-md-3">
+                    <div class="section-card">
+                        <h6>Pending Requests</h6>
+                        <h3>${pendingRequests}</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="section-card">
+                        <h6>Borrowed Items</h6>
+                        <h3>${borrowed}</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="section-card">
+                        <h6>Equipment Items</h6>
+                        <h3>${equipment.length}</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="section-card">
+                        <h6>Today's Pracs</h6>
+                        <h3>${todayPracticals}</h3>
+                    </div>
+                </div>
+            `;
+
+            // Recent requests
+            const recent = transactions.filter(t => t.status === 'pending').slice(0, 5);
+            document.getElementById('recentRequests').innerHTML = recent.length ?
+                recent.map(r => `
+                    <div class="request-card">
+                        <strong>${r.name}</strong> (${r.reg})<br>
+                        ${r.equipmentName} x${r.qty}<br>
+                        <small>${r.date}</small>
+                    </div>
+                `).join('') : '<p>No pending requests</p>';
+
+            // Today's practicals
+            const todayPracs = timetable.filter(t => t.day === today);
+            document.getElementById('todayPracticals').innerHTML = todayPracs.length ?
+                todayPracs.map(p => `
+                    <div class="alert alert-info">
+                        ${p.time} - ${p.title} (${p.class})
+                    </div>
+                `).join('') : '<p>No practicals today</p>';
+        }
+
+        // ==================== PRACTICAL TABS NAVIGATION ====================
+        window.loadPractical = function (type) {
+            // Update tab styling
+            document.querySelectorAll('[data-practical]').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            if (type === 'current') {
+                document.getElementById('currentPracticalSection').style.display = 'block';
+                document.getElementById('previousPracticalSection').style.display = 'none';
+            } else {
+                document.getElementById('currentPracticalSection').style.display = 'none';
+                document.getElementById('previousPracticalSection').style.display = 'block';
+            }
+        };
+
+        // ==================== CLEAR FORM ====================
+        window.clearForm = function () {
+            document.getElementById('practicalTitle').value = '';
+            document.getElementById('practicalClass').value = '';
+            document.getElementById('practicalDate').value = '';
+            document.getElementById('excelPreview').style.display = 'none';
+            document.getElementById('newGroupsSection').style.display = 'none';
+            uploadedStudentData = [];
+            currentGroups = [];
+            document.getElementById('excelFile').value = '';
+        };
+
+        // ==================== EXCEL UPLOAD ====================
+        document.getElementById('excelFile').onchange = function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+
+                    // Convert to JSON with headers
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    // Get headers (first row)
+                    const headers = jsonData[0] || [];
+
+                    // Process data rows (skip header)
+                    const rows = jsonData.slice(1).filter(row => row.length > 0 && row[0]);
+
+                    // Map to student objects
+                    uploadedStudentData = rows.map((row, index) => {
+                        let student = {
+                            id: `student_${Date.now()}_${index}`,
+                            name: '',
+                            reg: ''
+                        };
+
+                        // Try to identify columns based on header names or content
+                        headers.forEach((header, i) => {
+                            const cellValue = row[i] ? String(row[i]).trim() : '';
+                            if (!cellValue) return;
+
+                            const headerLower = String(header || '').toLowerCase();
+
+                            // Check header names
+                            if (headerLower.includes('name') || headerLower.includes('student')) {
+                                student.name = cellValue;
+                            }
+                            else if (headerLower.includes('reg') || headerLower.includes('id') || headerLower.includes('number')) {
+                                student.reg = cellValue;
+                            }
+                        });
+
+                        // If no headers matched, use column position
+                        if (!student.name && row[0]) student.name = row[0];
+                        if (!student.reg && row[1]) student.reg = row[1];
+
+                        // Generate reg if missing
+                        if (!student.reg) {
+                            student.reg = `REG${String(index + 1).padStart(3, '0')}`;
+                        }
+
+                        return student;
+                    });
+
+                    // Show preview
+                    showExcelPreview(headers, rows);
+
+                    alert(`Loaded ${uploadedStudentData.length} students successfully!`);
+                } catch (error) {
+                    console.error('Excel parsing error:', error);
+                    alert('Error parsing Excel file. Please check the format.');
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        };
+
+        function showExcelPreview(headers, rows) {
+            const previewDiv = document.getElementById('excelPreview');
+            previewDiv.style.display = 'block';
+
+            let html = '<table class="table table-sm table-bordered"><thead><tr>';
+            headers.forEach(h => html += `<th>${h || 'Column'}</th>`);
+            html += '</tr></thead><tbody>';
+
+            rows.slice(0, 5).forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell || ''}</td>`);
+                html += '</tr>';
+            });
+
+            if (rows.length > 5) {
+                html += `<tr><td colspan="${headers.length}" class="text-center">... and ${rows.length - 5} more rows</td></tr>`;
+            }
+
+            html += '</tbody></table>';
+            previewDiv.innerHTML = html;
+        }
+
+        // ==================== DOWNLOAD GROUPS (EXCEL) ====================
+        window.downloadGroups = function (groups, practicalTitle = 'Groups', className = '') {
+            // Prepare data for Excel
+            const excelData = [];
+
+            // Add header
+            excelData.push(['Group Number', 'Student Name', 'Registration Number']);
+
+            // Add each student with group info
+            groups.forEach(group => {
+                group.students.forEach(student => {
+                    excelData.push([`Group ${group.number}`, student.name, student.reg]);
+                });
+                // Add empty row between groups
+                excelData.push([]);
+            });
+
+            // Create workbook and worksheet
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+            // Add title
+            const title = practicalTitle + (className ? ` - ${className}` : '');
+            XLSX.utils.book_append_sheet(wb, ws, 'Groups');
+
+            // Download file
+            XLSX.writeFile(wb, `${title}_Groups.xlsx`);
+        };
+
+        window.downloadSavedGroups = function () {
+            if (currentAttendancePractical) {
+                downloadGroups(currentAttendancePractical.groups,
+                    currentAttendancePractical.title,
+                    currentAttendancePractical.class);
+            }
+        };
+
+        // ==================== CREATE GROUPS ====================
+        window.createGroups = function () {
+            if (!uploadedStudentData || uploadedStudentData.length === 0) {
+                alert('Please upload an Excel file first');
+                return;
+            }
+
+            const groupSize = parseInt(document.getElementById('groupSize').value) || 4;
+            const practicalTitle = document.getElementById('practicalTitle').value.trim();
+            const practicalClass = document.getElementById('practicalClass').value.trim();
+
+            if (!practicalTitle || !practicalClass) {
+                alert('Please enter Practical Title and Class');
+                return;
+            }
+
+            // Create groups with sequential numbering (Group 1, Group 2, etc.)
+            currentGroups = [];
+            for (let i = 0; i < uploadedStudentData.length; i += groupSize) {
+                const groupStudents = uploadedStudentData.slice(i, i + groupSize);
+                currentGroups.push({
+                    number: Math.floor(i / groupSize) + 1,
+                    name: `Group ${Math.floor(i / groupSize) + 1}`,
+                    students: groupStudents,
+                    size: groupStudents.length
+                });
+            }
+
+            // Display the newly created groups
+            displayNewGroups(currentGroups, practicalTitle, practicalClass);
+
+            // Show the save section
+            document.getElementById('newGroupsSection').style.display = 'block';
+        };
+
+        function displayNewGroups(groups, title, className) {
+            const container = document.getElementById('newGroupsContainer');
+
+            let html = `<div class="alert alert-info mb-3">
+                <strong>Practical:</strong> ${title} | <strong>Class:</strong> ${className} | 
+                <strong>Total Groups:</strong> ${groups.length} | 
+                <strong>Total Students:</strong> ${groups.reduce((sum, g) => sum + g.students.length, 0)}
+            </div>`;
+
+            html += '<div class="row">';
+
+            groups.forEach(group => {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="group-card">
+                            <div class="group-header">
+                                <h5 class="mb-0">${group.name}</h5>
+                                <small>${group.students.length} students</small>
+                            </div>
+                            <div class="mt-2">
+                                ${group.students.map(s => `
+                                    <div class="student-list-item">
+                                        <div>
+                                            <strong>${s.name}</strong><br>
+                                            <small>${s.reg}</small>
+                                        </div>
+                                        <span class="group-badge">${group.name}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // ==================== SAVE PRACTICAL GROUPS ====================
+        window.savePracticalGroups = async function () {
+            if (!currentGroups || currentGroups.length === 0) {
+                alert('No groups to save');
+                return;
+            }
+
+            const practicalTitle = document.getElementById('practicalTitle').value.trim();
+            const practicalClass = document.getElementById('practicalClass').value.trim();
+            const practicalDate = document.getElementById('practicalDate').value || new Date().toISOString().split('T')[0];
+
+            if (!practicalTitle || !practicalClass) {
+                alert('Please enter Practical Title and Class');
+                return;
+            }
+
+            const practicalData = {
+                title: practicalTitle,
+                class: practicalClass,
+                date: practicalDate,
+                groups: currentGroups,
+                totalStudents: currentGroups.reduce((sum, g) => sum + g.students.length, 0),
+                totalGroups: currentGroups.length,
+                timestamp: Date.now()
+            };
+
+            try {
+                await practicalsRef.push(practicalData);
+                alert('Practical groups saved successfully!');
+
+                // Clear form for next practical
+                clearForm();
+
+                // Switch to previous practicals tab to show saved data
+                document.querySelector('[data-practical="previous"]').click();
+
+            } catch (error) {
+                console.error('Error saving practical:', error);
+                alert('Error saving practical');
+            }
+        };
+
+        // ==================== RENDER SAVED PRACTICALS ====================
+        function renderSavedPracticals() {
+            const container = document.getElementById('savedPracticalsList');
+
+            if (!practicals || practicals.length === 0) {
+                container.innerHTML = '<p class="text-muted">No saved practicals yet.</p>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sorted = [...practicals].sort((a, b) => b.timestamp - a.timestamp);
+
+            container.innerHTML = sorted.map(prac => `
+                <div class="card mb-2 practical-tab" onclick="viewPracticalGroups('${prac.id}')">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">${prac.title}</h6>
+                                <small>Class: ${prac.class} | Date: ${prac.date}</small>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary">${prac.totalGroups} Groups</span>
+                                <span class="badge bg-secondary">${prac.totalStudents} Students</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== VIEW SAVED PRACTICAL GROUPS ====================
+        window.viewPracticalGroups = function (practicalId) {
+            const practical = practicals.find(p => p.id === practicalId);
+            if (!practical) return;
+
+            currentAttendancePractical = practical;
+
+            document.getElementById('selectedPracticalTitle').innerHTML =
+                `${practical.title} - ${practical.class} (${practical.date})`;
+
+            const container = document.getElementById('savedGroupsContainer');
+
+            let html = '<div class="row">';
+
+            practical.groups.forEach(group => {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="group-card">
+                            <div class="group-header">
+                                <h5 class="mb-0">${group.name || `Group ${group.number}`}</h5>
+                                <small>${group.students.length} students</small>
+                            </div>
+                            <div class="mt-2">
+                                ${group.students.map(s => `
+                                    <div class="student-list-item">
+                                        <div>
+                                            <strong>${s.name}</strong><br>
+                                            <small>${s.reg}</small>
+                                        </div>
+                                        <span class="group-badge">Group ${group.number}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            document.getElementById('savedGroupsSection').style.display = 'block';
+        };
+
+        // ==================== ATTENDANCE FUNCTIONS ====================
+        function updateAttendanceDropdowns() {
+            const select = document.getElementById('attendancePracticalSelect');
+            const recordSelect = document.getElementById('recordPracticalSelect');
+
+            if (!practicals || practicals.length === 0) {
+                select.innerHTML = '<option value="">No practicals available</option>';
+                recordSelect.innerHTML = '<option value="">No practicals available</option>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sorted = [...practicals].sort((a, b) => b.timestamp - a.timestamp);
+
+            let options = '<option value="">Choose a practical...</option>';
+            let recordOptions = '<option value="">Select Practical</option>';
+
+            sorted.forEach(prac => {
+                options += `<option value="${prac.id}">${prac.title} - ${prac.class} (${prac.date})</option>`;
+                recordOptions += `<option value="${prac.id}">${prac.title} - ${prac.class} (${prac.date})</option>`;
+            });
+
+            select.innerHTML = options;
+            recordSelect.innerHTML = recordOptions;
+        }
+
+        window.loadPracticalForAttendance = function () {
+            const practicalId = document.getElementById('attendancePracticalSelect').value;
+            if (!practicalId) {
+                document.getElementById('attendanceSection').style.display = 'none';
+                return;
+            }
+
+            const practical = practicals.find(p => p.id === practicalId);
+            if (!practical) return;
+
+            currentAttendancePractical = practical;
+
+            document.getElementById('attendancePracticalTitle').innerHTML =
+                `Mark Attendance: ${practical.title} - ${practical.class} (${practical.date})`;
+
+            renderAttendanceGroups(practical.groups);
+            document.getElementById('attendanceSection').style.display = 'block';
+        };
+
+        function renderAttendanceGroups(groups) {
+            const container = document.getElementById('attendanceGroupsContainer');
+
+            let html = '';
+
+            groups.forEach(group => {
+                html += `
+                    <div class="attendance-group">
+                        <div class="attendance-group-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">${group.name} (${group.students.length} students)</h5>
+                            <span class="select-all-btn" onclick="selectAllInGroup('group_${group.number}')">
+                                <i class="bi bi-check-all"></i> Select All
+                            </span>
+                        </div>
+                        <div class="row" id="group_${group.number}">
+                            ${group.students.map(student => `
+                                <div class="col-md-4 mb-2">
+                                    <div class="student-list-item">
+                                        <div>
+                                            <strong>${student.name}</strong><br>
+                                            <small>${student.reg}</small>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input attendance-checkbox" type="checkbox" 
+                                                   name="attendance_${group.number}" value="${student.id}" 
+                                                   id="student_${student.id}" checked>
+                                            <label class="form-check-label" for="student_${student.id}">
+                                                Present
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        window.selectAllInGroup = function (groupId) {
+            const group = document.getElementById(groupId);
+            const checkboxes = group.querySelectorAll('input[type="checkbox"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+            });
+        };
+
+        window.saveAttendance = async function () {
+            if (!currentAttendancePractical) {
+                alert('No practical selected');
+                return;
+            }
+
+            const present = [];
+            const absent = [];
+
+            // Collect all students from all groups
+            currentAttendancePractical.groups.forEach(group => {
+                group.students.forEach(student => {
+                    const checkbox = document.getElementById(`student_${student.id}`);
+                    if (checkbox && checkbox.checked) {
+                        present.push(student.id);
+                    } else {
+                        absent.push(student.id);
+                    }
+                });
+            });
+
+            const attendanceRecord = {
+                practicalId: currentAttendancePractical.id,
+                practicalTitle: currentAttendancePractical.title,
+                practicalClass: currentAttendancePractical.class,
+                date: new Date().toLocaleDateString(),
+                timestamp: Date.now(),
+                present: present,
+                absent: absent,
+                totalPresent: present.length,
+                totalAbsent: absent.length,
+                totalStudents: present.length + absent.length
+            };
+
+            try {
+                await attendanceRef.push(attendanceRecord);
+                alert(`Attendance saved! Present: ${present.length}, Absent: ${absent.length}`);
+
+                // Refresh attendance records display
+                loadAttendanceRecords();
+            } catch (error) {
+                console.error('Error saving attendance:', error);
+                alert('Error saving attendance');
+            }
+        };
+
+        window.loadAttendanceRecords = function () {
+            const practicalId = document.getElementById('recordPracticalSelect').value;
+
+            let filteredAttendance = attendance;
+            if (practicalId) {
+                filteredAttendance = attendance.filter(a => a.practicalId === practicalId);
+            }
+
+            const container = document.getElementById('attendanceRecords');
+
+            if (filteredAttendance.length === 0) {
+                container.innerHTML = '<p class="text-muted">No attendance records found</p>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sorted = filteredAttendance.sort((a, b) => b.timestamp - a.timestamp);
+
+            container.innerHTML = sorted.map(rec => `
+                <div class="card mb-2">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${rec.practicalTitle}</strong> - ${rec.practicalClass}
+                        </div>
+                        <div>
+                            <span class="badge bg-success">Present: ${rec.totalPresent}</span>
+                            <span class="badge bg-danger">Absent: ${rec.totalAbsent}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Present Students:</h6>
+                                <ul class="list-unstyled">
+                                    ${rec.present.map(id => {
+                // Find student name from practical groups
+                let studentName = 'Unknown';
+                if (currentAttendancePractical) {
+                    currentAttendancePractical.groups.forEach(group => {
+                        const student = group.students.find(s => s.id === id);
+                        if (student) studentName = student.name;
+                    });
+                }
+                return `<li>✓ ${studentName}</li>`;
+            }).join('')}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Absent Students:</h6>
+                                <ul class="list-unstyled">
+                                    ${rec.absent.map(id => {
+                let studentName = 'Unknown';
+                if (currentAttendancePractical) {
+                    currentAttendancePractical.groups.forEach(group => {
+                        const student = group.students.find(s => s.id === id);
+                        if (student) studentName = student.name;
+                    });
+                }
+                return `<li>✗ ${studentName}</li>`;
+            }).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        <small class="text-muted">Date: ${rec.date}</small>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // ==================== BORROW REQUESTS ====================
+        function renderBorrowRequests() {
+            const pending = transactions.filter(t => t.status === 'pending');
+            const borrowed = transactions.filter(t => t.status === 'approved' && !t.returned);
+            const returned = transactions.filter(t => t.returned === true);
+
+            document.getElementById('pendingRequests').innerHTML = pending.length ?
+                pending.map(t => `
+                    <div class="request-card">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>${t.name}</strong><br>
+                                <small>${t.reg}</small>
+                            </div>
+                            <div class="col-md-3">
+                                ${t.equipmentName} x${t.qty}
+                            </div>
+                            <div class="col-md-3">
+                                ${t.date}
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn-approve me-2" onclick="approveRequest('${t.id}')">
+                                    Approve
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="denyRequest('${t.id}')">
+                                    Deny
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : '<p>No pending requests</p>';
+
+            document.getElementById('borrowedItems').innerHTML = borrowed.length ?
+                borrowed.map(t => `
+                    <div class="request-card approved">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>${t.name}</strong><br>
+                                <small>${t.reg}</small>
+                            </div>
+                            <div class="col-md-3">
+                                ${t.equipmentName} x${t.qty}
+                            </div>
+                            <div class="col-md-3">
+                                ${t.date}
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn-return" onclick="markReturned('${t.id}')">
+                                    <i class="bi bi-arrow-return-left"></i> Return
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : '<p>No borrowed items</p>';
+
+            document.getElementById('returnedItems').innerHTML = returned.length ?
+                returned.map(t => `
+                    <div class="request-card returned">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>${t.name}</strong><br>
+                                <small>${t.reg}</small>
+                            </div>
+                            <div class="col-md-3">
+                                ${t.equipmentName} x${t.qty}
+                            </div>
+                            <div class="col-md-3">
+                                ${t.date}
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge bg-secondary">Returned</span>
+                                <br><small>${t.returnedDate || ''}</small>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : '<p>No returned items</p>';
+        }
+
+        // Approve request
+        window.approveRequest = async function (id) {
+            const transaction = transactions.find(t => t.id === id);
+            const item = equipment.find(e => e.id === transaction.equipmentId);
+
+            if (item.available < transaction.qty) {
+                alert('Not enough items in stock!');
+                return;
+            }
+
+            try {
+                // Update inventory
+                await equipmentRef.child(item.id).update({
+                    available: item.available - transaction.qty
+                });
+
+                // Update transaction
+                await transactionsRef.child(id).update({
+                    status: 'approved',
+                    approvedDate: new Date().toLocaleString()
+                });
+
+                alert('Request approved!');
+            } catch (error) {
+                console.error(error);
+                alert('Error approving request');
+            }
+        };
+
+        // Deny request
+        window.denyRequest = async function (id) {
+            if (confirm('Deny this request?')) {
+                try {
+                    await transactionsRef.child(id).update({
+                        status: 'denied'
+                    });
+                } catch (error) {
+                    alert('Error denying request');
+                }
+            }
+        };
+
+        // Mark as returned
+        window.markReturned = async function (id) {
+            if (!confirm('Mark this item as returned?')) return;
+
+            try {
+                const transaction = transactions.find(t => t.id === id);
+                if (!transaction) {
+                    alert('Transaction not found');
+                    return;
+                }
+
+                const item = equipment.find(e => e.id === transaction.equipmentId);
+                if (!item) {
+                    alert('Equipment not found');
+                    return;
+                }
+
+                // Update inventory - add back the quantity
+                await equipmentRef.child(item.id).update({
+                    available: (item.available || 0) + transaction.qty
+                });
+
+                // Update transaction
+                await transactionsRef.child(id).update({
+                    returned: true,
+                    returnedDate: new Date().toLocaleString(),
+                    status: 'returned'
+                });
+
+                alert('Item marked as returned!');
+            } catch (error) {
+                console.error('Return error:', error);
+                alert('Error processing return: ' + error.message);
+            }
+        };
+
+        // ==================== EXPERIMENTS ====================
+        document.getElementById('experimentForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const experiment = {
+                title: document.getElementById('expTitle').value,
+                shortDesc: document.getElementById('expShortDesc').value,
+                description: document.getElementById('expDesc').value,
+                duration: document.getElementById('expDuration').value,
+                imageUrl: document.getElementById('expImageUrl').value,
+                circuitDiagramUrl: document.getElementById('expCircuitUrl').value,
+                objectives: document.getElementById('expObjectives').value.split('\n').filter(l => l.trim()),
+                procedure: document.getElementById('expProcedure').value.split('\n').filter(l => l.trim()),
+                requiredEquipment: document.getElementById('expEquipment').value.split('\n').filter(l => l.trim()),
+                timestamp: Date.now()
+            };
+
+            await experimentsRef.push(experiment);
+            e.target.reset();
+            alert('Experiment added!');
+        };
+
+        function renderExperimentsList() {
+            const container = document.getElementById('experimentsList');
+            container.innerHTML = experiments.map(exp => `
+                <div class="card mb-2 p-2">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>${exp.title}</strong><br>
+                            <small>${exp.shortDesc || ''}</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-danger" onclick="deleteExperiment('${exp.id}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.deleteExperiment = async function (id) {
+            if (confirm('Delete this experiment?')) {
+                await experimentsRef.child(id).remove();
+            }
+        };
+
+        // ==================== EQUIPMENT ====================
+        document.getElementById('equipmentForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const equipmentItem = {
+                name: document.getElementById('eqName').value,
+                category: document.getElementById('eqCategory').value,
+                available: parseInt(document.getElementById('eqQty').value),
+                borrowable: document.getElementById('eqBorrowable').checked,
+                description: document.getElementById('eqDesc').value,
+                timestamp: Date.now()
+            };
+
+            await equipmentRef.push(equipmentItem);
+            e.target.reset();
+            document.getElementById('eqBorrowable').checked = true;
+        };
+
+        function renderEquipmentInventory() {
+            const container = document.getElementById('equipmentInventory');
+            container.innerHTML = equipment.map(eq => `
+                <div class="card mb-2 p-2">
+                    <div class="row align-items-center">
+                        <div class="col-md-3"><strong>${eq.name}</strong></div>
+                        <div class="col-md-2">${eq.category}</div>
+                        <div class="col-md-1">${eq.available}</div>
+                        <div class="col-md-2">
+                            <span class="badge ${eq.borrowable ? 'bg-success' : 'bg-danger'}">
+                                ${eq.borrowable ? 'Borrowable' : 'Reserved'}
+                            </span>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control form-control-sm" 
+                                   value="${eq.available}" onchange="updateStock('${eq.id}', this.value)">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-danger" onclick="deleteEquipment('${eq.id}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.updateStock = async function (id, newQty) {
+            await equipmentRef.child(id).update({ available: parseInt(newQty) });
+        };
+
+        window.deleteEquipment = async function (id) {
+            if (confirm('Delete this item?')) {
+                await equipmentRef.child(id).remove();
+            }
+        };
+
+        // ==================== TIMETABLE ====================
+        document.getElementById('timetableForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const schedule = {
+                day: document.getElementById('ttDay').value,
+                time: document.getElementById('ttTime').value,
+                title: document.getElementById('ttTitle').value,
+                class: document.getElementById('ttClass').value,
+                venue: 'Lab 101',
+                week: 'this',
+                timestamp: Date.now()
+            };
+
+            await timetableRef.push(schedule);
+            e.target.reset();
+            alert('Schedule added!');
+        };
+
+        function renderWeeklySchedule() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            let html = '<div class="row">';
+
+            days.forEach(day => {
+                const daySchedules = timetable.filter(t => t.day === day);
+                html += `
+                    <div class="col">
+                        <h6 class="text-center">${day}</h6>
+                        ${daySchedules.length ? daySchedules.map(s => `
+                            <div class="card mb-2 p-2">
+                                <strong>${s.time}</strong><br>
+                                ${s.title}<br>
+                                <small>${s.class}</small>
+                                <button class="btn btn-sm btn-danger mt-1" onclick="deleteSchedule('${s.id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        `).join('') : '<p class="text-center text-muted small">No sessions</p>'}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            document.getElementById('weeklySchedule').innerHTML = html;
+        }
+
+        window.deleteSchedule = async function (id) {
+            if (confirm('Delete this schedule?')) {
+                await timetableRef.child(id).remove();
+            }
+        };
+
+        // ==================== NAVIGATION ====================
+        window.showSection = function (section) {
+            document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+            document.getElementById(`section-${section}`).style.display = 'block';
+
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // If showing practicals section, reset to current practical tab
+            if (section === 'practicals') {
+                document.querySelector('[data-practical="current"]').click();
+            }
+        };
+    </script>
+</body>
+
+</html>
