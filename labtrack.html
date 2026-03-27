@@ -65,6 +65,50 @@
             margin: 1.5rem 0;
         }
 
+        .title-with-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-with-search h2 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark-blue);
+            border-left: 6px solid var(--accent-orange);
+            padding-left: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            border-radius: 40px;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #dee2e6;
+            background: white;
+            width: 100%;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(30, 79, 138, 0.1);
+        }
+
         .stat-card {
             background: white;
             border-radius: 20px;
@@ -165,6 +209,12 @@
             border-radius: 40px;
             font-size: 0.9rem;
             z-index: 1000;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
         }
     </style>
 </head>
@@ -273,32 +323,51 @@
             </div>
         </div>
 
-        <!-- Learn/Experiments Page -->
+        <!-- Learn/Experiments Page with Search -->
         <div id="page-learn" class="content-page">
-            <h2 class="page-title"><i class="bi bi-mortarboard me-2"></i>Engineering Experiments</h2>
+            <div class="title-with-search">
+                <h2><i class="bi bi-mortarboard me-2"></i>Engineering Experiments</h2>
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="experimentSearch" placeholder="Search experiments..."
+                        onkeyup="filterExperiments()">
+                </div>
+            </div>
             <div class="row g-4" id="experimentCards"></div>
         </div>
 
-        <!-- Equipment Page -->
+        <!-- Equipment Page with Search -->
         <div id="page-equipment" class="content-page">
-            <h2 class="page-title"><i class="bi bi-tools me-2"></i>Lab Equipment</h2>
+            <div class="title-with-search">
+                <h2><i class="bi bi-tools me-2"></i>Lab Equipment</h2>
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="equipmentSearch" placeholder="Search equipment..."
+                        onkeyup="filterEquipment()">
+                </div>
+            </div>
 
             <!-- Filter Tabs -->
             <ul class="nav nav-pills mb-3" id="equipmentTabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-category="all" href="#">All</a>
+                    <a class="nav-link active" data-category="all" href="#"
+                        onclick="filterByCategory('all'); return false;">All</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-category="component" href="#">Components</a>
+                    <a class="nav-link" data-category="component" href="#"
+                        onclick="filterByCategory('component'); return false;">Components</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-category="tool" href="#">Tools</a>
+                    <a class="nav-link" data-category="tool" href="#"
+                        onclick="filterByCategory('tool'); return false;">Tools</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-category="machine" href="#">Machines</a>
+                    <a class="nav-link" data-category="machine" href="#"
+                        onclick="filterByCategory('machine'); return false;">Machines</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-category="apparatus" href="#">Apparatus</a>
+                    <a class="nav-link" data-category="apparatus" href="#"
+                        onclick="filterByCategory('apparatus'); return false;">Apparatus</a>
                 </li>
             </ul>
 
@@ -397,6 +466,8 @@
         let experiments = [];
         let equipment = [];
         let timetable = [];
+        let currentEquipmentFilter = 'all';
+        let currentEquipmentSearch = '';
 
         // Load Data
         function loadData() {
@@ -410,7 +481,7 @@
             equipmentRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 equipment = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-                renderEquipment('all');
+                renderEquipment(currentEquipmentFilter, currentEquipmentSearch);
                 populateEquipmentDropdown();
                 updateDashboard();
             });
@@ -423,17 +494,25 @@
             });
         }
 
-        // Render Experiments
+        // Render Experiments with Search
         function renderExperiments() {
             const container = document.getElementById('experimentCards');
             if (!container) return;
 
-            if (experiments.length === 0) {
-                container.innerHTML = '<div class="col-12"><p class="text-center">No experiments available</p></div>';
+            const searchTerm = document.getElementById('experimentSearch')?.value.toLowerCase() || '';
+
+            const filtered = experiments.filter(exp =>
+                exp.title.toLowerCase().includes(searchTerm) ||
+                (exp.shortDesc && exp.shortDesc.toLowerCase().includes(searchTerm)) ||
+                (exp.description && exp.description.toLowerCase().includes(searchTerm))
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="no-results"><i class="bi bi-search fs-1"></i><h5 class="mt-3">No experiments found</h5><p>Try a different search term</p></div></div>';
                 return;
             }
 
-            container.innerHTML = experiments.map(exp => `
+            container.innerHTML = filtered.map(exp => `
                 <div class="col-md-4">
                     <div class="learn-card" onclick="showExperimentDetails('${exp.id}')">
                         <img src="${exp.imageUrl || 'https://via.placeholder.com/400x200?text=Experiment'}" alt="${exp.title}">
@@ -446,6 +525,72 @@
                 </div>
             `).join('');
         }
+
+        // Filter Experiments function
+        window.filterExperiments = function () {
+            renderExperiments();
+        };
+
+        // Render Equipment with Category Filter and Search
+        function renderEquipment(category, searchTerm = '') {
+            const container = document.getElementById('equipmentList');
+            if (!container) return;
+
+            let filtered = category === 'all' ? equipment : equipment.filter(e => e.category === category);
+
+            if (searchTerm) {
+                filtered = filtered.filter(item =>
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    (item.description && item.description.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="no-results"><i class="bi bi-search fs-1"></i><h5 class="mt-3">No equipment found</h5><p>Try a different search term or category</p></div></div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => `
+                <div class="col-md-4">
+                    <div class="equipment-card ${item.borrowable ? 'borrowable' : 'reserved'}">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5>${item.name}</h5>
+                                <span class="badge bg-secondary">${item.category}</span>
+                            </div>
+                            <i class="bi ${item.borrowable ? 'bi-unlock text-success' : 'bi-lock text-danger'} fs-4"></i>
+                        </div>
+                        <p class="mt-2">${item.description || ''}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="${item.borrowable ? 'text-success' : 'text-danger'}">
+                                ${item.borrowable ? '✓ Borrowable' : '✗ Reserved'}
+                            </span>
+                            <span class="badge bg-primary">${item.available || 0} available</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter by category
+        window.filterByCategory = function (category) {
+            currentEquipmentFilter = category;
+            // Update active tab styling
+            document.querySelectorAll('[data-category]').forEach(link => {
+                if (link.dataset.category === category) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            renderEquipment(currentEquipmentFilter, currentEquipmentSearch);
+        };
+
+        // Filter equipment by search
+        window.filterEquipment = function () {
+            currentEquipmentSearch = document.getElementById('equipmentSearch')?.value.toLowerCase() || '';
+            renderEquipment(currentEquipmentFilter, currentEquipmentSearch);
+        };
 
         // Show Experiment Details
         window.showExperimentDetails = function (expId) {
@@ -475,40 +620,6 @@
 
             new bootstrap.Modal(document.getElementById('experimentModal')).show();
         };
-
-        // Render Equipment with category filter
-        function renderEquipment(category) {
-            const container = document.getElementById('equipmentList');
-            if (!container) return;
-
-            const filtered = category === 'all' ? equipment : equipment.filter(e => e.category === category);
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="col-12"><p class="text-center">No equipment found</p></div>';
-                return;
-            }
-
-            container.innerHTML = filtered.map(item => `
-                <div class="col-md-4">
-                    <div class="equipment-card ${item.borrowable ? 'borrowable' : 'reserved'}">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5>${item.name}</h5>
-                                <span class="badge bg-secondary">${item.category}</span>
-                            </div>
-                            <i class="bi ${item.borrowable ? 'bi-unlock text-success' : 'bi-lock text-danger'} fs-4"></i>
-                        </div>
-                        <p class="mt-2">${item.description || ''}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="${item.borrowable ? 'text-success' : 'text-danger'}">
-                                ${item.borrowable ? '✓ Borrowable' : '✗ Reserved'}
-                            </span>
-                            <span class="badge bg-primary">${item.available || 0} available</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
 
         // Populate equipment dropdown for borrow form
         function populateEquipmentDropdown() {
@@ -663,7 +774,7 @@
 
             // Refresh data for the page
             if (page === 'equipment') {
-                renderEquipment('all');
+                renderEquipment(currentEquipmentFilter, currentEquipmentSearch);
             } else if (page === 'learn') {
                 renderExperiments();
             } else if (page === 'timetable') {
@@ -671,13 +782,12 @@
             }
         };
 
-        // Equipment category filter
+        // Equipment category filter (preserve existing functionality)
         document.querySelectorAll('[data-category]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.querySelectorAll('[data-category]').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                renderEquipment(link.dataset.category);
+                const category = link.dataset.category;
+                filterByCategory(category);
             });
         });
 
