@@ -3,14 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Chuka Connect | Anonymous Student Platform</title>
-    <!-- Bootstrap 5 + Icons + Fonts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuka Connect | Student Safety & Support Platform</title>
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <!-- Firebase SDKs -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -20,39 +18,22 @@
         }
 
         body {
-            background: #f4f7fc;
-            overflow-x: hidden;
+            background: #f0f2f5;
         }
 
         .card-modern {
             background: white;
             border-radius: 20px;
             border: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: 0.2s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .post-card {
             background: white;
-            border-radius: 18px;
-            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
             padding: 1.2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eef2fa;
-        }
-
-        .comment-tree {
-            margin-left: 2rem;
-            border-left: 2px solid #e0e6ed;
-            padding-left: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .comment-item {
-            background: #fafcff;
-            border-radius: 14px;
-            padding: 0.8rem;
-            margin-bottom: 0.8rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .user-chip {
@@ -61,23 +42,12 @@
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 600;
-            color: #0b2b3b;
-        }
-
-        .badge-category {
-            background: #e6f4ff;
-            color: #0077b6;
-            font-weight: 500;
-            padding: 4px 10px;
-            border-radius: 40px;
-            font-size: 0.7rem;
         }
 
         .btn-orange {
             background: #ff8c42;
             border: none;
             color: white;
-            font-weight: 600;
             border-radius: 40px;
             padding: 8px 20px;
         }
@@ -98,22 +68,20 @@
             background: #eef2fa;
         }
 
-        .vote-count {
-            font-weight: 600;
-            min-width: 28px;
-            text-align: center;
+        .contact-card {
+            background: linear-gradient(135deg, #0b2b3b, #1a4a62);
+            color: white;
+            border-radius: 16px;
+            padding: 15px;
+            cursor: pointer;
         }
 
-        .reply-form {
-            background: #f8fafd;
+        .sos-alert {
+            background: #fff5f5;
+            border-left: 4px solid #dc3545;
             border-radius: 12px;
             padding: 12px;
-            margin-top: 8px;
-        }
-
-        .admin-sidebar {
-            background: #071e2a;
-            min-height: 100vh;
+            margin-bottom: 12px;
         }
 
         .loading-overlay {
@@ -133,23 +101,21 @@
             cursor: pointer;
         }
 
-        .auth-container {
-            max-width: 500px;
-            margin: 80px auto;
+        [v-cloak] {
+            display: none;
         }
 
-        .profile-card {
-            background: linear-gradient(135deg, #0b2b3b 0%, #1e4a62 100%);
-            color: white;
-            border-radius: 20px;
-            padding: 20px;
+        .comment-tree {
+            margin-left: 2rem;
+            border-left: 2px solid #e0e6ed;
+            padding-left: 1rem;
         }
 
         .dm-chat-window {
-            height: 400px;
+            height: 450px;
             overflow-y: auto;
-            background: #fefefe;
-            border-radius: 24px;
+            background: #f8fafd;
+            border-radius: 16px;
             padding: 16px;
         }
 
@@ -163,43 +129,42 @@
             float: right;
             background: #0b2b3b;
             color: white;
-            border-radius: 22px 22px 4px 22px;
-            padding: 8px 16px;
+            border-radius: 20px 20px 4px 20px;
+            padding: 10px 18px;
         }
 
         .message-bubble.received {
             float: left;
+            background: white;
+            border-radius: 20px 20px 20px 4px;
+            padding: 10px 18px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 12px;
+            margin-top: 10px;
+            object-fit: contain;
+        }
+
+        .post-image {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 12px;
+            margin: 10px 0;
+            object-fit: contain;
+            cursor: pointer;
+        }
+
+        .conversation-item {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .conversation-item:hover {
             background: #e9ecef;
-            border-radius: 22px 22px 22px 4px;
-            padding: 8px 16px;
-        }
-
-        @media (max-width:768px) {
-            .comment-tree {
-                margin-left: 0.5rem;
-                padding-left: 0.5rem;
-            }
-
-            .message-bubble {
-                max-width: 85%;
-            }
-        }
-
-        [v-cloak] {
-            display: none;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .replies-header {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .replies-header:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -212,72 +177,90 @@
         </div>
 
         <div v-else>
-            <!-- LOGIN SCREEN -->
+            <!-- Login Screen -->
             <div v-if="!isLoggedIn" class="container">
-                <div class="auth-container">
-                    <div class="text-center mb-4"><i class="bi bi-chat-dots-fill"
-                            style="font-size: 48px; color: #ff8c42;"></i>
-                        <h2 class="mt-2">Chuka Connect</h2>
-                        <p class="text-muted">Anonymous Student Interaction & Academic Support</p>
-                    </div>
-                    <div class="card card-modern p-4">
-                        <ul class="nav nav-tabs mb-3">
-                            <li class="nav-item"><a class="nav-link" :class="{active: authMode=='login'}"
-                                    @click="authMode='login'">Login</a></li>
-                            <li class="nav-item"><a class="nav-link" :class="{active: authMode=='register'}"
-                                    @click="authMode='register'">Register</a></li>
-                        </ul>
-                        <div v-if="authMode=='login'">
-                            <div class="mb-3"><label>Email</label><input type="email" class="form-control"
-                                    v-model="loginEmail"></div>
-                            <div class="mb-3"><label>Password</label><input type="password" class="form-control"
-                                    v-model="loginPassword" @keyup.enter="login"></div>
-                            <button class="btn btn-orange w-100" @click="login">Login</button>
+                <div class="row justify-content-center mt-5">
+                    <div class="col-md-5">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-chat-heart-fill" style="font-size: 48px; color: #ff8c42;"></i>
+                            <h2 class="mt-2">Chuka Connect</h2>
+                            <p class="text-muted">Anonymous Student Support Platform</p>
                         </div>
-                        <div v-if="authMode=='register'">
-                            <div class="mb-3"><label>Full Name</label><input type="text" class="form-control"
-                                    v-model="regName"></div>
-                            <div class="mb-3"><label>Email</label><input type="email" class="form-control"
-                                    v-model="regEmail"></div>
-                            <div class="mb-3"><label>Password</label><input type="password" class="form-control"
-                                    v-model="regPassword"></div>
-                            <div class="mb-3"><label>Course</label><input type="text" class="form-control"
-                                    v-model="regCourse"></div>
-                            <button class="btn btn-orange w-100" @click="register">Create Account</button>
+                        <div class="card card-modern p-4">
+                            <ul class="nav nav-tabs mb-3">
+                                <li class="nav-item">
+                                    <a class="nav-link" :class="{active: authMode=='login'}"
+                                        @click="authMode='login'">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" :class="{active: authMode=='register'}"
+                                        @click="authMode='register'">Register</a>
+                                </li>
+                            </ul>
+                            <div v-if="authMode=='login'">
+                                <div class="mb-3">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" v-model="loginEmail">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" v-model="loginPassword"
+                                        @keyup.enter="login">
+                                </div>
+                                <button class="btn btn-orange w-100" @click="login">Login</button>
+                            </div>
+                            <div v-if="authMode=='register'">
+                                <div class="mb-3">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" v-model="regName">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" v-model="regEmail">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" v-model="regPassword">
+                                </div>
+                                <div class="mb-3">
+                                    <label>Course</label>
+                                    <input type="text" class="form-control" v-model="regCourse">
+                                </div>
+                                <button class="btn btn-orange w-100" @click="register">Create Account</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <button class="btn btn-link btn-sm" @click="adminLoginShow">Admin Access</button>
+                            </div>
                         </div>
-                        <div class="text-center mt-3"><button class="btn btn-link btn-sm" @click="adminLoginShow">🔒
-                                Admin Access</button></div>
                     </div>
                 </div>
             </div>
 
-            <!-- MAIN APP -->
+            <!-- Main App -->
             <div v-else>
-                <!-- ADMIN DASHBOARD -->
-                <div v-if="isAdminMode" class="container-fluid p-0">
-                    <div class="row g-0">
-                        <div class="col-md-3 col-lg-2 sidebar admin-sidebar">
-                            <div class="p-3 text-white text-center">
-                                <h5><i class="bi bi-shield-lock-fill"></i> Admin Panel</h5>
-                            </div>
+                <!-- Admin Panel -->
+                <div v-if="isAdminMode" class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3">
+                            <h5 class="mb-3">Admin Panel</h5>
                             <ul class="nav flex-column">
                                 <li class="nav-item"><a href="#" @click.prevent="activeAdminTab='dashboard'"
-                                        class="nav-link text-white">📊 Dashboard</a></li>
+                                        class="nav-link text-white">Dashboard</a></li>
                                 <li class="nav-item"><a href="#" @click.prevent="activeAdminTab='posts'"
-                                        class="nav-link text-white">📝 Posts</a></li>
+                                        class="nav-link text-white">Posts</a></li>
                                 <li class="nav-item"><a href="#" @click.prevent="activeAdminTab='comments'"
-                                        class="nav-link text-white">💬 Comments</a></li>
+                                        class="nav-link text-white">Comments</a></li>
                                 <li class="nav-item"><a href="#" @click.prevent="activeAdminTab='reports'"
-                                        class="nav-link text-white">🚨 Reports</a></li>
+                                        class="nav-link text-white">Reports</a></li>
                                 <li class="nav-item"><a href="#" @click.prevent="activeAdminTab='users'"
-                                        class="nav-link text-white">👥 Users</a></li>
-                                <li class="nav-item"><a href="#" @click.prevent="logout" class="nav-link text-danger">🚪
-                                        Logout</a></li>
+                                        class="nav-link text-white">Users</a></li>
+                                <li class="nav-item"><a href="#" @click.prevent="logout"
+                                        class="nav-link text-danger">Logout</a></li>
                             </ul>
                         </div>
                         <div class="col-md-9 col-lg-10 p-4">
                             <div v-if="activeAdminTab=='dashboard'">
-                                <h3>Overview</h3>
+                                <h3>Dashboard</h3>
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="card p-3">
@@ -295,26 +278,16 @@
                             </div>
                             <div v-if="activeAdminTab=='posts'">
                                 <h4>All Posts</h4>
-                                <div v-for="p in allPostsArray" class="post-card"><b>{{ p.anonymousId }}</b>
-                                    <p>{{ p.content }}</p><button class="btn btn-sm btn-danger"
-                                        @click="adminDeletePost(p.id)">Delete</button>
+                                <div v-for="p in allPostsArray" class="post-card">
+                                    <b>{{ p.anonymousId }}</b>
+                                    <p>{{ p.content }}</p>
+                                    <div v-if="p.imageData"><img :src="p.imageData"
+                                            style="max-height:150px; border-radius:12px;"></div>
+                                    <button class="btn btn-sm btn-danger" @click="adminDeletePost(p.id)">Delete</button>
                                 </div>
                             </div>
-                            <div v-if="activeAdminTab=='comments'">
-                                <h4>All Comments</h4>
-                                <div v-for="c in allCommentsArray" class="card mb-2 p-2"><b>{{ c.anonymousId }}</b>: {{
-                                    c.content }}<button class="btn btn-sm btn-danger ms-2"
-                                        @click="adminDeleteComment(c.id)">Delete</button></div>
-                            </div>
-                            <div v-if="activeAdminTab=='reports'">
-                                <h4>Reports</h4>
-                                <div v-for="r in reportsList" class="card mb-2 p-2"><b>{{ r.reason }}</b> - {{
-                                    r.postContent }}<button class="btn btn-sm btn-danger"
-                                        @click="resolveReportAndDelete(r.id, r.postId)">Delete Post</button></div>
-                            </div>
                             <div v-if="activeAdminTab=='users'">
-                                <h4>Users</h4>
-                                <table class="table table-bordered">
+                                <table class="table table-bordered bg-white">
                                     <tr v-for="(u,uid) in usersList">
                                         <td>{{ u.email }}</td>
                                         <td>{{ u.anonymousId }}</td>
@@ -324,189 +297,217 @@
                                     </tr>
                                 </table>
                             </div>
+                            <div v-if="activeAdminTab=='comments'">
+                                <div v-for="c in allCommentsArray" class="card mb-2 p-2">{{ c.anonymousId }}: {{
+                                    c.content }} <button class="btn btn-sm btn-danger"
+                                        @click="adminDeleteComment(c.id)">Delete</button></div>
+                            </div>
+                            <div v-if="activeAdminTab=='reports'">
+                                <div v-for="r in reportsList" class="card mb-2 p-2">{{ r.reason }} <button
+                                        class="btn btn-sm btn-danger"
+                                        @click="resolveReportAndDelete(r.id, r.postId)">Delete</button></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- USER PORTAL -->
+                <!-- User Portal -->
                 <div v-else>
                     <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
                         <div class="container-fluid">
-                            <a class="navbar-brand fw-bold" href="#"><i class="bi bi-chat-dots-fill text-warning"></i>
-                                Chuka Connect</a>
+                            <a class="navbar-brand fw-bold" href="#">Chuka Connect</a>
                             <div class="ms-auto d-flex gap-3 align-items-center">
-                                <span class="user-chip"><i class="bi bi-incognito"></i> {{ userProfile.anonymousId
-                                    }}</span>
-                                <button class="btn btn-outline-secondary btn-sm" @click="showProfile = !showProfile"><i
-                                        class="bi bi-person"></i></button>
+                                <span class="user-chip">{{ userProfile.anonymousId }}</span>
+                                <button class="btn btn-outline-secondary btn-sm"
+                                    @click="showProfile = !showProfile">Profile</button>
                                 <button class="btn btn-outline-danger btn-sm" @click="logout">Logout</button>
                             </div>
                         </div>
                     </nav>
 
                     <div class="container mt-3">
+                        <!-- Profile -->
                         <div v-if="showProfile" class="card card-modern p-3 mb-3">
-                            <div class="profile-card">
-                                <h5>{{ userProfile.fullName }}</h5>
-                                <p>📧 {{ userProfile.email }}<br>🎓 {{ userProfile.course || 'Not set' }}<br>🏆 Rep: {{
-                                    userProfile.reputation || 0 }}<br>🆔 Anonymous ID: {{ userProfile.anonymousId }}</p>
+                            <h5>{{ userProfile.fullName }}</h5>
+                            <p>{{ userProfile.email }}<br>Course: {{ userProfile.course || 'Not set' }}<br>Anonymous ID:
+                                {{ userProfile.anonymousId }}</p>
+                        </div>
+
+                        <!-- Safety Contacts -->
+                        <div class="row mb-4 g-3">
+                            <div class="col-md-6">
+                                <div class="contact-card text-center" @click="contactSecurity">
+                                    <i class="bi bi-shield-check" style="font-size: 24px;"></i>
+                                    <h6 class="mt-2">Campus Security</h6>
+                                    <small>+254 800 230 008</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="contact-card text-center" @click="contactWelfare">
+                                    <i class="bi bi-people" style="font-size: 24px;"></i>
+                                    <h6 class="mt-2">Director Welfare</h6>
+                                    <small>+254 711 234567</small>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- MAIN TABS -->
-                        <ul class="nav nav-tabs mb-4 flex-wrap">
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-4">
                             <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='home'}"
-                                    @click="activeTab='home'">🏠 Home Feed</a></li>
-                            <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='academics'}"
-                                    @click="activeTab='academics'">🎓 Academics</a></li>
-                            <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='freetalk'}"
-                                    @click="activeTab='freetalk'">💬 Free Talk</a></li>
+                                    @click="activeTab='home'">Home Feed</a></li>
+                            <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='anonymous'}"
+                                    @click="activeTab='anonymous'">Anonymous Page</a></li>
                             <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='issues'}"
-                                    @click="activeTab='issues'">🚨 Issues</a></li>
+                                    @click="activeTab='issues'">Issues</a></li>
                             <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='polls'}"
-                                    @click="activeTab='polls'; loadPollVotes()">📊 Polls</a></li>
+                                    @click="activeTab='polls'">Polls</a></li>
                             <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='messages'}"
-                                    @click="activeTab='messages'; loadConversations()">📩 Messages</a></li>
+                                    @click="activeTab='messages'; loadConversations()">Messages</a></li>
                             <li class="nav-item"><a class="nav-link" :class="{active: activeTab=='settings'}"
-                                    @click="activeTab='settings'">⚙️ Settings</a></li>
+                                    @click="activeTab='settings'">Settings</a></li>
                         </ul>
 
-                        <!-- ==================== HOME FEED (REDDIT STYLE WITH COLLAPSIBLE REPLIES) ==================== -->
+                        <!-- Home Feed (Only general posts, not anonymous posts) -->
                         <div v-if="activeTab=='home'">
+                            <!-- SOS Button -->
+                            <div class="card card-modern p-3 mb-4 text-center">
+                                <button class="btn btn-danger w-100 fw-bold" data-bs-toggle="modal"
+                                    data-bs-target="#sosModal">
+                                    🆘 SOS - Emergency Help 🆘
+                                </button>
+                            </div>
+
+                            <!-- Create Post -->
                             <div class="card card-modern p-3 mb-4">
                                 <textarea class="form-control mb-2" rows="2" v-model="newPostContent"
-                                    placeholder="Create a post... (Anonymous)"></textarea>
-                                <div class="d-flex gap-2"><select v-model="newPostCategory" class="form-select w-auto">
-                                        <option value="general">General</option>
-                                        <option value="academics">Academics</option>
-                                        <option value="freetalk">FreeTalk</option>
-                                        <option value="issues">Issue</option>
-                                    </select><button class="btn btn-orange" @click="createPost">Post</button></div>
+                                    placeholder="Share something... (General)"></textarea>
+                                <div class="d-flex gap-2">
+                                    <label class="btn btn-outline-secondary btn-sm">
+                                        📷 Upload Image <input type="file" accept="image/*" @change="handleImageUpload"
+                                            style="display:none">
+                                    </label>
+                                    <button class="btn btn-orange" @click="createPost">Post to Home</button>
+                                </div>
+                                <div v-if="uploadedImageData" class="mt-2">
+                                    <img :src="uploadedImageData" class="image-preview">
+                                    <button class="btn btn-sm btn-link text-danger"
+                                        @click="uploadedImageData=null">Remove</button>
+                                </div>
                             </div>
-                            <div class="d-flex gap-2 mb-3"><button class="btn btn-sm btn-outline-secondary"
-                                    @click="sortFeed='latest'">Latest</button><button
-                                    class="btn btn-sm btn-outline-secondary" @click="sortFeed='top'">Top
-                                    (Score)</button></div>
 
-                            <div v-for="post in sortedPosts" class="post-card">
-                                <div class="d-flex align-items-start gap-2">
-                                    <div class="d-flex flex-column align-items-center me-2">
-                                        <button class="vote-btn" @click="votePost(post.id, 'up')"><i
-                                                class="bi bi-arrow-up-short" style="font-size: 1.5rem;"></i></button>
-                                        <span class="vote-count">{{ post.score || 0 }}</span>
-                                        <button class="vote-btn" @click="votePost(post.id, 'down')"><i
-                                                class="bi bi-arrow-down-short" style="font-size: 1.5rem;"></i></button>
+                            <!-- SOS Alerts -->
+                            <div v-if="sosAlerts.length > 0" class="mb-4">
+                                <h5><i class="bi bi-megaphone-fill text-danger"></i> Active SOS Alerts</h5>
+                                <div v-for="sos in sosAlerts" class="sos-alert">
+                                    <strong><i class="bi bi-person-circle"></i> {{ sos.anonymousId }}</strong> - {{
+                                    formatTime(sos.timestamp) }}
+                                    <p class="mt-1 mb-0"><i class="bi bi-geo-alt-fill"></i> Location: {{ sos.location }}
+                                    </p>
+                                    <p><i class="bi bi-chat-text-fill"></i> {{ sos.message }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Sort Options -->
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    @click="sortFeed='latest'">Latest</button>
+                                <button class="btn btn-sm btn-outline-secondary" @click="sortFeed='top'">Top
+                                    (Score)</button>
+                            </div>
+
+                            <!-- Posts Feed (Only general category, no freetalk/anonymous) -->
+                            <div v-for="post in homeFeedPosts" class="post-card">
+                                <div class="d-flex gap-2">
+                                    <div class="text-center">
+                                        <button class="vote-btn" @click="votePost(post.id, 'up')">▲</button>
+                                        <div>{{ post.score || 0 }}</div>
+                                        <button class="vote-btn" @click="votePost(post.id, 'down')">▼</button>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <div class="mb-1"><span class="user-chip">{{ post.anonymousId }}</span> <span
-                                                class="badge-category">{{ post.category }}</span> <small
-                                                class="text-muted ms-2">{{ formatTime(post.timestamp) }}</small></div>
-                                        <p class="mt-2 mb-2">{{ post.content }}</p>
+                                        <div class="mb-1">
+                                            <span class="user-chip">{{ post.anonymousId }}</span>
+                                            <span class="badge bg-secondary ms-2">{{ post.category }}</span>
+                                            <small class="text-muted ms-2">{{ formatTime(post.timestamp) }}</small>
+                                        </div>
+                                        <p>{{ post.content }}</p>
+                                        <div v-if="post.imageData" class="mb-2">
+                                            <img :src="post.imageData" class="post-image"
+                                                @click="enlargeImage(post.imageData)">
+                                        </div>
                                         <div class="d-flex gap-3">
-                                            <button class="btn btn-sm btn-link text-secondary"
-                                                @click="toggleRepliesVisibility(post.id)"><i class="bi bi-chat"></i> {{
+                                            <button class="btn btn-sm btn-link" @click="toggleReplies(post.id)">💬 {{
                                                 getRepliesCount(post.id) }} replies</button>
-                                            <button class="btn btn-sm btn-link text-secondary"
-                                                @click="showReplyFormForPost(post.id)"><i class="bi bi-reply"></i>
+                                            <button class="btn btn-sm btn-link" @click="showReplyForm(post.id)">↩️
                                                 Reply</button>
-                                            <button class="btn btn-sm btn-link text-secondary"
-                                                @click="startDM(post.userId)">📩 DM</button>
+                                            <button class="btn btn-sm btn-link" @click="startDM(post.userId)">📩
+                                                DM</button>
                                             <button class="btn btn-sm btn-link text-danger"
                                                 @click="reportPost(post.id)">🚩 Report</button>
                                             <button v-if="post.userId === currentUser?.uid"
                                                 class="btn btn-sm btn-link text-danger"
                                                 @click="deleteOwnPost(post.id)">🗑️ Delete</button>
                                         </div>
-                                        <div v-if="activeReplyPostId === post.id" class="reply-form mt-2">
-                                            <textarea class="form-control form-control-sm" rows="2"
-                                                v-model="replyTextInput" placeholder="Write a reply..."></textarea>
-                                            <button class="btn btn-sm btn-primary mt-2"
-                                                @click="submitReplyToPost(post.id, null)">Submit Reply</button>
-                                            <button class="btn btn-sm btn-secondary mt-2 ms-2"
-                                                @click="activeReplyPostId = null">Cancel</button>
+                                        <!-- Reply Form -->
+                                        <div v-if="activeReplyPost === post.id" class="mt-2">
+                                            <textarea class="form-control form-control-sm" rows="2" v-model="replyText"
+                                                placeholder="Write a reply..."></textarea>
+                                            <button class="btn btn-sm btn-primary mt-1"
+                                                @click="submitReply(post.id, null)">Submit Reply</button>
+                                            <button class="btn btn-sm btn-secondary mt-1 ms-2"
+                                                @click="activeReplyPost=null">Cancel</button>
                                         </div>
-
-                                        <!-- Collapsible Replies Section -->
-                                        <div v-if="showReplies[post.id]" class="comment-tree mt-3">
-                                            <div v-for="comment in getCommentTree(post.id)" :key="comment.id">
-                                                <div class="comment-item">
-                                                    <div class="d-flex align-items-start gap-2">
-                                                        <div class="d-flex flex-column align-items-center">
-                                                            <button class="vote-btn"
-                                                                @click="voteComment(comment.id, 'up')"><i
-                                                                    class="bi bi-arrow-up-short"></i></button>
-                                                            <span class="vote-count small">{{ comment.score || 0
-                                                                }}</span>
-                                                            <button class="vote-btn"
-                                                                @click="voteComment(comment.id, 'down')"><i
-                                                                    class="bi bi-arrow-down-short"></i></button>
+                                        <!-- Comments Thread -->
+                                        <div v-if="showReplies[post.id]" class="comment-tree mt-2">
+                                            <div v-for="comment in getCommentTree(post.id)" :key="comment.id"
+                                                class="mb-2">
+                                                <div class="d-flex gap-2">
+                                                    <div class="text-center">
+                                                        <button class="vote-btn"
+                                                            @click="voteComment(comment.id, 'up')">▲</button>
+                                                        <div class="small">{{ comment.score || 0 }}</div>
+                                                        <button class="vote-btn"
+                                                            @click="voteComment(comment.id, 'down')">▼</button>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <span class="user-chip">{{ comment.anonymousId }}</span>
+                                                        <small class="text-muted ms-2">{{ formatTime(comment.timestamp)
+                                                            }}</small>
+                                                        <p class="mt-1 mb-1">{{ comment.content }}</p>
+                                                        <button class="btn btn-sm btn-link p-0"
+                                                            @click="showReplyForm(comment.postId, comment.id)">↩️
+                                                            Reply</button>
+                                                        <button v-if="comment.userId === currentUser?.uid"
+                                                            class="btn btn-sm btn-link text-danger p-0 ms-2"
+                                                            @click="deleteOwnComment(comment.id)">Delete</button>
+                                                        <div v-if="activeReplyPost === comment.postId && activeParentComment === comment.id"
+                                                            class="mt-2">
+                                                            <textarea class="form-control form-control-sm" rows="2"
+                                                                v-model="replyText"></textarea>
+                                                            <button class="btn btn-sm btn-primary mt-1"
+                                                                @click="submitReply(comment.postId, comment.id)">Submit</button>
                                                         </div>
-                                                        <div class="flex-grow-1">
-                                                            <div><span class="user-chip">{{ comment.anonymousId
-                                                                    }}</span> <small class="text-muted ms-2">{{
-                                                                    formatTime(comment.timestamp) }}</small></div>
-                                                            <p class="mb-1 mt-1">{{ comment.content }}</p>
-                                                            <div class="d-flex gap-2">
-                                                                <button class="btn btn-sm btn-link text-secondary p-0"
-                                                                    @click="showReplyFormForComment(comment.id, comment.postId)"><i
-                                                                        class="bi bi-reply"></i> Reply</button>
-                                                                <button v-if="comment.userId === currentUser?.uid"
-                                                                    class="btn btn-sm btn-link text-danger p-0"
-                                                                    @click="deleteOwnComment(comment.id)">Delete</button>
-                                                            </div>
-                                                            <div v-if="activeReplyCommentId === comment.id"
-                                                                class="reply-form mt-2">
-                                                                <textarea class="form-control form-control-sm" rows="2"
-                                                                    v-model="replyTextInput"
-                                                                    placeholder="Write a reply..."></textarea>
-                                                                <button class="btn btn-sm btn-primary mt-2"
-                                                                    @click="submitReplyToPost(comment.postId, comment.id)">Submit</button>
-                                                                <button class="btn btn-sm btn-secondary mt-2 ms-2"
-                                                                    @click="activeReplyCommentId = null">Cancel</button>
-                                                            </div>
-                                                            <div v-if="comment.children && comment.children.length"
-                                                                class="comment-tree mt-2">
-                                                                <div v-for="child in comment.children" :key="child.id"
-                                                                    class="comment-item">
-                                                                    <div class="d-flex align-items-start gap-2">
-                                                                        <div
-                                                                            class="d-flex flex-column align-items-center">
-                                                                            <button class="vote-btn"
-                                                                                @click="voteComment(child.id, 'up')"><i
-                                                                                    class="bi bi-arrow-up-short"></i></button>
-                                                                            <span class="vote-count small">{{
-                                                                                child.score || 0 }}</span>
-                                                                            <button class="vote-btn"
-                                                                                @click="voteComment(child.id, 'down')"><i
-                                                                                    class="bi bi-arrow-down-short"></i></button>
-                                                                        </div>
-                                                                        <div class="flex-grow-1">
-                                                                            <div><span class="user-chip">{{
-                                                                                    child.anonymousId }}</span> <small
-                                                                                    class="text-muted">{{
-                                                                                    formatTime(child.timestamp)
-                                                                                    }}</small></div>
-                                                                            <p class="mb-1">{{ child.content }}</p>
-                                                                            <button
-                                                                                class="btn btn-sm btn-link text-secondary p-0"
-                                                                                @click="showReplyFormForComment(child.id, child.postId)"><i
-                                                                                    class="bi bi-reply"></i>
-                                                                                Reply</button>
-                                                                            <button
-                                                                                v-if="child.userId === currentUser?.uid"
-                                                                                class="btn btn-sm btn-link text-danger p-0 ms-2"
-                                                                                @click="deleteOwnComment(child.id)">Delete</button>
-                                                                            <div v-if="activeReplyCommentId === child.id"
-                                                                                class="reply-form mt-2">
-                                                                                <textarea
-                                                                                    class="form-control form-control-sm"
-                                                                                    rows="2"
-                                                                                    v-model="replyTextInput"></textarea>
-                                                                                <button
-                                                                                    class="btn btn-sm btn-primary mt-2"
-                                                                                    @click="submitReplyToPost(child.postId, child.id)">Submit</button>
-                                                                            </div>
-                                                                        </div>
+                                                        <!-- Nested replies -->
+                                                        <div v-if="comment.children && comment.children.length"
+                                                            class="comment-tree mt-2">
+                                                            <div v-for="child in comment.children" :key="child.id"
+                                                                class="mb-2">
+                                                                <div class="d-flex gap-2">
+                                                                    <div class="text-center">
+                                                                        <button class="vote-btn"
+                                                                            @click="voteComment(child.id, 'up')">▲</button>
+                                                                        <div class="small">{{ child.score || 0 }}</div>
+                                                                        <button class="vote-btn"
+                                                                            @click="voteComment(child.id, 'down')">▼</button>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="user-chip">{{ child.anonymousId
+                                                                            }}</span>
+                                                                        <small class="text-muted ms-2">{{
+                                                                            formatTime(child.timestamp) }}</small>
+                                                                        <p class="mt-1 mb-1">{{ child.content }}</p>
+                                                                        <button v-if="child.userId === currentUser?.uid"
+                                                                            class="btn btn-sm btn-link text-danger p-0"
+                                                                            @click="deleteOwnComment(child.id)">Delete</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -516,157 +517,184 @@
                                             </div>
                                         </div>
                                         <button v-if="getRepliesCount(post.id) > 0"
-                                            class="btn btn-sm btn-link text-muted mt-1"
-                                            @click="toggleRepliesVisibility(post.id)">
+                                            class="btn btn-sm btn-link text-muted mt-1" @click="toggleReplies(post.id)">
                                             {{ showReplies[post.id] ? 'Hide replies' : 'Show replies' }}
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="Object.keys(posts).length===0" class="text-center text-muted py-5">No posts yet.
+                            <div v-if="homeFeedPosts.length === 0" class="text-center text-muted py-5">No posts yet.
                                 Create the first post!</div>
                         </div>
 
-                        <!-- ==================== ACADEMICS PAGE ==================== -->
-                        <div v-if="activeTab=='academics'">
-                            <h4>📚 Academic Hub</h4>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card card-modern p-3"><input class="form-control mb-2"
-                                            v-model="academicQuestion" placeholder="Ask academic question..."><button
-                                            @click="postAcademicHelp" class="btn btn-orange">Post Question</button>
-                                    </div>
+                        <!-- Anonymous Page (Freetalk posts - separate from home) -->
+                        <div v-if="activeTab=='anonymous'">
+                            <h4><i class="bi bi-incognito"></i> Anonymous Page - Speak Freely</h4>
+                            <p class="text-muted">Posts here are anonymous and will NOT appear on the Home Feed.</p>
+                            <div class="card card-modern p-3 mb-4">
+                                <textarea class="form-control mb-2" rows="2" v-model="freeTalkContent"
+                                    placeholder="Share anonymously..."></textarea>
+                                <div class="d-flex gap-2">
+                                    <label class="btn btn-outline-secondary btn-sm">📷 Upload Image <input type="file"
+                                            accept="image/*" @change="handleAnonymousImageUpload"
+                                            style="display:none"></label>
+                                    <button class="btn btn-orange" @click="createFreeTalkPost">Post Anonymously</button>
                                 </div>
-                                <div class="col-md-6">
-                                    <h5>Study Resources</h5><input class="form-control mb-1" v-model="resourceTitle"
-                                        placeholder="Title"><input class="form-control mb-1" v-model="resourceLink"
-                                        placeholder="URL"><button @click="uploadResource"
-                                        class="btn btn-sm btn-secondary">Share</button>
-                                    <ul class="mt-2">
-                                        <li v-for="res in resourcesArray">{{ res.title }} - by {{ res.uploadedBy }}</li>
-                                    </ul>
-                                    <hr>
-                                    <h6>Find Study Partner</h6><textarea class="form-control"
-                                        v-model="studyPartnerMsg"></textarea><button class="btn btn-sm btn-warning mt-1"
-                                        @click="postStudyPartner">Post request</button>
-                                </div>
+                                <div v-if="anonymousImageData" class="mt-2"><img :src="anonymousImageData"
+                                        class="image-preview"><button class="btn btn-sm btn-link text-danger"
+                                        @click="anonymousImageData=null">Remove</button></div>
                             </div>
-                            <div class="mt-3">
-                                <h5>Academic Q&A</h5>
-                                <div v-for="p in academicPosts" class="post-card"><strong>{{ p.anonymousId }}</strong>
-                                    <p>{{ p.content }}</p><button class="btn btn-sm btn-outline-success"
-                                        @click="upvoteAnswer(p.id)">👍 Upvote ({{ p.upvotes || 0 }})</button><button
-                                        v-if="p.userId === currentUser?.uid"
-                                        class="btn btn-sm btn-link text-danger ms-2"
+                            <div v-for="p in anonymousPosts" class="post-card">
+                                <span class="user-chip">{{ p.anonymousId }}</span>
+                                <small class="text-muted ms-2">{{ formatTime(p.timestamp) }}</small>
+                                <p class="mt-2">{{ p.content }}</p>
+                                <div v-if="p.imageData"><img :src="p.imageData" class="post-image"></div>
+                                <div class="d-flex gap-2 mt-2">
+                                    <button class="btn btn-sm btn-link" @click="showReplyForm(p.id)">Reply</button>
+                                    <button v-if="p.userId === currentUser?.uid" class="btn btn-sm btn-link text-danger"
                                         @click="deleteOwnPost(p.id)">Delete</button>
                                 </div>
+                                <div v-if="activeReplyPost === p.id" class="mt-2">
+                                    <textarea class="form-control form-control-sm" rows="2"
+                                        v-model="replyText"></textarea>
+                                    <button class="btn btn-sm btn-primary mt-1"
+                                        @click="submitReply(p.id, null)">Submit</button>
+                                </div>
+                                <div v-if="showReplies[p.id]" class="comment-tree mt-2">
+                                    <div v-for="comment in getCommentTree(p.id)" :key="comment.id">
+                                        <span class="user-chip">{{ comment.anonymousId }}</span>
+                                        <p class="mt-1">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                                <button v-if="getRepliesCount(p.id) > 0" class="btn btn-sm btn-link"
+                                    @click="toggleReplies(p.id)">{{ showReplies[p.id] ? 'Hide' : 'Show' }}
+                                    replies</button>
                             </div>
                         </div>
 
-                        <!-- FREE TALK -->
-                        <div v-if="activeTab=='freetalk'">
-                            <h4>🗣️ Free Talk / Confessions</h4><textarea class="form-control"
-                                v-model="freeTalkContent"></textarea><button class="btn btn-orange mt-2"
-                                @click="createFreeTalkPost">Post</button>
-                            <div v-for="p in freeTalkPosts" class="post-card mt-3"><span class="user-chip">{{
-                                    p.anonymousId }}</span>
-                                <p>{{ p.content }}</p><button v-if="p.userId === currentUser?.uid"
-                                    class="btn btn-sm btn-link text-danger" @click="deleteOwnPost(p.id)">Delete</button>
-                            </div>
-                        </div>
-
-                        <!-- ISSUES -->
+                        <!-- Issues Page -->
                         <div v-if="activeTab=='issues'">
-                            <h4>🚨 Campus Issues Reporting</h4><textarea class="form-control" v-model="issueContent"
-                                placeholder="Report lab/lecturer/facilities issue..."></textarea><button
-                                class="btn btn-danger mt-2" @click="submitIssueReport">Submit Report</button>
+                            <h4>🚨 Report Campus Issues</h4>
+                            <textarea class="form-control" v-model="issueContent"
+                                placeholder="Report lab issues, lecturer concerns, facilities problems..."></textarea>
+                            <button class="btn btn-danger mt-2" @click="submitIssueReport">Submit Report</button>
                             <div class="mt-4">
                                 <h5>Recent Reports</h5>
-                                <div v-for="iss in issuePosts" class="border-bottom pb-2">{{ iss.content }} <button
-                                        v-if="iss.userId === currentUser?.uid" class="btn btn-sm btn-link text-danger"
-                                        @click="deleteOwnPost(iss.id)">Delete</button></div>
+                                <div v-for="iss in issuePosts" class="border-bottom pb-2">{{ iss.content }}</div>
                             </div>
                         </div>
 
-                        <!-- ==================== POLLS (with delete, one vote per account) ==================== -->
+                        <!-- Polls -->
                         <div v-if="activeTab=='polls'">
                             <h4>📊 Polls</h4>
-                            <div class="card card-modern p-3 mb-4">
-                                <input class="form-control mb-2" v-model="pollQuestion" placeholder="Poll question">
-                                <input class="form-control mb-1" v-model="pollOption1" placeholder="Option 1">
-                                <input class="form-control mb-1" v-model="pollOption2" placeholder="Option 2">
-                                <button class="btn btn-orange mt-2" @click="createPoll">Create Poll</button>
+                            <div class="card p-3 mb-3">
+                                <input class="form-control mb-2" v-model="pollQuestion" placeholder="Question">
+                                <input class="form-control mb-2" v-model="pollOption1" placeholder="Option 1">
+                                <input class="form-control mb-2" v-model="pollOption2" placeholder="Option 2">
+                                <button class="btn btn-orange" @click="createPoll">Create Poll</button>
                             </div>
-                            <div v-for="p in pollsList" class="card mt-3 p-3">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <b>{{ p.question }}</b>
-                                    <button v-if="p.createdBy === currentUser?.uid"
-                                        class="btn btn-sm btn-outline-danger" @click="deletePoll(p.id)">🗑️ Delete
-                                        Poll</button>
+                            <div v-for="p in pollsList" class="card p-3 mb-2">
+                                <b>{{ p.question }}</b>
+                                <div v-for="opt in p.options" class="mt-1">
+                                    <button class="btn btn-sm btn-outline-secondary" @click="votePoll(p.id, opt)"
+                                        :disabled="userPollVotes[p.id]">Vote {{ opt }}</button>
+                                    {{ p.votes[opt] || 0 }} votes
                                 </div>
-                                <div v-for="opt in p.options" class="mt-2">
-                                    <button class="btn btn-sm btn-outline-secondary me-2" @click="votePoll(p.id, opt)"
-                                        :disabled="userPollVotes[p.id]">
-                                        Vote {{ opt }}
-                                    </button>
-                                    {{ p.votes?.[opt] || 0 }} votes
-                                </div>
-                                <small class="text-muted mt-2" v-if="userPollVotes[p.id]">You already voted on this
-                                    poll</small>
-                                <small class="text-muted" v-else>Click to vote (one vote per account)</small>
+                                <small v-if="userPollVotes[p.id]" class="text-muted">You already voted</small>
+                                <button v-if="p.createdBy === currentUser?.uid"
+                                    class="btn btn-sm btn-link text-danger mt-2" @click="deletePoll(p.id)">Delete
+                                    Poll</button>
                             </div>
                         </div>
 
-                        <!-- ==================== MESSAGES (FIXED SEND BUTTON) ==================== -->
+                        <!-- Messages (DM Feature Restored) -->
                         <div v-if="activeTab=='messages'">
                             <h4>💬 Direct Messages</h4>
                             <div class="row">
                                 <div class="col-md-4">
                                     <h6>Conversations</h6>
-                                    <div v-for="conv in myConversations" class="list-group-item cursor-pointer"
-                                        @click="openConversation(conv)">
-                                        <b>{{ conv.otherUser }}</b>
+                                    <div class="list-group">
+                                        <div v-for="conv in myConversations" class="list-group-item conversation-item"
+                                            @click="openConversation(conv)">
+                                            <b><i class="bi bi-person-circle"></i> {{ conv.otherUser }}</b>
+                                        </div>
+                                        <div v-if="myConversations.length === 0" class="text-muted p-3">No conversations
+                                            yet. Click DM on any post to start chatting.</div>
                                     </div>
-                                    <div v-if="myConversations.length===0" class="text-muted">No conversations yet.
-                                        Start by clicking DM on any post.</div>
                                 </div>
                                 <div class="col-md-8">
-                                    <div v-if="activeConversation" class="dm-chat-window"
-                                        style="height:400px; overflow-y:auto; background:#f8fafd; border-radius:16px; padding:16px;">
+                                    <div v-if="activeConversation" class="dm-chat-window">
                                         <div v-for="msg in activeConversation.messages"
                                             :class="['message-bubble', msg.senderId === currentUser?.uid ? 'sent' : 'received']">
                                             {{ msg.text }}
+                                            <div class="small text-muted mt-1"
+                                                :class="{'text-white-50': msg.senderId === currentUser?.uid}">{{
+                                                formatTime(msg.timestamp) }}</div>
                                         </div>
                                     </div>
                                     <div v-if="activeConversation" class="mt-3 d-flex gap-2">
                                         <input class="form-control" v-model="newMessageText" @keyup.enter="sendMessage"
-                                            placeholder="Type your message...">
+                                            placeholder="Type a message...">
                                         <button class="btn btn-orange" @click="sendMessage">Send</button>
                                     </div>
-                                    <div v-else class="text-center text-muted p-5">Select a conversation to start
-                                        messaging</div>
+                                    <div v-else class="text-center text-muted p-5 bg-white rounded">Select a
+                                        conversation to start messaging</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- SETTINGS -->
+                        <!-- Settings -->
                         <div v-if="activeTab=='settings'">
-                            <div class="card card-modern p-4">
+                            <div class="card p-3">
                                 <h5>Privacy Settings</h5>
-                                <div class="form-check"><input class="form-check-input" type="checkbox"
-                                        v-model="userAllowDM" @change="updateUserAllowDM"> Allow others to DM me</div>
-                                <h5>Blocked Users</h5><input v-model="blockUserIdInput"
-                                    placeholder="Anonymous ID to block"><button @click="blockUser"
-                                    class="btn btn-sm btn-danger">Block</button>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" v-model="userAllowDM"
+                                        @change="updateUserAllowDM">
+                                    <label>Allow others to send me direct messages</label>
+                                </div>
+                                <h5 class="mt-3">Blocked Users</h5>
+                                <div class="input-group mb-2">
+                                    <input class="form-control" v-model="blockUserIdInput"
+                                        placeholder="Anonymous ID to block">
+                                    <button class="btn btn-danger" @click="blockUser">Block</button>
+                                </div>
                                 <ul>
-                                    <li v-for="bl in blockedUsersList">{{ bl }} <button
+                                    <li v-for="bl in blockedUsersList">{{ bl }} <button class="btn btn-sm btn-link"
                                             @click="unblockUser(bl)">unblock</button></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <footer class="text-center py-3 text-muted small">Chuka Connect — Anonymous. Respectful. Engaging.
-                    </footer>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOS Modal -->
+        <div class="modal fade" id="sosModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill"></i> Emergency SOS</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Your Location</label>
+                            <input class="form-control" v-model="sosLocation"
+                                placeholder="e.g., Library, Hostel Block A, Computer Lab">
+                            <button class="btn btn-sm btn-secondary mt-1" @click="getCurrentLocation"><i
+                                    class="bi bi-geo-alt"></i> Use Current Location</button>
+                        </div>
+                        <div class="mb-3">
+                            <label>Describe your emergency</label>
+                            <textarea class="form-control" rows="3" v-model="sosMessage"
+                                placeholder="What's happening?"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger" @click="sendSOS">Send SOS Alert</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -687,82 +715,70 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const database = firebase.database();
+        const db = firebase.database();
 
         new Vue({
             el: '#app',
             data: {
                 loading: true, isLoggedIn: false, isAdminMode: false, currentUser: null,
-                userProfile: { anonymousId: '', fullName: '', email: '', course: '', reputation: 0 },
+                userProfile: { anonymousId: '', fullName: '', email: '', course: '' },
                 authMode: 'login', loginEmail: '', loginPassword: '', regName: '', regEmail: '', regPassword: '', regCourse: '',
                 activeTab: 'home', showProfile: false,
-                newPostContent: '', newPostCategory: 'general',
+                newPostContent: '', uploadedImageData: null, anonymousImageData: null, freeTalkContent: '',
                 posts: {}, comments: {}, userVotes: {}, reportsList: [], allPostsArray: [], allCommentsArray: [], usersList: {},
-                resourcesArray: [], pollsList: [], userPollVotes: {}, conversations: {}, myConversations: [], activeConversation: null, newMessageText: '',
+                pollsList: [], userPollVotes: {}, conversations: {}, myConversations: [], activeConversation: null, newMessageText: '',
                 userAllowDM: true, blockedUsersList: [], blockUserIdInput: '',
-                showReplies: {}, activeReplyPostId: null, activeReplyCommentId: null, replyTextInput: '', sortFeed: 'latest',
-                academicQuestion: '', resourceTitle: '', resourceLink: '', studyPartnerMsg: '', freeTalkContent: '', issueContent: '',
-                pollQuestion: '', pollOption1: '', pollOption2: '',
+                showReplies: {}, activeReplyPost: null, activeParentComment: null, replyText: '', sortFeed: 'latest',
+                issueContent: '', pollQuestion: '', pollOption1: '', pollOption2: '', sosAlerts: [], sosLocation: '', sosMessage: '',
                 activeAdminTab: 'dashboard', stats: { totalUsers: 0, totalPosts: 0 }
             },
             computed: {
-                sortedPosts() { let arr = Object.values(this.posts); if (this.sortFeed === 'top') arr.sort((a, b) => (b.score || 0) - (a.score || 0)); else arr.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); return arr; },
-                academicPosts() { return Object.values(this.posts).filter(p => p.category === 'academics'); },
-                freeTalkPosts() { return Object.values(this.posts).filter(p => p.category === 'freetalk'); },
+                homeFeedPosts() { return Object.values(this.posts).filter(p => p.category === 'general' && p.category !== 'freetalk' && p.category !== 'sos'); },
+                anonymousPosts() { return Object.values(this.posts).filter(p => p.category === 'freetalk'); },
                 issuePosts() { return Object.values(this.posts).filter(p => p.category === 'issues'); }
             },
             methods: {
                 formatTime(ts) { return ts ? new Date(ts).toLocaleString() : ''; },
-                async register() { try { const cred = await auth.createUserWithEmailAndPassword(this.regEmail, this.regPassword); const anonymousId = 'User_' + Math.floor(Math.random() * 9000 + 1000); await database.ref('users/' + cred.user.uid).set({ email: this.regEmail, fullName: this.regName, anonymousId, course: this.regCourse, reputation: 0, allowDM: true, banned: false }); alert("Registered! Please login."); this.authMode = 'login'; } catch (e) { alert(e.message); } },
-                async login() { try { const cred = await auth.signInWithEmailAndPassword(this.loginEmail, this.loginPassword); this.currentUser = cred.user; const snap = await database.ref('users/' + cred.user.uid).once('value'); this.userProfile = snap.val(); if (this.userProfile.banned) { await auth.signOut(); alert("Banned"); return; } this.isLoggedIn = true; this.loadData(); } catch (e) { alert("Login failed"); } },
+                handleImageUpload(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { this.uploadedImageData = ev.target.result; }; reader.readAsDataURL(file); } },
+                handleAnonymousImageUpload(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (ev) => { this.anonymousImageData = ev.target.result; }; reader.readAsDataURL(file); } },
+                enlargeImage(imgSrc) { window.open(imgSrc, '_blank'); },
+                async register() { try { const cred = await auth.createUserWithEmailAndPassword(this.regEmail, this.regPassword); const anonymousId = 'User_' + Math.floor(Math.random() * 9000 + 1000); await db.ref('users/' + cred.user.uid).set({ email: this.regEmail, fullName: this.regName, anonymousId, course: this.regCourse, allowDM: true, banned: false }); alert("Registered! Please login."); this.authMode = 'login'; } catch (e) { alert(e.message); } },
+                async login() { try { const cred = await auth.signInWithEmailAndPassword(this.loginEmail, this.loginPassword); this.currentUser = cred.user; const snap = await db.ref('users/' + cred.user.uid).once('value'); this.userProfile = snap.val(); if (this.userProfile.banned) { await auth.signOut(); alert("Banned"); return; } this.isLoggedIn = true; this.loadData(); } catch (e) { alert("Login failed"); } },
                 async logout() { await auth.signOut(); this.isLoggedIn = false; this.isAdminMode = false; },
-                adminLoginShow() { if (prompt("Admin key:") === "admin2026") { this.isAdminMode = true; this.loadAdminData(); } },
-                loadData() {
-                    database.ref('posts').on('value', snap => { this.posts = snap.val() || {}; this.allPostsArray = Object.values(this.posts); this.stats.totalPosts = this.allPostsArray.length; });
-                    database.ref('comments').on('value', snap => { this.comments = snap.val() || {}; });
-                    database.ref('resources').on('value', snap => { this.resourcesArray = Object.values(snap.val() || {}); });
-                    database.ref('polls').on('value', snap => { this.pollsList = Object.values(snap.val() || {}); });
-                    if (this.currentUser) {
-                        database.ref('userVotes/' + this.currentUser.uid).on('value', snap => { this.userVotes = snap.val() || {}; });
-                        database.ref('userPollVotes/' + this.currentUser.uid).on('value', snap => { this.userPollVotes = snap.val() || {}; });
-                    }
-                    database.ref('users/' + this.currentUser.uid + '/allowDM').on('value', snap => { if (snap.exists()) this.userAllowDM = snap.val(); });
-                    database.ref('users/' + this.currentUser.uid + '/blockedUsers').on('value', snap => { this.blockedUsersList = snap.val() || []; });
-                },
-                loadAdminData() { database.ref('posts').on('value', snap => { this.allPostsArray = Object.values(snap.val() || {}); this.stats.totalPosts = this.allPostsArray.length; }); database.ref('comments').on('value', snap => { this.allCommentsArray = Object.values(snap.val() || {}); }); database.ref('users').on('value', snap => { this.usersList = snap.val() || {}; this.stats.totalUsers = Object.keys(this.usersList).length; }); database.ref('reports').on('value', snap => { this.reportsList = Object.values(snap.val() || {}); }); },
-                async createPost() { if (!this.newPostContent) return; const postId = Date.now() + '_' + Math.random().toString(36).substr(2, 6); await database.ref('posts/' + postId).set({ id: postId, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.newPostContent, category: this.newPostCategory, timestamp: Date.now(), score: 0 }); this.newPostContent = ''; },
-                async votePost(postId, direction) { const voteKey = `post_${postId}`; let current = this.userVotes[voteKey]; let delta = 0; if (current === direction) { delta = (direction === 'up') ? -1 : 1; direction = null; } else if (current === 'up' && direction === 'down') delta = -2; else if (current === 'down' && direction === 'up') delta = 2; else delta = (direction === 'up') ? 1 : -1; const post = this.posts[postId]; if (post) await database.ref('posts/' + postId + '/score').set((post.score || 0) + delta); if (direction === null) await database.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).remove(); else await database.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).set(direction); },
-                async voteComment(commentId, direction) { const voteKey = `comment_${commentId}`; let current = this.userVotes[voteKey]; let delta = 0; if (current === direction) { delta = (direction === 'up') ? -1 : 1; direction = null; } else if (current === 'up' && direction === 'down') delta = -2; else if (current === 'down' && direction === 'up') delta = 2; else delta = (direction === 'up') ? 1 : -1; const c = this.comments[commentId]; if (c) await database.ref('comments/' + commentId + '/score').set((c.score || 0) + delta); if (direction === null) await database.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).remove(); else await database.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).set(direction); },
+                adminLoginShow() { const pwd = prompt("Admin key:"); if (pwd === "admin2026") { this.isAdminMode = true; this.loadAdminData(); } },
+                loadData() { db.ref('posts').on('value', snap => { this.posts = snap.val() || {}; this.allPostsArray = Object.values(this.posts); this.stats.totalPosts = this.allPostsArray.length; }); db.ref('comments').on('value', snap => { this.comments = snap.val() || {}; }); db.ref('polls').on('value', snap => { this.pollsList = Object.values(snap.val() || {}); }); db.ref('sosAlerts').on('value', snap => { this.sosAlerts = Object.values(snap.val() || {}).reverse(); }); if (this.currentUser) { db.ref('userVotes/' + this.currentUser.uid).on('value', snap => { this.userVotes = snap.val() || {}; }); db.ref('userPollVotes/' + this.currentUser.uid).on('value', snap => { this.userPollVotes = snap.val() || {}; }); db.ref('users/' + this.currentUser.uid + '/blockedUsers').on('value', snap => { this.blockedUsersList = snap.val() || []; }); } },
+                loadAdminData() { db.ref('posts').on('value', snap => { this.allPostsArray = Object.values(snap.val() || {}); this.stats.totalPosts = this.allPostsArray.length; }); db.ref('comments').on('value', snap => { this.allCommentsArray = Object.values(snap.val() || {}); }); db.ref('users').on('value', snap => { this.usersList = snap.val() || {}; this.stats.totalUsers = Object.keys(this.usersList).length; }); db.ref('reports').on('value', snap => { this.reportsList = Object.values(snap.val() || {}); }); },
+                async createPost() { if (!this.newPostContent && !this.uploadedImageData) return; const postId = Date.now() + '_' + Math.random().toString(36).substr(2, 6); await db.ref('posts/' + postId).set({ id: postId, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.newPostContent || "Image post", category: 'general', timestamp: Date.now(), score: 0, imageData: this.uploadedImageData || null }); this.newPostContent = ''; this.uploadedImageData = null; },
+                async createFreeTalkPost() { if (!this.freeTalkContent && !this.anonymousImageData) return; const postId = Date.now() + '_' + Math.random().toString(36).substr(2, 6); await db.ref('posts/' + postId).set({ id: postId, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.freeTalkContent || "Anonymous post", category: 'freetalk', timestamp: Date.now(), score: 0, imageData: this.anonymousImageData || null }); this.freeTalkContent = ''; this.anonymousImageData = null; },
+                async votePost(postId, direction) { const voteKey = `post_${postId}`; let current = this.userVotes[voteKey]; let delta = 0; if (current === direction) { delta = (direction === 'up') ? -1 : 1; direction = null; } else if (current === 'up' && direction === 'down') delta = -2; else if (current === 'down' && direction === 'up') delta = 2; else delta = (direction === 'up') ? 1 : -1; const post = this.posts[postId]; if (post) await db.ref('posts/' + postId + '/score').set((post.score || 0) + delta); if (direction === null) await db.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).remove(); else await db.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).set(direction); },
+                async voteComment(commentId, direction) { const voteKey = `comment_${commentId}`; let current = this.userVotes[voteKey]; let delta = 0; if (current === direction) { delta = (direction === 'up') ? -1 : 1; direction = null; } else if (current === 'up' && direction === 'down') delta = -2; else if (current === 'down' && direction === 'up') delta = 2; else delta = (direction === 'up') ? 1 : -1; const c = this.comments[commentId]; if (c) await db.ref('comments/' + commentId + '/score').set((c.score || 0) + delta); if (direction === null) await db.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).remove(); else await db.ref('userVotes/' + this.currentUser.uid + '/' + voteKey).set(direction); },
                 getRepliesCount(postId) { return Object.values(this.comments).filter(c => c.postId === postId && !c.parentCommentId).length; },
                 getCommentTree(postId) { const all = Object.values(this.comments).filter(c => c.postId === postId); const map = {}; const roots = []; all.forEach(c => { c.children = []; map[c.id] = c; }); all.forEach(c => { if (c.parentCommentId && map[c.parentCommentId]) map[c.parentCommentId].children.push(c); else if (!c.parentCommentId) roots.push(c); }); roots.sort((a, b) => (b.score || 0) - (a.score || 0)); return roots; },
-                toggleRepliesVisibility(postId) { this.$set(this.showReplies, postId, !this.showReplies[postId]); },
-                showReplyFormForPost(postId) { this.activeReplyPostId = postId; this.activeReplyCommentId = null; this.replyTextInput = ''; },
-                showReplyFormForComment(commentId, postId) { this.activeReplyCommentId = commentId; this.activeReplyPostId = null; this.replyTextInput = ''; },
-                async submitReplyToPost(postId, parentCommentId) { if (!this.replyTextInput.trim()) return; const commentId = Date.now() + '_' + Math.random().toString(36).substr(2, 5); await database.ref('comments/' + commentId).set({ id: commentId, postId, parentCommentId: parentCommentId || null, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.replyTextInput, timestamp: Date.now(), score: 0 }); this.replyTextInput = ''; this.activeReplyPostId = null; this.activeReplyCommentId = null; this.$set(this.showReplies, postId, true); },
-                async deleteOwnPost(postId) { if (confirm("Delete this post?")) await database.ref('posts/' + postId).remove(); },
-                async deleteOwnComment(commentId) { if (confirm("Delete this comment?")) await database.ref('comments/' + commentId).remove(); },
-                async reportPost(postId) { const reason = prompt("Reason for report:"); if (reason) await database.ref('reports/' + Date.now()).set({ id: Date.now(), postId, reason, postContent: this.posts[postId]?.content }); },
+                toggleReplies(postId) { this.$set(this.showReplies, postId, !this.showReplies[postId]); },
+                showReplyForm(postId, parentId = null) { this.activeReplyPost = postId; this.activeParentComment = parentId; this.replyText = ''; },
+                async submitReply(postId, parentCommentId) { if (!this.replyText.trim()) return; const commentId = Date.now() + '_' + Math.random().toString(36).substr(2, 5); await db.ref('comments/' + commentId).set({ id: commentId, postId, parentCommentId: parentCommentId || null, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.replyText, timestamp: Date.now(), score: 0 }); this.replyText = ''; this.activeReplyPost = null; this.activeParentComment = null; this.$set(this.showReplies, postId, true); },
+                async deleteOwnPost(postId) { if (confirm("Delete?")) await db.ref('posts/' + postId).remove(); },
+                async deleteOwnComment(commentId) { if (confirm("Delete?")) await db.ref('comments/' + commentId).remove(); },
+                async reportPost(postId) { const reason = prompt("Reason for report:"); if (reason) await db.ref('reports/' + Date.now()).set({ id: Date.now(), postId, reason }); },
                 startDM(targetUserId) { this.activeTab = 'messages'; this.loadConversations(); setTimeout(() => { this.findOrCreateConversation(targetUserId); }, 500); },
-                findOrCreateConversation(targetUserId) { const convId = [this.currentUser.uid, targetUserId].sort().join('_'); database.ref('users/' + targetUserId).once('value', snap => { if (snap.exists()) { const otherUser = snap.val(); const convExists = this.myConversations.find(c => c.id === convId); if (convExists) this.openConversation(convExists); else { this.activeConversation = { id: convId, otherUser: otherUser.anonymousId, messages: [] }; this.myConversations.push(this.activeConversation); } } }); },
-                loadConversations() { database.ref('messages').on('value', snap => { const data = snap.val() || {}; const list = []; for (let id in data) { const parts = id.split('_'); const otherId = parts[0] === this.currentUser.uid ? parts[1] : parts[0]; database.ref('users/' + otherId).once('value', s => { if (s.exists() && !this.blockedUsersList.includes(s.val().anonymousId)) { const msgs = data[id].chats ? Object.values(data[id].chats) : []; msgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0)); list.push({ id, otherUser: s.val().anonymousId, messages: msgs }); this.myConversations = list; } }); } }); },
+                findOrCreateConversation(targetUserId) { const convId = [this.currentUser.uid, targetUserId].sort().join('_'); db.ref('users/' + targetUserId).once('value', snap => { if (snap.exists()) { this.activeConversation = { id: convId, otherUser: snap.val().anonymousId, messages: [] }; this.loadConversations(); } }); },
+                loadConversations() { db.ref('messages').on('value', snap => { const data = snap.val() || {}; const list = []; for (let id in data) { if (id.includes(this.currentUser.uid)) { const parts = id.split('_'); const otherId = parts[0] === this.currentUser.uid ? parts[1] : parts[0]; db.ref('users/' + otherId).once('value', s => { if (s.exists()) { const msgs = data[id].chats ? Object.values(data[id].chats) : []; msgs.sort((a, b) => a.timestamp - b.timestamp); list.push({ id, otherUser: s.val().anonymousId, messages: msgs }); this.myConversations = list; } }); } } }); },
                 openConversation(conv) { this.activeConversation = conv; },
-                async sendMessage() { if (!this.activeConversation || !this.newMessageText.trim()) { alert("Type a message first"); return; } const msgId = Date.now() + '_msg'; const msg = { senderId: this.currentUser.uid, text: this.newMessageText, timestamp: Date.now() }; await database.ref('messages/' + this.activeConversation.id + '/chats/' + msgId).set(msg); this.newMessageText = ''; this.activeConversation.messages.push(msg); },
-                postAcademicHelp() { const pid = Date.now() + '_acad'; database.ref('posts/' + pid).set({ id: pid, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.academicQuestion, category: 'academics', timestamp: Date.now(), score: 0 }); this.academicQuestion = ''; },
-                uploadResource() { if (this.resourceTitle) database.ref('resources/' + Date.now()).set({ id: Date.now(), title: this.resourceTitle, link: this.resourceLink, uploadedBy: this.userProfile.anonymousId }); this.resourceTitle = this.resourceLink = ''; },
-                postStudyPartner() { const pid = Date.now(); database.ref('posts/' + pid).set({ id: pid, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: "Study partner: " + this.studyPartnerMsg, category: 'academics', timestamp: Date.now(), score: 0 }); this.studyPartnerMsg = ''; },
-                upvoteAnswer(id) { database.ref('posts/' + id + '/upvotes').transaction(v => (v || 0) + 1); },
-                createFreeTalkPost() { const pid = Date.now(); database.ref('posts/' + pid).set({ id: pid, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.freeTalkContent, category: 'freetalk', timestamp: Date.now(), score: 0 }); this.freeTalkContent = ''; },
-                submitIssueReport() { const pid = Date.now(); database.ref('posts/' + pid).set({ id: pid, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.issueContent, category: 'issues', timestamp: Date.now(), score: 0 }); this.issueContent = ''; },
-                async createPoll() { if (!this.pollQuestion) return; const pollId = Date.now() + '_poll'; await database.ref('polls/' + pollId).set({ id: pollId, question: this.pollQuestion, options: [this.pollOption1, this.pollOption2], votes: { [this.pollOption1]: 0, [this.pollOption2]: 0 }, createdBy: this.currentUser.uid }); this.pollQuestion = this.pollOption1 = this.pollOption2 = ''; },
-                async votePoll(pollId, opt) { if (this.userPollVotes[pollId]) { alert("You already voted on this poll!"); return; } await database.ref('polls/' + pollId + '/votes/' + opt).transaction(v => (v || 0) + 1); await database.ref('userPollVotes/' + this.currentUser.uid + '/' + pollId).set(opt); this.userPollVotes[pollId] = opt; },
-                async deletePoll(pollId) { if (confirm("Delete this poll?")) await database.ref('polls/' + pollId).remove(); },
-                loadPollVotes() { if (this.currentUser) database.ref('userPollVotes/' + this.currentUser.uid).on('value', snap => { this.userPollVotes = snap.val() || {}; }); },
-                updateUserAllowDM() { database.ref('users/' + this.currentUser.uid + '/allowDM').set(this.userAllowDM); },
-                blockUser() { if (this.blockUserIdInput && !this.blockedUsersList.includes(this.blockUserIdInput)) { const newList = [...this.blockedUsersList, this.blockUserIdInput]; database.ref('users/' + this.currentUser.uid + '/blockedUsers').set(newList); this.blockUserIdInput = ''; } },
-                unblockUser(uid) { const newList = this.blockedUsersList.filter(b => b !== uid); database.ref('users/' + this.currentUser.uid + '/blockedUsers').set(newList); },
-                adminDeletePost(id) { database.ref('posts/' + id).remove(); }, adminDeleteComment(id) { database.ref('comments/' + id).remove(); }, resolveReportAndDelete(reportId, postId) { database.ref('posts/' + postId).remove(); database.ref('reports/' + reportId).remove(); }, toggleBanUser(uid, ban) { database.ref('users/' + uid + '/banned').set(ban); }
+                async sendMessage() { if (!this.activeConversation || !this.newMessageText.trim()) return; const msgId = Date.now() + '_msg'; const msg = { senderId: this.currentUser.uid, text: this.newMessageText, timestamp: Date.now() }; await db.ref('messages/' + this.activeConversation.id + '/chats/' + msgId).set(msg); this.newMessageText = ''; this.activeConversation.messages.push(msg); },
+                async submitIssueReport() { const pid = Date.now(); await db.ref('posts/' + pid).set({ id: pid, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: this.issueContent, category: 'issues', timestamp: Date.now(), score: 0 }); this.issueContent = ''; alert("Report submitted to admin"); },
+                async createPoll() { if (!this.pollQuestion) return; const pollId = Date.now() + '_poll'; await db.ref('polls/' + pollId).set({ id: pollId, question: this.pollQuestion, options: [this.pollOption1, this.pollOption2], votes: { [this.pollOption1]: 0, [this.pollOption2]: 0 }, createdBy: this.currentUser.uid }); this.pollQuestion = this.pollOption1 = this.pollOption2 = ''; },
+                async votePoll(pollId, opt) { if (this.userPollVotes[pollId]) { alert("Already voted!"); return; } await db.ref('polls/' + pollId + '/votes/' + opt).transaction(v => (v || 0) + 1); await db.ref('userPollVotes/' + this.currentUser.uid + '/' + pollId).set(opt); this.userPollVotes[pollId] = opt; },
+                async deletePoll(pollId) { if (confirm("Delete poll?")) await db.ref('polls/' + pollId).remove(); },
+                getCurrentLocation() { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { this.sosLocation = `Lat: ${pos.coords.latitude}, Lng: ${pos.coords.longitude}`; }, () => { alert("Location access denied"); }); } },
+                async sendSOS() { if (!this.sosLocation || !this.sosMessage) { alert("Please provide location and message"); return; } const sosId = Date.now() + '_sos'; await db.ref('posts/' + sosId).set({ id: sosId, userId: this.currentUser.uid, anonymousId: this.userProfile.anonymousId, content: "SOS: " + this.sosMessage, category: 'sos', timestamp: Date.now(), score: 0 }); await db.ref('sosAlerts/' + sosId).set({ id: sosId, anonymousId: this.userProfile.anonymousId, location: this.sosLocation, message: this.sosMessage, timestamp: Date.now() }); alert("SOS Alert Sent! Help is on the way."); const modal = bootstrap.Modal.getInstance(document.getElementById('sosModal')); modal.hide(); this.sosLocation = ''; this.sosMessage = ''; },
+                contactSecurity() { alert("Campus Security: Call +254 800 230 008\nAvailable 24/7 for emergencies"); },
+                contactWelfare() { alert("Director of Welfare: Call +254 711 234567\nOffice Hours: Mon-Fri 8am-5pm"); },
+                updateUserAllowDM() { db.ref('users/' + this.currentUser.uid + '/allowDM').set(this.userAllowDM); },
+                blockUser() { if (this.blockUserIdInput && !this.blockedUsersList.includes(this.blockUserIdInput)) { const newList = [...this.blockedUsersList, this.blockUserIdInput]; db.ref('users/' + this.currentUser.uid + '/blockedUsers').set(newList); this.blockUserIdInput = ''; alert('User blocked'); } },
+                unblockUser(uid) { const newList = this.blockedUsersList.filter(b => b !== uid); db.ref('users/' + this.currentUser.uid + '/blockedUsers').set(newList); },
+                adminDeletePost(id) { db.ref('posts/' + id).remove(); }, adminDeleteComment(id) { db.ref('comments/' + id).remove(); }, resolveReportAndDelete(reportId, postId) { db.ref('posts/' + postId).remove(); db.ref('reports/' + reportId).remove(); }, toggleBanUser(uid, ban) { db.ref('users/' + uid + '/banned').set(ban); }
             },
-            mounted() { setTimeout(() => this.loading = false, 500); auth.onAuthStateChanged(async user => { if (user) { this.currentUser = user; const snap = await database.ref('users/' + user.uid).once('value'); if (snap.exists()) this.userProfile = snap.val(); else { await auth.signOut(); return; } if (this.userProfile.banned) { await auth.signOut(); alert("Banned"); return; } this.isLoggedIn = true; this.loadData(); } else { this.isLoggedIn = false; } }); }
+            mounted() { setTimeout(() => this.loading = false, 500); auth.onAuthStateChanged(async user => { if (user) { this.currentUser = user; const snap = await db.ref('users/' + user.uid).once('value'); if (snap.exists()) { this.userProfile = snap.val(); this.isLoggedIn = true; this.loadData(); } else { await auth.signOut(); } } }); }
         });
     </script>
 </body>
