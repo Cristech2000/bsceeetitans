@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>BSCEEE Y2S1 - Electrical & Electronics Engineering</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="BSCEEE Y2S1">
+    <link rel="apple-touch-icon" href="pngegg.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="pngegg.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ==================== HEADER & NAVIGATION ==================== -->
+<div id="overlay"></div>
+
+<header>
+    <nav>
+        <div class="nav-left">
+            <button id="menuBtn"><i class="fas fa-bars"></i></button>
+            <div class="logo">
+                <img src="GALLERY/image-removebg-preview.png" alt="Chuka University Logo">
+                <div class="logo-text">
+                    <h1>Chuka University</h1>
+                    <p>Faculty of Engineering</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <div id="adminIndicator" style="display: none;">
+                <i class="fas fa-crown"></i> Admin
+            </div>
+            <div class="notification-icon" id="notificationBell">
+                <a href="#" onclick="showPage('announcements'); return false;">
+                    <i class="fas fa-bell"></i>
+                    <span id="notificationCount" class="notification-badge">0</span>
+                </a>
+            </div>
+            <button id="installButton" style="display: none;">
+                <i class="fas fa-download"></i> Install
+            </button>
+            <button id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<!-- Sidebar Navigation -->
+<div id="sidebar">
+    <a href="#" onclick="showPage('home'); return false;"><i class="fas fa-home"></i> Home</a>
+    <a href="#" onclick="showPage('timetable'); return false;"><i class="fas fa-calendar"></i> Timetable</a>
+    <a href="#" onclick="showPage('assignments'); return false;"><i class="fas fa-tasks"></i> Assignments</a>
+    <a href="#" onclick="showPage('studydocs'); return false;"><i class="fas fa-book"></i> Study Documents</a>
+    <a href="#" onclick="showPage('announcements'); return false;"><i class="fas fa-bullhorn"></i> Announcements</a>
+    <a href="#" onclick="showPage('practicalHub'); return false;"><i class="fas fa-microchip"></i> Practical Hub</a>
+    <a href="#" onclick="showPage('gallery'); return false;"><i class="fas fa-images"></i> Gallery</a>
+    <a href="#" onclick="showPage('sports'); return false;"><i class="fas fa-futbol"></i> Sports</a>
+    <a href="#" onclick="showPage('personnel'); return false;"><i class="fas fa-users"></i> Personnel</a>
+    <a href="#" onclick="showPage('registration'); return false;"><i class="fas fa-clipboard-list"></i> Registration</a>
+    <a href="#" onclick="showPage('support'); return false;"><i class="fas fa-life-ring"></i> Academic Support</a>
+    <a href="#" onclick="showPage('adminLogin'); return false;" id="adminLoginLink"><i class="fas fa-lock"></i> Admin Login</a>
+    <a href="#" onclick="showPage('adminDashboard'); return false;" id="adminDashboardLink" style="display: none;"><i class="fas fa-cogs"></i> Dashboard</a>
+</div>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<main class="content">
+    
+    <!-- ===== PAGE: HOME ===== -->
+    <div id="page-home" class="page-content active-page">
+        <!-- Hero Section -->
+        <section class="hero" id="section-hero">
+            <div class="hero-text">
+                <h1 id="heroTitle">Bachelor of Science in Electrical and Electronics Engineering<br>Chuka University<br>2nd Year | Academic Year 2025–2026</h1>
+                <p id="heroSubtitle">Innovate. Learn. Engineer.</p>
+                <button class="admin-edit-btn" data-section="hero" onclick="openEditor('hero')" style="display: none;"><i class="fas fa-edit"></i> Edit Hero</button>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about" id="section-about">
+            <h2>About This Site</h2>
+            <p id="aboutContent">The BSCEEE Y2S1 class website is a centralized digital space designed to foster academic excellence, unity, and streamlined communication for students pursuing a Bachelor of Science in Electrical and Electronics Engineering at Chuka University.</p>
+            <button class="admin-edit-btn" data-section="about" onclick="openEditor('about')" style="display: none;"><i class="fas fa-edit"></i> Edit About</button>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="section-features">
+            <div class="image-row">
+                <figure><img src="GALLERY/hi image.jpg" alt="Class photo"></figure>
+                <figure><img src="GALLERY/home image 2025-06-16 at 20.25.54_a0a50007.jpg" alt="Class activity"></figure>
+                <figure><img src="GALLERY/home page 20.22.35_7f93281f.jpg" alt="Engineering project"></figure>
+            </div>
+            <div class="features-text">
+                <span id="featuresContent">🧠 <strong>Who We Are</strong><br>BSCEEE Y2S1 is a class of 102 ambitious student engineers who value academic excellence, innovation, and teamwork.</span>
+                <button class="admin-edit-btn" data-section="features" onclick="openEditor('features')" style="display: none;"><i class="fas fa-edit"></i> Edit Content</button>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section class="news" id="section-news">
+            <h2><i class="fas fa-newspaper"></i> Latest News</h2>
+            <div id="newsContent">
+                <p>📰 Loading news...</p>
+            </div>
+            <button class="admin-edit-btn" data-section="news" onclick="openEditor('news')" style="display: none;"><i class="fas fa-edit"></i> Edit News</button>
+        </section>
+
+        <!-- Fun Facts Section -->
+        <section class="fun-facts" id="section-funfacts">
+            <h2><i class="fas fa-lightbulb"></i> Fun Engineering Facts</h2>
+            <ul id="funFactsContent">
+                <li>Loading facts...</li>
+            </ul>
+            <button class="admin-edit-btn" data-section="funFacts" onclick="openEditor('funFacts')" style="display: none;"><i class="fas fa-edit"></i> Edit Fun Facts</button>
+        </section>
+
+        <!-- Student Spotlight -->
+        <section class="spotlight" id="section-spotlight">
+            <h2><i class="fas fa-star"></i> Student Spotlight</h2>
+            <div id="spotlightContent">
+                <p>Loading spotlight...</p>
+            </div>
+            <button class="admin-edit-btn" data-section="spotlight" onclick="openEditor('spotlight')" style="display: none;"><i class="fas fa-edit"></i> Edit Spotlight</button>
+        </section>
+
+        <!-- Weekly Quiz -->
+        <section class="quiz" id="section-quiz">
+            <h2><i class="fas fa-brain"></i> Weekly Quiz</h2>
+            <div id="quizContent">
+                <p>Loading quiz...</p>
+            </div>
+            <button class="admin-edit-btn" data-section="quiz" onclick="openEditor('quiz')" style="display: none;"><i class="fas fa-edit"></i> Edit Quiz</button>
+        </section>
+
+        <!-- Custom Sections Container -->
+        <div id="customSectionsContainer"></div>
+    </div>
+
+    <!-- ===== PAGE: TIMETABLE ===== -->
+    <div id="page-timetable" class="page-content" style="display: none;">
+        <div class="timetable-container">
+            <div class="timetable-tabs">
+                <button class="timetable-tab active" onclick="showTimetableType('regular')">Class Timetable</button>
+                <button class="timetable-tab" onclick="showTimetableType('exam')">Exam Timetable</button>
+            </div>
+            <div id="regularTimetable" class="timetable-section">
+                <h2>CLASS TIMETABLE</h2>
+                <div id="regularPeriod" class="academic-period">Loading...</div>
+                <div class="table-container">
+                    <div id="regularTimetableContent" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading timetable...</div>
+                </div>
+            </div>
+            <div id="examTimetable" class="timetable-section" style="display: none;">
+                <h2>EXAMINATION TIMETABLE</h2>
+                <div id="examPeriod" class="academic-period">Loading...</div>
+                <div class="table-container">
+                    <div id="examTimetableContent" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading exam schedule...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: ASSIGNMENTS ===== -->
+    <div id="page-assignments" class="page-content" style="display: none;">
+        <section class="coming-soon" style="margin-top: 70px; text-align: center; padding: 60px 20px;">
+            <h2>📁 Assignments</h2>
+            <p>We're currently on break. Assignments will be posted here once the new semester begins. Stay tuned!</p>
+        </section>
+    </div>
+
+    <!-- ===== PAGE: STUDY DOCUMENTS ===== -->
+    <div id="page-studydocs" class="page-content" style="display: none;">
+        <section class="study-docs" style="margin-top: 60px;">
+            <h2 style="margin-bottom: 20px;">Study Documents</h2>
+            <div id="loadingState" class="loading"><p>📚 Loading study documents...</p></div>
+            <div id="errorState" class="error" style="display: none; color: red;"><p>❌ Error loading documents.</p></div>
+            <div id="studyDocsContainer"></div>
+        </section>
+    </div>
+
+    <!-- ===== PAGE: ANNOUNCEMENTS ===== -->
+    <div id="page-announcements" class="page-content" style="display: none;">
+        <div class="announcements-header" style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #004080 0%, #0066cc 100%); color: white;">
+            <h1><i class="fas fa-bullhorn"></i> Announcements</h1>
+            <p>Stay updated with the latest news and information</p>
+        </div>
+        <div class="filter-bar" style="display: flex; gap: 10px; justify-content: center; margin: 20px; flex-wrap: wrap;">
+            <button class="filter-btn active" onclick="filterAnnouncements('all')">All</button>
+            <button class="filter-btn" onclick="filterAnnouncements('important')">Important</button>
+            <button class="filter-btn" onclick="filterAnnouncements('urgent')">Urgent</button>
+            <button class="filter-btn" onclick="filterAnnouncements('event')">Events</button>
+            <button class="filter-btn" onclick="filterAnnouncements('info')">Information</button>
+        </div>
+        <div class="announcements-list" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div id="announcementsLoading" class="loading" style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading announcements...</div>
+            <div id="announcementsContainer" style="display: none;"></div>
+            <div id="noAnnouncements" class="no-announcements" style="display: none; text-align: center; padding: 60px;"><i class="fas fa-bullhorn fa-3x"></i><h3>No Announcements Yet</h3><p>Check back later for updates.</p></div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: PRACTICAL HUB ===== -->
+    <div id="page-practicalHub" class="page-content" style="display: none;">
+        <section class="head" style="background-image: url(GALLERY/back.jpg); background-size: cover; padding: 60px 20px; text-align: center; color: white;">
+            <div class="head-text">
+                <h1>Practical Electronics Hub</h1>
+                <p>Affordable, Tested Electronics Kits for EEE Practicals</p>
+            </div>
+        </section>
+        <section class="filter-section" style="padding: 20px;">
+            <h3><i class="fas fa-filter"></i> Filter Products</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <select id="categoryFilter" onchange="filterProducts()">
+                    <option value="all">All Categories</option>
+                    <option value="arduino">Arduino Kits</option>
+                    <option value="555">Mini Projects Kits</option>
+                    <option value="components">Components</option>
+                    <option value="tools">Tools</option>
+                </select>
+                <select id="priceFilter" onchange="filterProducts()">
+                    <option value="all">All Prices</option>
+                    <option value="0-500">Under Ksh 500</option>
+                    <option value="500-1000">Ksh 500-1000</option>
+                    <option value="1000-5000">Ksh 1000-5000</option>
+                    <option value="5000+">Over Ksh 5000</option>
+                </select>
+                <input type="text" id="searchBox" placeholder="Search products..." onkeyup="filterProducts()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+            </div>
+        </section>
+        <section><h2><i class="fas fa-box-open"></i> Available Products</h2>
+        <div class="product-grid" id="productsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading products...</div>
+        </div></section>
+        <div class="admin-controls" id="adminControls" style="display: none; position: fixed; bottom: 20px; right: 20px;">
+            <button class="btn-admin" onclick="openProductEditor()" style="background: #004080; color: white; border: none; padding: 12px 20px; border-radius: 30px;"><i class="fas fa-plus"></i> Add Product</button>
+        </div>
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cartSidebar" style="position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: var(--bg-primary); transition: right 0.3s; z-index: 1000; overflow-y: auto;">
+            <div class="cart-header" style="padding: 20px; background: #004080; color: white; display: flex; justify-content: space-between;">
+                <h3><i class="fas fa-shopping-cart"></i> Your Cart</h3>
+                <button onclick="toggleCart()" style="background: none; border: none; color: white; font-size: 24px;">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems" style="padding: 20px;"></div>
+            <div class="cart-total" style="padding: 20px; border-top: 1px solid var(--border);"><strong>Total: Ksh <span id="cartTotal">0</span></strong>
+            <button class="btn-buy" onclick="checkout()" style="width: 100%; margin-top: 10px; background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px;">Checkout</button></div>
+        </div>
+        <!-- WhatsApp Float Button -->
+        <a href="https://wa.me/+254746165077?text=Hi,%20I'm%20interested%20in%20your%20products" class="float" target="_blank" style="position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: white; border-radius: 50%; text-align: center; font-size: 30px; box-shadow: 2px 2px 3px #999; z-index: 1000; display: flex; align-items: center; justify-content: center;"><i class="fa fa-whatsapp"></i></a>
+    </div>
+
+    <!-- ===== PAGE: GALLERY ===== -->
+    <div id="page-gallery" class="page-content" style="display: none;">
+        <div class="event-gallery" style="padding: 20px;">
+            <h2>Engineering Day 2025</h2>
+            <p>On 4th March 2025, we joined the global community in celebrating World Engineering Day.</p>
+            <div class="image-grid" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <!-- Gallery images - update paths as needed -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: SPORTS ===== -->
+    <div id="page-sports" class="page-content" style="display: none;">
+        <div class="sports-section" style="padding: 100px 40px 40px;">
+            <h2>Sports at BSCEEE Y2S1</h2>
+            <p>Football and volleyball are our main sports. Regular matches and tournaments help build teamwork and fitness.</p>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: PERSONNEL ===== -->
+    <div id="page-personnel" class="page-content" style="display: none;">
+        <div style="padding: 80px 20px 20px;">
+            <section class="personnel-section"><h2>Class Leadership</h2><div class="personnel-grid" id="classLeadershipGrid"><div class="loading">Loading...</div></div></section>
+            <section class="personnel-section"><h2>Faculty Leadership</h2><div class="personnel-grid" id="facultyLeadershipGrid"><div class="loading">Loading...</div></div></section>
+            <section class="personnel-section"><h2>Lecturers</h2>
+                <div class="semester-tabs" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                    <button class="semester-btn active" onclick="loadLecturers('year1sem1')">Y1 S1</button>
+                    <button class="semester-btn" onclick="loadLecturers('year1sem2')">Y1 S2</button>
+                    <button class="semester-btn" onclick="loadLecturers('year2sem1')">Y2 S1</button>
+                    <button class="semester-btn" onclick="loadLecturers('year2sem2')">Y2 S2</button>
+                </div>
+                <div id="lecturersContainer"><div class="lecturer-grid" id="lecturersGrid"><div class="loading">Loading lecturers...</div></div></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: REGISTRATION ===== -->
+    <div id="page-registration" class="page-content" style="display: none;">
+        <div style="max-width: 600px; margin: 80px auto 20px; padding: 20px;">
+            <section class="registration-form" style="background: var(--bg-primary); padding: 30px; border-radius: 15px;">
+                <h2>Semester Registration</h2>
+                <form id="individualRegForm">
+                    <input type="text" name="Name" placeholder="Full Name" required style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+                    <input type="text" name="RegNo" placeholder="Registration Number" required style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+                    <input type="tel" name="Phone" placeholder="Phone Number" required style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+                    <button type="submit" style="width: 100%; padding: 12px; background: #004080; color: white; border: none; border-radius: 8px;">Submit</button>
+                </form>
+            </section>
+            <section class="registration-form" style="background: var(--bg-primary); padding: 30px; border-radius: 15px; margin-top: 30px;">
+                <h2>Group Registration</h2>
+                <form id="groupForm">
+                    <input type="text" id="groupName" placeholder="Group Name" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <h3>Enter 6 Members' Reg Numbers</h3>
+                    <input class="regInput" placeholder="Reg No 1" required style="width: 100%; padding: 10px; margin: 5px 0;">
+                    <input class="regInput" placeholder="Reg No 2" required style="width: 100%; padding: 10px; margin: 5px 0;">
+                    <input class="regInput" placeholder="Reg No 3" required style="width: 100%; padding: 10px; margin: 5px 0;">
+                    <input class="regInput" placeholder="Reg No 4" required style="width: 100%; padding: 10px; margin: 5px 0;">
+                    <input class="regInput" placeholder="Reg No 5" required style="width: 100%; padding: 10px; margin: 5px 0;">
+                    <input class="regInput" placeholder="Reg No 6" required style="width: 100%; padding: 10px; margin: 5px 0;">
+                    <button type="submit" style="width: 100%; padding: 12px; background: #004080; color: white; border: none; border-radius: 8px; margin-top: 15px;">Register Group</button>
+                </form>
+            </section>
+            <section class="registration-form" style="background: var(--bg-primary); padding: 30px; border-radius: 15px; margin-top: 30px;">
+                <h2>No Group Yet?</h2>
+                <form id="pendingForm">
+                    <input type="text" name="RegNo" placeholder="Your Reg Number" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <button type="submit" style="width: 100%; padding: 12px; background: #004080; color: white; border: none; border-radius: 8px;">Submit</button>
+                </form>
+            </section>
+            <section class="registration-form" style="background: var(--bg-primary); padding: 30px; border-radius: 15px; margin-top: 30px;">
+                <h2>Trip Shift Registration</h2>
+                <div id="shift1Status" class="shift-status" style="margin: 10px 0; padding: 10px; border-radius: 5px; text-align: center;">Shift 1: 0/51 registered</div>
+                <div id="shift2Status" class="shift-status" style="margin: 10px 0; padding: 10px; border-radius: 5px; text-align: center;">Shift 2: 0/52 registered</div>
+                <form id="tripForm">
+                    <input type="text" id="tripName" placeholder="Full Name" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <input type="text" id="tripRegNo" placeholder="Registration Number" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <select id="tripShift" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                        <option value="">Select Shift</option>
+                        <option value="shift1">Shift 1 (Max: 51)</option>
+                        <option value="shift2">Shift 2 (Max: 52)</option>
+                    </select>
+                    <button type="submit" style="width: 100%; padding: 12px; background: #004080; color: white; border: none; border-radius: 8px;">Register for Trip</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: SUPPORT ===== -->
+    <div id="page-support" class="page-content" style="display: none;">
+        <div style="padding: 80px 20px 20px;">
+            <div class="tab-buttons" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button onclick="showSupportYear('year1')" class="active">1st Year</button>
+                <button onclick="showSupportYear('year2')">2nd Year</button>
+                <button onclick="showSupportYear('year3')">3rd Year</button>
+                <button onclick="showSupportYear('year4')">4th Year</button>
+                <button onclick="showSupportYear('year5')">5th Year</button>
+            </div>
+            <div id="support-year1" class="support-year-content">
+                <form class="support-form" id="complaint-year1" style="max-width: 600px; margin: 0 auto; background: var(--bg-primary); padding: 30px; border-radius: 15px;">
+                    <h2>Missing Marks Complaint (1st Year)</h2>
+                    <input name="Name" placeholder="Your Name" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <input name="RegNo" placeholder="Registration Number" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <input name="Lecturer" placeholder="Lecturer's Name" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <select name="Unit" required style="width: 100%; padding: 12px; margin: 10px 0;"><option value="">-- Select Unit --</option><option value="EENG111">EENG 111</option><option value="EENG112">EENG 112</option></select>
+                    <button type="submit" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px;">Submit Complaint</button>
+                </form>
+            </div>
+            <div id="support-year2" class="support-year-content" style="display: none;">
+                <form class="support-form" id="complaint-year2" style="max-width: 600px; margin: 0 auto; background: var(--bg-primary); padding: 30px; border-radius: 15px;">
+                    <h2>Missing Marks Complaint (2nd Year)</h2>
+                    <input name="RegNo" placeholder="Registration Number" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <select name="Unit" required style="width: 100%; padding: 12px; margin: 10px 0;"><option value="">-- Select Unit --</option><option value="EENG271">EENG 271</option><option value="EENG291">EENG 291</option></select>
+                    <button type="submit" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px;">Submit Complaint</button>
+                </form>
+                <form class="support-form" id="anonymous-year2" style="max-width: 600px; margin: 20px auto; background: var(--bg-primary); padding: 30px; border-radius: 15px;">
+                    <h2>Anonymous Class Issue</h2>
+                    <select name="IssueType" required style="width: 100%; padding: 12px; margin: 10px 0;"><option value="">-- Select Issue --</option><option value="teaching">Teaching Quality</option><option value="resources">Resources</option></select>
+                    <textarea name="Description" placeholder="Describe the issue..." style="width: 100%; height: 100px; padding: 12px; margin: 10px 0;" required></textarea>
+                    <button type="submit" style="width: 100%; padding: 12px; background: #17a2b8; color: white; border: none; border-radius: 8px;">Submit Anonymously</button>
+                </form>
+                <form class="support-form" id="courseReg-year2" style="max-width: 600px; margin: 20px auto; background: var(--bg-primary); padding: 30px; border-radius: 15px;">
+                    <h2>Course Registration Issue</h2>
+                    <input type="text" name="studentName" placeholder="Full Name" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <input type="text" name="regNumber" placeholder="Registration Number" required style="width: 100%; padding: 12px; margin: 10px 0;">
+                    <select name="issueType" required style="width: 100%; padding: 12px; margin: 10px 0;"><option value="">-- Issue Type --</option><option value="registration_error">Registration Error</option></select>
+                    <textarea name="explanation" placeholder="Detailed explanation..." style="width: 100%; height: 100px; padding: 12px; margin: 10px 0;" required></textarea>
+                    <button type="submit" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px;">Submit Issue</button>
+                </form>
+            </div>
+            <!-- Add year3, year4, year5 similarly -->
+        </div>
+    </div>
+
+    <!-- ===== PAGE: ADMIN LOGIN ===== -->
+    <div id="page-adminLogin" class="page-content" style="display: none;">
+        <div class="login-container" style="max-width: 400px; margin: 100px auto; background: var(--bg-primary); padding: 40px; border-radius: 20px;">
+            <div class="login-header" style="text-align: center;">
+                <i class="fas fa-lock fa-3x" style="color: #004080;"></i>
+                <h1>Admin Login</h1>
+                <p>BSCEEE Y2S1 Control Panel</p>
+            </div>
+            <div id="loginErrorMessage" class="error-message" style="display: none; background: #fee; color: #c33; padding: 10px; border-radius: 5px; margin-bottom: 15px;"></div>
+            <form id="adminLoginForm">
+                <input type="email" id="adminEmail" placeholder="Admin Email" required style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+                <input type="password" id="adminPassword" placeholder="Password" required style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+                <button type="submit" style="width: 100%; padding: 12px; background: #004080; color: white; border: none; border-radius: 8px;"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+            <div style="text-align: center; margin-top: 20px;"><a href="#" onclick="showPage('home'); return false;">← Back to Home</a></div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: ADMIN DASHBOARD ===== -->
+    <div id="page-adminDashboard" class="page-content" style="display: none;">
+        <!-- Simplified admin dashboard - will be expanded -->
+        <div style="padding: 80px 20px 20px;">
+            <h1 style="color: #004080;">Admin Dashboard</h1>
+            <p>Welcome to the admin panel. Use the sidebar to navigate to management sections.</p>
+            <button onclick="logout()" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px;">Logout</button>
+        </div>
+        <div id="adminDashboardContent"></div>
+    </div>
+
+</main>
+
+<!-- ==================== MODALS ==================== -->
+<div id="adminModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7);">
+    <div class="modal-content" style="background: white; padding: 30px; border-radius: 10px; max-width: 600px; margin: 50px auto;">
+        <span class="closeBtn" onclick="closeEditor()" style="float: right; font-size: 28px; cursor: pointer;">&times;</span>
+        <h3 id="modalTitle">Edit Content</h3>
+        <textarea id="contentEditor" style="width: 100%; height: 300px; padding: 15px; margin: 20px 0; border-radius: 8px; border: 2px solid #ddd;"></textarea>
+        <button onclick="closeEditor()" style="padding: 10px 20px; margin-right: 10px; background: #6c757d; color: white; border: none; border-radius: 5px;">Cancel</button>
+        <button onclick="saveContent()" style="padding: 10px 20px; background: #004080; color: white; border: none; border-radius: 5px;">Save</button>
+    </div>
+</div>
+
+<div id="productDetailsModal" class="product-modal" style="display: none; position: fixed; z-index: 10001; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);"></div>
+<div id="productEditorModal" class="modal" style="display: none;"></div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="https://www.chuka.ac.ke" target="_blank">Chuka University Website</a></li>
+                <li><a href="https://portal.chuka.ac.ke" target="_blank">Student Portal</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 BSCEEE Y2S1 · Chuka University</p>
+    </div>
+</footer>
+
+<!-- ==================== FIREBASE & APP SCRIPTS ==================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
