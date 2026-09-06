@@ -104,6 +104,12 @@
         }
 
         /* BUTTONS */
+        @keyframes pulse-btn {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
         .btn {
             position: relative;
             display: inline-block;
@@ -121,6 +127,7 @@
             transition: all 0.4s ease;
             text-decoration: none;
             letter-spacing: 1px;
+            animation: pulse-btn 2.5s infinite; /* Added subtle pulse to make it obviously clickable */
         }
 
         .btn:hover {
@@ -128,6 +135,7 @@
             border-color: var(--accent-gold);
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 15px rgba(212, 175, 55, 0.2);
+            animation: none; /* Stop pulsing on hover */
         }
 
         .ripple {
@@ -195,6 +203,26 @@
         }
 
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* SCROLL INDICATOR */
+        #scroll-indicator {
+            margin-top: 4rem;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            font-family: var(--font-sans);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            animation: bounce 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
 
         /* CARDS (DISCOVERIES) */
         .cards-grid {
@@ -441,6 +469,7 @@
         
         <section id="intro">
             <div id="intro-text"></div>
+            <div id="scroll-indicator">Scroll Down ↓</div>
         </section>
 
         <section id="discoveries" class="reveal">
@@ -687,6 +716,14 @@
             
             // Allow scrolling
             document.body.style.overflowY = 'auto';
+
+            // Show scroll indicator after text finishes typing
+            setTimeout(() => {
+                const scrollIndicator = document.getElementById('scroll-indicator');
+                if(scrollIndicator) {
+                    scrollIndicator.style.opacity = '1';
+                }
+            }, 500);
         }
 
         enterBtn.addEventListener('click', () => {
