@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Hanifah</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS VARIABLES */
+        :root {
+            --bg-dark: #050814;
+            --bg-gradient: linear-gradient(135deg, #050814 0%, #0a1128 50%, #12182b 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gold: #d4af37;
+            --accent-pink: #f4c2c2;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'Montserrat', sans-serif;
+        }
+
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            overflow-y: hidden; /* Locked until hero is clicked */
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* PARTICLES */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+        }
+        
+        .title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            background: linear-gradient(to right, #fff, var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: var(--text-muted);
+            font-style: italic;
+            font-family: var(--font-serif);
+            margin-bottom: 2rem;
+        }
+
+        /* LAYOUT & SECTIONS */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        #main-content {
+            display: none; /* Hidden until hero is cleared */
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        /* BUTTONS */
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            cursor: pointer;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.4s ease;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* HERO SECTION */
+        #hero {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
+        }
+
+        #hero.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* SCROLL REVEAL CLASSES */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* INTRO */
+        #intro-text {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-family: var(--font-serif);
+            line-height: 1.8;
+            min-height: 150px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: var(--accent-gold);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* CARDS (DISCOVERIES) */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            margin-top: 3rem;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-25deg);
+            transition: all 0.7s ease;
+        }
+
+        .glass-card:hover::before {
+            left: 200%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card.clicked {
+            border-color: var(--accent-pink);
+            background: rgba(244, 194, 194, 0.05);
+        }
+
+        /* AGAPORNIS */
+        .bird-svg {
+            width: 150px;
+            height: auto;
+            margin: 2rem auto;
+            display: block;
+        }
+        
+        .bird-body-1 { fill: var(--accent-gold); opacity: 0.8; animation: breathe 4s ease-in-out infinite; transform-origin: center bottom; }
+        .bird-body-2 { fill: var(--accent-pink); opacity: 0.8; animation: breathe 4s ease-in-out infinite 1s; transform-origin: center bottom; }
+        
+        @keyframes breathe {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.05); }
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 4rem auto 0;
+            padding: 2rem 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            top: 0; bottom: 0; left: 50%;
+            margin-left: -1px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background: inherit;
+            width: 50%;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) { left: 0; text-align: right; }
+        .timeline-item:nth-child(even) { left: 50%; text-align: left; }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            right: -8px;
+            background: var(--bg-dark);
+            border: 2px solid var(--text-muted);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:nth-child(even)::after { left: -8px; }
+        
+        .timeline-item:hover::after, .timeline-item.glow::after {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px var(--accent-gold);
+        }
+
+        .timeline-content {
+            padding: 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* CURIOSITY & TERMINAL */
+        #terminal-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 2rem;
+            font-family: monospace;
+            text-align: left;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 500px;
+            display: none;
+        }
+
+        .terminal-line { margin: 0.5rem 0; opacity: 0; }
+        .terminal-success { color: var(--accent-pink); font-size: 1.5rem; font-family: var(--font-serif); text-align: center; margin-top: 1rem; }
+        .terminal-error { color: #ff5555; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 8, 20, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none; border: none;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-pink));
+            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #gift-result {
+            display: none;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* FOOTER */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* RESPONSIVE */
+        @media screen and (max-width: 768px) {
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 0; }
+            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { left: 0; text-align: left; }
+            .timeline-item::after, .timeline-item:nth-child(even):after { left: 23px; top: 15px; }
+            section { padding: 4rem 1.5rem; }
+            .title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <div id="hero">
+        <h1 class="title">Hanifah</h1>
+        <p class="subtitle">"I made something for you..."</p>
+        <button class="btn" id="enter-btn">Open it 🤍</button>
+    </div>
+
+    <div id="main-content">
+        
+        <section id="intro">
+            <div id="intro-text"></div>
+        </section>
+
+        <section id="discoveries" class="reveal">
+            <h2 class="title" style="font-size: 2.5rem;">Things I've Discovered</h2>
+            <div class="cards-grid">
+                <div class="glass-card"><p>You study Economics. (Future minister of finance? 👀)</p></div>
+                <div class="glass-card"><p>You enjoy business, money, government and demand & supply.</p></div>
+                <div class="glass-card"><p>You're absolutely obsessed with K-dramas.</p></div>
+                <div class="glass-card"><p>You dream of going to a live concert.</p></div>
+                <div class="glass-card"><p>You're shy at first but become a total extrovert around your people.</p></div>
+                <div class="glass-card"><p>Personality matters way more than looks to you.</p></div>
+                <div class="glass-card"><p>You're proudly your own number one admirer 😂❤️</p></div>
+                <div class="glass-card"><p>You have a playful but genuinely caring heart.</p></div>
+            </div>
+        </section>
+
+        <section id="agapornis" class="reveal">
+            <h2 class="title" style="font-size: 2.5rem;">Agapornis 🕊️</h2>
+            
+            <svg class="bird-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 10 100 Q 100 110 190 95" stroke="rgba(255,255,255,0.2)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <g class="bird-body-1" transform="translate(60, 45)">
+                    <path d="M 10 50 C -5 30 5 0 20 0 C 35 0 45 30 30 50 Z" />
+                    <path d="M 5 20 L -5 25 L 5 30 Z" fill="#fff" opacity="0.6"/>
+                    <circle cx="15" cy="15" r="2" fill="#050814"/>
+                </g>
+                <g class="bird-body-2" transform="translate(95, 50)">
+                    <path d="M 10 45 C -5 25 5 0 20 0 C 35 0 45 25 30 45 Z" />
+                    <path d="M 35 15 L 45 20 L 35 25 Z" fill="#fff" opacity="0.6"/>
+                    <circle cx="25" cy="15" r="2" fill="#050814"/>
+                </g>
+            </svg>
+
+            <p style="max-width: 600px; margin: 0 auto; font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.8;">
+                "Remember when you guessed our bird?<br><br>
+                Agapornis.<br><br>
+                Lovebirds don't become beautiful because they're always together.<br>
+                They're beautiful because they choose each other.<br><br>
+                Maybe that's why I smiled when you said it."
+            </p>
+        </section>
+
+        <section id="story" class="reveal">
+            <h2 class="title" style="font-size: 2.5rem;">Our Little Story</h2>
+            <div class="timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h3>Day 1</h3>
+                        <p class="subtitle" style="font-size: 1rem; margin-bottom:0; margin-top: 5px;">"Hey there, I'm Cris. Vic gave me your number..."</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <p>We discovered we actually vibe 😂</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <p>Economics vs Engineering debates</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <p>K-dramas, skateboards & random stories</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h3>Today</h3>
+                        <p class="subtitle" style="font-size: 1rem; margin-bottom:0; margin-top: 5px;">"I'm sitting here coding a birthday website for you."</p>
+                    </div>
+                </div>
+                <div class="timeline-item glow reveal">
+                    <div class="timeline-content" style="border-color: var(--accent-gold);">
+                        <h3 style="color: var(--accent-gold);">Next Chapter</h3>
+                        <p style="font-style: italic;">"Still being written..."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="curiosity" class="reveal">
+            <button class="btn" id="curiosity-btn">I'm Curious 👀</button>
+            <div id="terminal-box">
+                <div class="terminal-line" id="t-1">> Loading birthday surprise...</div>
+                <div class="terminal-line" id="t-2">> Checking database...</div>
+                <div class="terminal-line" id="t-3">> Searching...</div>
+                <div class="terminal-line terminal-error" id="t-4">> ERROR: Too much awesomeness detected 😂</div>
+                <div class="terminal-line terminal-success" id="t-5">Happy Birthday Hanifah ❤️</div>
+            </div>
+        </section>
+
+        <section id="final-message" class="reveal">
+            <h2 class="title" style="font-size: 3rem; margin-bottom: 2rem;">Happy Birthday 🎉</h2>
+            <div style="max-width: 600px; text-align: left; font-size: 1.1rem; padding: 2rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;">
+                <p style="margin-bottom: 1.5rem;">"I don't know where life will take us.</p>
+                <p style="margin-bottom: 1.5rem;">We've only known each other for a short while, but somehow you've already given me plenty of reasons to smile.</p>
+                <p style="margin-bottom: 1.5rem;">Thank you for being unapologetically yourself.</p>
+                <p style="margin-bottom: 2rem;">May this new year bring you peace, laughter, meaningful adventures, and people who genuinely deserve your heart.</p>
+                <p style="margin-bottom: 1rem; font-family: var(--font-serif); font-size: 1.3rem;">Happy Birthday, Hanifah. ❤️"</p>
+                <p style="text-align: right; font-style: italic; color: var(--accent-gold);">— Cris</p>
+            </div>
+        </section>
+
+        <section id="one-more-thing" class="reveal" style="min-height: 50vh;">
+            <button class="btn" id="modal-btn">One More Thing 👀</button>
+        </section>
+
+        <footer>
+            <p>Built with code, caffeine, and questionable amounts of overthinking 😂</p>
+            <p style="margin-top: 10px; font-family: var(--font-serif);">&copy; Cris</p>
+        </footer>
+
+    </div> <div class="modal-overlay" id="gift-modal">
+        <div class="modal-content">
+            <button class="close-btn" id="close-modal">&times;</button>
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;" id="modal-title">Gift loading...</h3>
+            
+            <div class="progress-container" id="prog-container">
+                <div class="progress-bar" id="prog-bar"></div>
+            </div>
+
+            <div id="gift-result">
+                <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">🎁 Birthday Gift Unlocked</h3>
+                <p style="font-size: 1.2rem; font-weight: 500; margin-bottom: 1rem;">Dinner Date: Pending... 🍽️😉</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">"I figured some gifts are better redeemed in real life."</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- PARTICLES BACKGROUND ---
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', setCanvasSize);
+        setCanvasSize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            let count = window.innerWidth < 768 ? 40 : 100; // Less on mobile
+            for (let i = 0; i < count; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        // --- BUTTON RIPPLE EFFECT ---
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let x = e.clientX - e.target.getBoundingClientRect().left;
+                let y = e.clientY - e.target.getBoundingClientRect().top;
+                let ripples = document.createElement('span');
+                ripples.style.left = x + 'px';
+                ripples.style.top = y + 'px';
+                ripples.classList.add('ripple');
+                this.appendChild(ripples);
+                setTimeout(() => { ripples.remove() }, 600);
+            });
+        });
+
+        // --- HERO & TYPING INTRO ---
+        const enterBtn = document.getElementById('enter-btn');
+        const hero = document.getElementById('hero');
+        const mainContent = document.getElementById('main-content');
+        
+        const introLines = [
+            "I could've just sent you a birthday text...",
+            "But that would've been way too ordinary 😂",
+            "So, as an engineer who apparently solves emotional problems with code...",
+            "I made you a website instead."
+        ];
+
+        async function typeWriter(text, element, speed = 40) {
+            return new Promise(resolve => {
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        resolve();
+                    }
+                }
+                type();
+            });
+        }
+
+        async function playIntro() {
+            const introDiv = document.getElementById('intro-text');
+            
+            await typeWriter(introLines[0], introDiv);
+            await new Promise(r => setTimeout(r, 800));
+            
+            introDiv.innerHTML = introLines[0] + '<br><br>';
+            await typeWriter(introLines[1], introDiv);
+            await new Promise(r => setTimeout(r, 1200));
+
+            introDiv.innerHTML = introLines[0] + '<br><br>' + introLines[1] + '<br><br>';
+            await typeWriter(introLines[2], introDiv);
+            await new Promise(r => setTimeout(r, 800));
+            
+            introDiv.innerHTML = introLines[0] + '<br><br>' + introLines[1] + '<br><br>' + introLines[2] + '<br><br>';
+            await typeWriter(introLines[3], introDiv);
+            
+            // Allow scrolling
+            document.body.style.overflowY = 'auto';
+        }
+
+        enterBtn.addEventListener('click', () => {
+            hero.classList.add('hidden');
+            setTimeout(() => {
+                mainContent.style.display = 'block';
+                // Trigger reflow
+                void mainContent.offsetWidth; 
+                mainContent.style.opacity = '1';
+                setTimeout(playIntro, 500);
+            }, 1000);
+        });
+
+        // --- SCROLL REVEAL ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+        
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => revealOnScroll.observe(el));
+
+        // --- CARDS INTERACTION ---
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('clicked');
+            });
+        });
+
+        // --- CURIOSITY TERMINAL ---
+        const curBtn = document.getElementById('curiosity-btn');
+        const termBox = document.getElementById('terminal-box');
+        const t1 = document.getElementById('t-1');
+        const t2 = document.getElementById('t-2');
+        const t3 = document.getElementById('t-3');
+        const t4 = document.getElementById('t-4');
+        const t5 = document.getElementById('t-5');
+
+        curBtn.addEventListener('click', () => {
+            curBtn.style.display = 'none';
+            termBox.style.display = 'block';
+            
+            setTimeout(() => { t1.style.opacity = 1; }, 500);
+            setTimeout(() => { t2.style.opacity = 1; }, 1500);
+            setTimeout(() => { t3.style.opacity = 1; }, 2500);
+            setTimeout(() => { t4.style.opacity = 1; }, 4000);
+            setTimeout(() => { t5.style.opacity = 1; }, 5500);
+        });
+
+        // --- ONE MORE THING MODAL ---
+        const modalBtn = document.getElementById('modal-btn');
+        const modal = document.getElementById('gift-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const progBar = document.getElementById('prog-bar');
+        const progCont = document.getElementById('prog-container');
+        const giftResult = document.getElementById('gift-result');
+        const modTitle = document.getElementById('modal-title');
+        let modalOpened = false;
+
+        modalBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            if(!modalOpened) {
+                modalOpened = true;
+                setTimeout(() => {
+                    progBar.style.width = '100%';
+                }, 300);
+                
+                setTimeout(() => {
+                    progCont.style.display = 'none';
+                    modTitle.style.display = 'none';
+                    giftResult.style.display = 'block';
+                }, 2400); // Wait for transition + buffer
+            }
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) modal.classList.remove('active');
+        });
+
+    </script>
+</body>
+</html>
